@@ -1,0 +1,45 @@
+@import '_common-style.scss';
+
+.header{
+    background-color: $darkgrey;
+    min-height:$header-height;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: $border-shadow;
+    &-logo {
+        display: flex;
+        align-items: center;
+      &-img{
+        animation: header-logo-spin infinite 20s linear;
+        height: $logo-height;
+      }
+      &-name{
+        font-size:$header-font-size;
+        color: $white;
+      }
+    }
+    nav{
+        display: flex;
+        font-size: $nav-font-size;
+        margin-right: $nav-margin;
+        .nav-item{
+            color:$white;
+            text-decoration: none;
+            margin-left: $nav-margin;
+        }
+        .selected{
+            color: $darkgreen;
+        }
+    }
+}
+
+// animation for header logo
+@keyframes header-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }

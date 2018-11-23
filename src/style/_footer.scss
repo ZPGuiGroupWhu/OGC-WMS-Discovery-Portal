@@ -1,0 +1,21 @@
+@import '_common-style.scss';
+
+footer{
+    background-color:$lightgrey;
+    min-height:$header-height;
+    .footer-logo{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img{
+            height: $logo-height - 1vmin;
+        }
+    }
+    a{
+        text-decoration: none;
+        color: $darkgrey;
+    }
+    a:hover{
+        color: $darkgreen;
+    }
+}
