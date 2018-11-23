@@ -1,5 +1,5 @@
 # Geographic Service Catalogue
-===
+
 [![react](https://img.shields.io/badge/react-16.6.3-orange.svg)](https://vuejs.org)
 
 ## 环境配置及项目运行步骤：
