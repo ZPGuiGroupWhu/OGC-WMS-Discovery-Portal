@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Header extends Component {
+class DataAnalysis extends Component {
   render() {
     return (
       <p>这里是Data Analysis</p>
@@ -8,4 +8,4 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default DataAnalysis;

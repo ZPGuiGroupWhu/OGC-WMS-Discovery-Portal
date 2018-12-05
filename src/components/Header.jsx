@@ -13,7 +13,6 @@ class Header extends Component {
         </div> 
         <nav>
           <Link className="nav-item" exact activeClassName="selected" to="/">Data Search</Link>
-          <Link className="nav-item" activeClassName="selected" to="/imageSearch">Image Search</Link>
           <Link className="nav-item" activeClassName="selected" to="/themeMap">Theme Map</Link>
           <Link className="nav-item" activeClassName="selected" to="/dataAnalysis">Data Analysis</Link>
         </nav>

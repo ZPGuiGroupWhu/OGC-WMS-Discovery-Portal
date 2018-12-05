@@ -4,7 +4,6 @@ import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import Home from './components/Home/Home.jsx';
-import ImageSearch from './components/imageSearch/imageSearch.jsx';
 import ThemeMap from './components/themeMap/themeMap.jsx';
 import DataAnalysis from './components/dataAnalysis/dataAnalysis.jsx';
 import * as serviceWorker from './serviceWorker';
@@ -16,7 +15,6 @@ ReactDOM.render(
             <Header className="App-header"></Header>
             <div className="App-container">
                 <Route exact path="/" component={Home}/>
-                <Route path="/imageSearch" component={ImageSearch} />
                 <Route path="/themeMap" component={ThemeMap}/>
                 <Route path="/dataAnalysis" component={DataAnalysis}/>
             </div>

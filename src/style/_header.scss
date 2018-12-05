@@ -28,6 +28,9 @@
             text-decoration: none;
             margin-left: $nav-margin;
         }
+        .nav-item:hover{
+          color: $darkgreen;
+        }
         .selected{
             color: $darkgreen;
         }

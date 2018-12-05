@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Header extends Component {
+class ThemeMap extends Component {
   render() {
     return (
       <p>theme map</p>
@@ -8,4 +8,4 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default ThemeMap;
