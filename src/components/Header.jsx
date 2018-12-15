@@ -9,7 +9,7 @@ class Header extends Component {
       <header className="header"> 
         <div className="header-logo">     
           <img src={logo} className="header-logo-img" alt="logo" />
-          <span className="header-logo-name">Geographic Service catalogue</span>
+          <span className="header-logo-name">WMS Discovery Portal</span>
         </div> 
         <nav>
           <Link className="nav-item" exact activeClassName="selected" to="/">Data Search</Link>
