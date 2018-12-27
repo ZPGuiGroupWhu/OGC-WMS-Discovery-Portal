@@ -1,0 +1,40 @@
+// style file of Header.jsx
+@import '_common-style.scss';
+
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1vmin !important; 
+    &_logo {
+        display: flex;
+        align-items: center;
+        &_img {
+            animation: header-logo-spin infinite 20s linear;
+            height: $logo_height;
+        }
+        &_name{
+            font-size:$header_font_size;
+            color: $white;
+        }
+    }
+    &_menu{
+        line-height: $header_height !important;
+        &_nav,  &_dropdown{
+            font-size: $nav_font_size;
+        }
+        &_dropdown_selected{
+            background-color: $blue !important;
+        }
+    }
+}
+
+// animation for header logo
+@keyframes header-logo-spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}
