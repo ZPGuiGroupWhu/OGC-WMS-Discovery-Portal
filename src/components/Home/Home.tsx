@@ -5,33 +5,32 @@ import {NavLink as Link} from 'react-router-dom';
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import { Layout, Input, Radio, Select } from 'antd';
 import 'antd/dist/antd.css';
+import '../../style/_home.scss';
 
 const { Content} = Layout;
-const Search = Input.Search;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const Option = Select.Option;
 
 class Home extends React.Component {
   public render() {
     return (
       <Router>
-        <Content style={{ padding: '20px 0px' }}>
-          <Search
-              style={{ padding: '20px 0px'}}
-              placeholder="input search text"
-              enterButton={true}
-          />
-          <RadioGroup defaultValue="a" style={{margin:'0 20px'}}>
-            <RadioButton value="a"><Link exact={true} to="/">Service Searching</Link></RadioButton>
-            <RadioButton value="b"><Link to="/layerSearch">Map Layer Searching</Link></RadioButton>
-          </RadioGroup>
-          <Select defaultValue="lucy" style={{ width: 223, margin: '0 0' }}>
-            <Option value="jack">Order By Quality Rank</Option>
-            <Option value="lucy">Order By Name First Letter</Option>
-            <Option value="disabled">Order By Response Time</Option>
-            <Option value="Yiminghe">Order By Layer Number</Option>
-          </Select>
+        <Content className="content">
+          <div className="content_tool">
+             <Input.Search
+                className="content_tool_search"
+                placeholder="Input something to search services"
+                enterButton={true}
+            />
+            <Radio.Group defaultValue="service" buttonStyle="solid" className="content_tool_radio">
+              <Radio.Button value="service"><Link to="/">Service Searching</Link></Radio.Button>
+              <Radio.Button value="layer"><Link to="/layerSearch">Map Layer Searching</Link></Radio.Button>
+            </Radio.Group>
+            <Select defaultValue="firstLetter" className="content_tool_select">
+              <Select.Option value="qualityRank">Order By Quality Rank</Select.Option>
+              <Select.Option value="firstLetter">Order By Name First Letter</Select.Option>
+              <Select.Option value="ResTime">Order By Response Time</Select.Option>
+              <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
+            </Select>
+          </div> 
           <Layout>
               <Route exact={true} path="/" component={DataSearch}/>
               <Route path="/layerSearch" component={LayerSearch}/>

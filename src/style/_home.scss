@@ -1,0 +1,27 @@
+// style file of Home.tsx
+@import '_common-style.scss';
+
+.content{
+    padding: 0 !important;
+    &_tool{
+        display: flex;
+        flex-direction: row;
+        padding: $bound_padding_tb;
+        &_search{
+            flex:1;
+        }
+        &_radio{
+            flex: 0 0 300px;
+            margin: $bound_padding_lr;
+        }
+        &_select{
+            flex: 0 0 100px;
+        }
+    }
+}
+
+// style for Home/DataSearch.tsx
+.main_container{
+    padding: $bound_padding_tb;
+    background-color: $white;
+}
