@@ -1,22 +1,32 @@
 package com.gsvproject.gsv.bean;
-
+//返回结果类
 public class WMS_Result {
+    private Integer ErrCode;
+    private String reqMsg;
     private String id;
     private String url;
     private String keywords;
     private String title;
     private String administrative_unit;
-    private String topic;
+//    private String topic;
 
     public WMS_Result() {
     }
 
-    public WMS_Result( String url, String keywords, String title, String administrative_unit, String topic) {
-        this.url = url;
-        this.keywords = keywords;
-        this.title = title;
-        this.administrative_unit = administrative_unit;
-        this.topic = topic;
+    public Integer getErrCode() {
+        return ErrCode;
+    }
+
+    public void setErrCode(Integer errCode) {
+        ErrCode = errCode;
+    }
+
+    public String getReqMsg() {
+        return reqMsg;
+    }
+
+    public void setReqMsg(String reqMsg) {
+        this.reqMsg = reqMsg;
     }
 
     public String getId() {
@@ -35,8 +45,8 @@ public class WMS_Result {
         this.url = url;
     }
 
-    public String getKeywords(String keywords) {
-        return this.keywords;
+    public String getKeywords() {
+        return keywords;
     }
 
     public void setKeywords(String keywords) {
@@ -57,25 +67,5 @@ public class WMS_Result {
 
     public void setAdministrative_unit(String administrative_unit) {
         this.administrative_unit = administrative_unit;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    @Override
-    public String toString() {
-        return "WMS_Result{" +
-                "id='" + id + '\'' +
-                ", url='" + url + '\'' +
-                ", keywords='" + keywords + '\'' +
-                ", title='" + title + '\'' +
-                ", administrative_unit='" + administrative_unit + '\'' +
-                ", topic='" + topic + '\'' +
-                '}';
     }
 }

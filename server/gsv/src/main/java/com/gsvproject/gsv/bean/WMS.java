@@ -1,30 +1,34 @@
 package com.gsvproject.gsv.bean;
 
 import javax.persistence.*;
-
+//数据库wms表类
 @Entity
-@Table(name = "wms_topic")
+@Table(name = "wms")
 public class WMS {
     @Id
     @GeneratedValue
     private Integer id;
     private String url;
-    private String title;
-    private String Abstract;
-    private String keywords;
-    private String coreTopic;
-    private String topic;
-    private String relevance;
-    private String totalTopic;
-    private String ip;
+    private String selected;
     private String country;
     private String stateOrProvince;
     private String city;
     private float latitude;
     private float longitude;
+    private String TimeZone;
+    private String title;
+    private String Abstract;
+    private String keywords;
     private String version;
-    private String continent;
-    private String crs;
+    private String request;
+    private String format;
+    private String fees;
+    private String access;
+    private String maxWidth;
+    private String maxHeight;
+    private String layerLimit;
+    private String versionSupported;
+
 
     public WMS() {
     }
@@ -45,68 +49,12 @@ public class WMS {
         this.url = url;
     }
 
-    public String getTitle() {
-        return title;
+    public String getSelected() {
+        return selected;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getAbstract() {
-        return Abstract;
-    }
-
-    public void setAbstract(String anAbstract) {
-        Abstract = anAbstract;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
-    }
-
-    public String getCoreTopic() {
-        return coreTopic;
-    }
-
-    public void setCoreTopic(String coreTopic) {
-        this.coreTopic = coreTopic;
-    }
-
-    public String getTopic() {
-        return topic;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public String getRelevance() {
-        return relevance;
-    }
-
-    public void setRelevance(String relevance) {
-        this.relevance = relevance;
-    }
-
-    public String getTotalTopic() {
-        return totalTopic;
-    }
-
-    public void setTotalTopic(String totalTopic) {
-        this.totalTopic = totalTopic;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setSelected(String selected) {
+        this.selected = selected;
     }
 
     public String getCountry() {
@@ -149,6 +97,38 @@ public class WMS {
         this.longitude = longitude;
     }
 
+    public String getTimeZone() {
+        return TimeZone;
+    }
+
+    public void setTimeZone(String timeZone) {
+        TimeZone = timeZone;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAbstract() {
+        return Abstract;
+    }
+
+    public void setAbstract(String anAbstract) {
+        Abstract = anAbstract;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
     public String getVersion() {
         return version;
     }
@@ -157,19 +137,67 @@ public class WMS {
         this.version = version;
     }
 
-    public String getContinent() {
-        return continent;
+    public String getRequest() {
+        return request;
     }
 
-    public void setContinent(String continent) {
-        this.continent = continent;
+    public void setRequest(String request) {
+        this.request = request;
     }
 
-    public String getCrs() {
-        return crs;
+    public String getFormat() {
+        return format;
     }
 
-    public void setCrs(String crs) {
-        this.crs = crs;
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    public String getFees() {
+        return fees;
+    }
+
+    public void setFees(String fees) {
+        this.fees = fees;
+    }
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
+    }
+
+    public String getMaxWidth() {
+        return maxWidth;
+    }
+
+    public void setMaxWidth(String maxWidth) {
+        this.maxWidth = maxWidth;
+    }
+
+    public String getMaxHeight() {
+        return maxHeight;
+    }
+
+    public void setMaxHeight(String maxHeight) {
+        this.maxHeight = maxHeight;
+    }
+
+    public String getLayerLimit() {
+        return layerLimit;
+    }
+
+    public void setLayerLimit(String layerLimit) {
+        this.layerLimit = layerLimit;
+    }
+
+    public String getVersionSupported() {
+        return versionSupported;
+    }
+
+    public void setVersionSupported(String versionSupported) {
+        this.versionSupported = versionSupported;
     }
 }
