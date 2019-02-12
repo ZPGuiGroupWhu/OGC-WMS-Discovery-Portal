@@ -11,11 +11,8 @@
             flex:1;
         }
         &_radio{
-            flex: 0 0 300px;
+            flex: 0 0 $ratio_width;
             margin: $bound_padding_lr;
-        }
-        &_select{
-            flex: 0 0 100px;
         }
     }
 }
@@ -24,4 +21,23 @@
 .main_container{
     padding: $bound_padding_tb;
     background-color: $white;
+    &_sider{
+        background-color: $white;
+        border-right: $border_right;
+        &_icon{
+            margin-left: $bound_padding * 2.4;
+        }
+        span{
+            margin-left: $bound_padding * 0.6;
+        }
+        &_map{
+            width: $sider_width - 2 * $bound_padding;
+            height: $sider_width - 4 * $bound_padding;
+            margin: $bound_padding;
+            background-color: aqua;
+        }
+        &_menu{
+            border:none !important;
+        }
+    }
 }
