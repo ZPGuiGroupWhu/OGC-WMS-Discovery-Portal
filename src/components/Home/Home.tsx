@@ -15,14 +15,14 @@ class Home extends React.Component {
       <Router>
         <Content className="content">
           <div className="content_tool">
-             <Input.Search
+            <Input.Search
                 className="content_tool_search"
                 placeholder="Input something to search services"
                 enterButton={true}
             />
             <Radio.Group defaultValue="service" buttonStyle="solid" className="content_tool_radio">
-              <Radio.Button value="service"><Link to="/">Service Searching</Link></Radio.Button>
-              <Radio.Button value="layer"><Link to="/layerSearch">Map Layer Searching</Link></Radio.Button>
+              <Radio.Button className="content_tool_radio_btn" value="service"><Link to="/">Service Searching</Link></Radio.Button>
+              <Radio.Button className="content_tool_radio_btn" value="layer"><Link to="/layerSearch">Map Layer Searching</Link></Radio.Button>
             </Radio.Group>
             <Select defaultValue="firstLetter" className="content_tool_select">
               <Select.Option value="qualityRank">Order By Quality Rank</Select.Option>

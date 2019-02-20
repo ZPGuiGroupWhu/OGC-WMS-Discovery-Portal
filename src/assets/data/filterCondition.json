@@ -1,0 +1,71 @@
+[
+        {
+            "name" : "Topic",
+            "icon" : "user",
+            "children" : [
+                { "name" : "Agriculture", "count" : 111 },
+                { "name" : "Biodiversity", "count" : 111 },
+                { "name" : "Climate", "count" : 111 },
+                { "name" : "Disaster", "count" : 111 },
+                { "name" : "Ecosystem", "count" : 111 },
+                { "name" : "Energy", "count" : 111 },
+                { "name" : "Geology", "count" : 111 },
+                { "name" : "Health", "count" : 111 },
+                { "name" : "Water", "count" : 111 },
+                { "name" : "Weather", "count" : 111 }
+            ]
+        },{
+            "name" : "Keyword",
+            "icon" : "key",
+            "children" : [
+                { "name" : "Rock", "count" : 111},
+                { "name" : "GeoChemical", "count" : 111 },
+                { "name" : "Fire", "count" : 111 },
+                { "name" : "Fish", "count" : 111 },
+                { "name" : "Carbon", "count" : 111 }
+            ]
+        },{
+            "name" : "Organization Type",
+            "icon" : "pushpin",
+            "children" : [
+                { "name" : "Education Organization", "count" : 111},
+                { "name" : "Government", "count" : 111 },
+                { "name" : "Academic Organization", "count" : 111 },
+                { "name" : "Industry", "count" : 111 },
+                { "name" : "Others", "count" : 111 }
+            ]
+        },{
+            "name" : "Public Organization",
+            "icon" : "laptop",
+            "children" : [
+                { "name" : "Earth Data Analysis Center", "count" : 111},
+                { "name" : "NOAA", "count" : 111 },
+                { "name" : "FAO", "count" : 111 },
+                { "name" : "NCEI", "count" : 111 },
+                { "name" : "Arizona Geological Survey", "count" : 111 },
+                { "name" : "Geological Survey Mineral Resources Program", "count" : 111 }
+            ]
+        },{
+            "name" : "Continent",
+            "icon" : "notification",
+            "children" : [
+                { "name" : "Africa", "count" : 111},
+                { "name" : "Antarctica", "count" : 111 },
+                { "name" : "Asia", "count" : 111 },
+                { "name" : "Europea", "count" : 111 },
+                { "name" : "North America", "count" : 111 },
+                { "name" : "South America", "count" : 111 },
+                { "name" : "Oceania", "count" : 111 }
+            ]
+        },{
+            "name" : "Public Time",
+            "icon" : "bulb",
+            "children" : [
+                { "name" : "1995-2000", "count" : 111},
+                { "name" : "2000-2005", "count" : 111 },
+                { "name" : "2005-2010", "count" : 111 },
+                { "name" : "2010-2015", "count" : 111 },
+                { "name" : "2015-2020", "count" : 111 }
+            ]
+        }
+ ]

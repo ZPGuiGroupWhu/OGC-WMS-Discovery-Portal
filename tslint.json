@@ -8,7 +8,12 @@
     ]
   },
   "rules":{
+    "indent": 0,
+    "no-any": false,
     "ordered-imports":false,
-    "indent": 0
+    "no-parameter-properties":true,
+    "no-unnecessary-type-assertion":true,
+    "no-object-literal-type-assertion": true,
+    "object-literal-sort-keys": false
   }
 }

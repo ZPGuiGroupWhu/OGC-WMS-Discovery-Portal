@@ -19,7 +19,7 @@ const { Content} = Layout;
 ReactDOM.render(
   <Router>
         <Layout className="app">
-            <Header />
+            <Header/>
             <Content className="app_container">
                 <Route exact={true} path="/" component={Home}/>
                 <Route path="/distribution" component={Distribution}/>
