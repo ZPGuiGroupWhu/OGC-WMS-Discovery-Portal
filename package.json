@@ -14,8 +14,8 @@
     "eject": "react-scripts-ts eject"
   },
   "devDependencies": {
-    "@types/leaflet": "^1.2.9",
     "@types/jest": "^23.3.10",
+    "@types/leaflet": "^1.2.9",
     "@types/node": "^10.12.17",
     "@types/react": "^16.7.17",
     "@types/react-dom": "^16.0.11",

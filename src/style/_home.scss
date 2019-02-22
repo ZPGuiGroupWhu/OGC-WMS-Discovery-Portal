@@ -12,7 +12,10 @@
         }
         &_radio{
             flex: 0 0 $ratio_width;
-            margin: $bound_padding_lr;
+            margin: 0 0 0 $bound_padding;
+        }
+        &_select{
+            margin-left: -($bound_padding/2);
         }
     }
 }
@@ -33,36 +36,51 @@
             margin-left: $bound_padding * 0.5;
         }
         &_map{
-            width: $sider_width - 2 * $bound_padding;
-            height: $sider_width - 4 * $bound_padding;
+            width: 240px;
+            height: 240px;
             margin: $bound_padding;
             background-color: aqua;
         }
         &_menu{
             border:none !important;
+            .ant-menu-submenu-title{
+                padding-left: $bound_padding !important;
+            }
+            li.ant-menu-item{
+                padding-left: 2 * $bound_padding !important;
+            }
             &_item{
-                margin-left: -$bound_padding !important;
+                span{
+                    margin-left: 0 !important;
+                }
             }
         }
     }
     // 主体中右侧数据
     &_content{
-        padding: 0 $bound_padding;
+        padding: $bound_padding_lr;
         position: relative;
         &_list{
-            position: absolute;
-            top: 0;
-            bottom: 40px;
-            width: 100%;
-            height: 100%;
-            background-color: aqua;
-        }
-        &_pagination{
-            width: 100%;
-            position: absolute;
-            bottom: 0;
-            display: flex;
-            justify-content: center;
+            &_item{
+                line-height: $header_font_size;
+                .rank{
+                    margin-left: $bound_padding;
+                    font-size: $nav_font_size !important;
+                }
+                u{
+                    margin-left: 5px;
+                }
+                span{
+                    word-wrap:break-word;
+                    word-break:break-all;
+                }
+                .icon{
+                    margin-right: 5px;
+                }
+                .span{
+                    margin-left: $bound_padding;
+                }
+            }
         }
     }
 }
