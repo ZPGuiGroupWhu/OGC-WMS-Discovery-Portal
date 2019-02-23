@@ -7,8 +7,12 @@
         display: flex;
         flex-direction: row;
         padding: $bound_padding_tb;
+        .button{
+            font-family:"Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+        }
         &_search{
             flex:1;
+            margin-left: $bound_padding;
         }
         &_radio{
             flex: 0 0 $ratio_width;
@@ -36,10 +40,10 @@
             margin-left: $bound_padding * 0.5;
         }
         &_map{
-            width: 240px;
+            width: 270px;
             height: 240px;
             margin: $bound_padding;
-            background-color: aqua;
+            background-color: rgba(0,0,0,0.05);
         }
         &_menu{
             border:none !important;

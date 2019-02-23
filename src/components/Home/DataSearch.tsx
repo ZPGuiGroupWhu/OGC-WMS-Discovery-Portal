@@ -1,7 +1,7 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
-// import * as L from 'leaflet';
 import '../../style/_home.scss';
+import * as L from 'leaflet';
 import stringFilter from '../../util/util';
 import { Layout, Menu, Icon, List, Rate } from 'antd';
 import * as menuListData from '../../assets/data/filterCondition.json';
@@ -11,14 +11,14 @@ const { SubMenu } = Menu;
 const { Content, Sider} = Layout;
 
 // 条件选择菜单一级目录变量类型
-export interface IMenu{
+interface IMenu{
     name: string;
     icon: string;
     children: object[];
 }
 
 // 条件选择菜单二级目录变量类型
-export interface ISubMenu{
+interface ISubMenu{
     name: string;
     count: number;
 }
@@ -46,7 +46,7 @@ function addMenuItem(menu: IMenu){
 }
 
 // 单个服务变量类型
-export interface IServ{
+interface IServ{
     Title : string;
     URL : string;
     Rank : number;
@@ -58,23 +58,22 @@ export interface IServ{
     GeoLocation : number[]; 
 }
 
-class DataSearch extends React.Component {
+class DataSearch extends React.Component<object> {
     private menuList = menuListData[0]; // 条件选择菜单数据
     private servList = servListData[0]; // 服务列表数据
     private paginationSize = 10; // 分页器初试当前页码
+
+    public componentDidMount(){
+        const locatioNMap = L.map('location_map').setView([0,0],1);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locatioNMap);
+    }
     
-    // public componentDidMount(){
-    //     const aMap = L.map('location-map').setView([0,0],3);
-    //     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    //         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    //     }).addTo(aMap);
-    // }
     public render() {
       return (
         <Layout className="main_container">
             <Sider width={300} className="main_container_sider">
                 <Icon className="main_container_sider_icon" type="global"/><span>Filte By Location</span>
-                <div className="main_container_sider_map" id="location-map"/>
+                <div className="main_container_sider_map" id="location_map" />
                 <Menu
                     mode="inline"
                     multiple={true}
@@ -100,8 +99,8 @@ class DataSearch extends React.Component {
                         <List.Item key={item.Title} className="main_container_content_list_item">
                             <b>{item.Title}</b>
                             <Rate disabled={true} allowHalf={true} value={item.Rank} className="rank"/><br/>
-                            <span><Icon className="icon" type="compass"/>{item.Location}</span>
-                            <span className="span"><Icon className="icon" type="pushpin"/>{item.GeoLocation[0]},{item.GeoLocation[1]}</span><br/>
+                            <span><Icon className="icon" type="compass"/>Location: {item.Location}</span>
+                            <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {item.GeoLocation[0]},{item.GeoLocation[1]}</span><br/>
                             Service was public at the website: <a href={item.URL}>{item.URL}</a><br/>
                             {stringFilter(item.Abstract)}<br/>
                             <b>Keywords: </b><span>{stringFilter(item.Keywords)}</span>
