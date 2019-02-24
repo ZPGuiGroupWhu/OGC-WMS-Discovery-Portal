@@ -1,7 +1,8 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';
-import * as L from 'leaflet';
+import * as L from 'leaflet';  
+import 'leaflet-draw';                                                                                          
 import stringFilter from '../../util/util';
 import { Layout, Menu, Icon, List, Rate } from 'antd';
 import * as menuListData from '../../assets/data/filterCondition.json';
@@ -64,10 +65,33 @@ class DataSearch extends React.Component<object> {
     private paginationSize = 10; // 分页器初试当前页码
 
     public componentDidMount(){
+        // leaflet地图的初始化加载、工具栏的加载
         const locatioNMap = L.map('location_map').setView([0,0],1);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locatioNMap);
+        const drawnItems = new L.FeatureGroup();
+        locatioNMap.addLayer(drawnItems);
+        const drawControl = new L.Control.Draw({
+            position:'topright',
+            draw: {
+                polyline: false,
+                polygon: false,
+                marker: false,
+                circle: false,
+                circlemarker: false
+            },
+            edit: {
+                featureGroup: drawnItems,
+                edit: false
+            }
+        });
+        locatioNMap.addControl(drawControl);
+        locatioNMap.on(L.Draw.Event.CREATED, function(e){
+            console.log(e["layer"]);
+            const layer = e["layer"];
+            drawnItems.addLayer(layer);
+        });
     }
-    
+
     public render() {
       return (
         <Layout className="main_container">

@@ -11,10 +11,18 @@
     "indent": 0,
     "no-any": false,
     "ordered-imports":false,
-    "no-parameter-properties":true,
-    "no-unnecessary-type-assertion":true,
-    "no-object-literal-type-assertion": true,
+    "no-parameter-properties":false,
+    "no-unnecessary-type-assertion":false,
+    "no-object-literal-type-assertion": false,
     "object-literal-sort-keys": false,
-    "jsx-no-lambda": false
+    "jsx-no-lambda": false,
+    "only-arrow-functions": false,
+    "no-console": false,
+    "no-inferrable-types": false,
+    "no-conditional-assignment": false,
+    "no-shadowed-variable": false,
+    "use-default-type-parameter": false,
+    "prefer-method-signature": false,
+    "no-string-literal":false
   }
 }
