@@ -3,6 +3,7 @@
 
 .content{
     padding: 0 !important;
+    // toolbar container on the top
     &_tool{
         display: flex;
         flex-direction: row;
@@ -28,15 +29,20 @@
     padding: $bound_padding_tb;
     height: 100%;
     background-color: $white;
-    // 主体中左侧条件选择栏
+    // sider condition selector container 
     &_sider{
         background-color: $white;
         border-right: $border_right;
         &_icon{
-            margin-left: $bound_padding;
-        }
-        span{
-            margin-left: $bound_padding * 0.5;
+            width: 100%;
+            height: 40px;
+            padding-left: $bound_padding;
+            display: flex;
+            align-items: center;
+            .title{
+                margin-left: $bound_padding * 0.5;
+                font-weight: bold;
+            }
         }
         &_map{
             width: 270px;
@@ -55,11 +61,12 @@
             &_item{
                 span{
                     margin-left: 0 !important;
+                    font-weight: bold;
                 }
             }
         }
     }
-    // 主体中右侧数据
+    // data list container
     &_content{
         padding: $bound_padding_lr;
         position: relative;

@@ -11,33 +11,33 @@ import * as servListData from '../../assets/data/testServList.json';
 const { SubMenu } = Menu;
 const { Content, Sider} = Layout;
 
-// 条件选择菜单一级目录变量类型
+// menu item variable type
 interface IMenu{
     name: string;
     icon: string;
     children: object[];
 }
 
-// 条件选择菜单二级目录变量类型
+// submenu item variable type
 interface ISubMenu{
     name: string;
     count: number;
 }
 
-// 生成菜单二级目录条目
+// init to render condition selector menu (submenu item)
 function addSubMenuItem(subMenu: ISubMenu){
     return (
         <Menu.Item key={subMenu.name}>{subMenu.name} ({subMenu.count})</Menu.Item>                
     )
 }
 
-// 生成条件选择菜单
+// init to render condition selector menu (parent menu item)
 function addMenuItem(menu: IMenu){
     return (
         <SubMenu 
             className="main_container_sider_menu_item" 
             key={menu.name} 
-            title={<span><Icon className="icon" type={menu.icon} />{menu.name}</span>}
+            title={<span><Icon className="icon" type={menu.icon} />Filte By {menu.name}</span>}
         >
             {menu.children.map((item:ISubMenu)=>{
                 return addSubMenuItem(item); 
@@ -46,7 +46,7 @@ function addMenuItem(menu: IMenu){
     );
 }
 
-// 单个服务变量类型
+// service item variable type
 interface IServ{
     Title : string;
     URL : string;
@@ -60,43 +60,19 @@ interface IServ{
 }
 
 class DataSearch extends React.Component<object> {
-    private menuList = menuListData[0]; // 条件选择菜单数据
-    private servList = servListData[0]; // 服务列表数据
-    private paginationSize = 10; // 分页器初试当前页码
+    private menuList = menuListData[0]; // condition selector menu 
+    private servList = servListData[0]; // service data
+    private paginationSize = 10; // data count in each page of the pagination 
 
     public componentDidMount(){
-        // leaflet地图的初始化加载、工具栏的加载
-        const locatioNMap = L.map('location_map').setView([0,0],1);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locatioNMap);
-        const drawnItems = new L.FeatureGroup();
-        locatioNMap.addLayer(drawnItems);
-        const drawControl = new L.Control.Draw({
-            position:'topright',
-            draw: {
-                polyline: false,
-                polygon: false,
-                marker: false,
-                circle: false,
-                circlemarker: false
-            },
-            edit: {
-                featureGroup: drawnItems,
-                edit: false
-            }
-        });
-        locatioNMap.addControl(drawControl);
-        locatioNMap.on(L.Draw.Event.CREATED, function(e){
-            console.log(e["layer"]);
-            const layer = e["layer"];
-            drawnItems.addLayer(layer);
-        });
+        this.mapInit();
     }
 
     public render() {
       return (
         <Layout className="main_container">
             <Sider width={300} className="main_container_sider">
-                <Icon className="main_container_sider_icon" type="global"/><span>Filte By Location</span>
+                <div className="main_container_sider_icon"><Icon type="global"/><span className="title">Filte By Location</span></div>
                 <div className="main_container_sider_map" id="location_map" />
                 <Menu
                     mode="inline"
@@ -134,6 +110,43 @@ class DataSearch extends React.Component<object> {
             </Content>
         </Layout>
       );
+    }
+
+    // init leaflet map, init add leaflet draw control
+    public mapInit(){ 
+        const locatioNMap = L.map("location_map",{
+            attributionControl:false,
+            zoomControl: false
+        }).setView([0,0],1);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locatioNMap);
+        const drawnItems = new L.FeatureGroup();
+        locatioNMap.addLayer(drawnItems);
+        const drawControl = new L.Control.Draw({
+            position:'topleft',
+            draw: {
+                polyline: false,
+                polygon: false,
+                marker: false,
+                circle: false,
+                circlemarker: false,
+                rectangle: {
+                    shapeOptions: {
+                        weight: 1
+                    },
+                    repeatMode: false
+                },
+            },
+            edit: {
+                featureGroup: drawnItems,
+                edit: false
+            }
+        });
+        locatioNMap.addControl(drawControl);
+        locatioNMap.on(L.Draw.Event.CREATED, function(e){
+            const layer = e["layer"];
+            drawnItems.addLayer(layer);
+            
+        });
     }
   }
   
