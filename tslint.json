@@ -23,6 +23,7 @@
     "no-shadowed-variable": false,
     "use-default-type-parameter": false,
     "prefer-method-signature": false,
-    "no-string-literal":false
+    "no-string-literal":false,
+    "interface-name":false
   }
 }
