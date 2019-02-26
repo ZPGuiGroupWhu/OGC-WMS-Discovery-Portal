@@ -5,7 +5,7 @@ import * as React from 'react';
 // slice the string which are demostrated on card/list/page 
 // the short string will follow a "more", which can be clicked to show more
 // the long string will follow a "fold", which can be click to show less
-export default function abridgeFilt(article:string){
+export function stringFilter(article:string){
     let fold = true;
     const filtCharNum = 400;
     const stringFilt = article.slice(0,filtCharNum)+'...';
@@ -34,4 +34,19 @@ export default function abridgeFilt(article:string){
             indexDom.innerHTML = fold ? 'more':'fold';
         }
     }
+}
+
+/* merge the request url for http request
+   @params  prams    [the request params]        
+            baseUrl  [the base url before the params of request url]
+*/
+export function reqUrl(params:object,baseUrl:string){
+    let url = `http://localhost:8080/${baseUrl}?`; 
+    for ( const key of Object.keys(params)) {
+        if ( params[key] !== null) {
+            url += `${key}=${params[key]}&`;
+        }
+    }
+    url = url.substring(0,url.length-1);
+    return url;
 }

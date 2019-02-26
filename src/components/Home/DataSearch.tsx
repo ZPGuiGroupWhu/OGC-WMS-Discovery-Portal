@@ -2,8 +2,9 @@ import * as React from 'react';
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';
 import * as L from 'leaflet';     
-import 'leaflet-draw';                                                                     
-import stringFilter from '../../util/util';
+import 'leaflet-draw';     
+import $req, { HttpMethod } from '../../util/fetch';                                                                
+import {stringFilter, reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
 import * as menuListData from '../../assets/data/filterCondition.json';
 import * as servListData from '../../assets/data/testServList.json';
@@ -45,6 +46,7 @@ interface Props {
 interface State {
     dataList: object[];
     geoBox: string;
+    listTotal: number;
 }
 
 class DataSearch extends React.Component<Props, State> {
@@ -55,8 +57,9 @@ class DataSearch extends React.Component<Props, State> {
     constructor (props:Props) {
         super(props);
         this.state = {
-            dataList:this.servList,
-            geoBox: 'Filter Geo-Range'
+            dataList: this.servList,
+            geoBox: 'Filter Geo-Range',
+            listTotal: this.servList.length
         };
     }
 
@@ -93,12 +96,14 @@ class DataSearch extends React.Component<Props, State> {
                         size="large"
                         pagination={{
                             pageSize: this.paginationSize,
+                            hideOnSinglePage: true,
+                            total: this.state.listTotal
                         }}
                         dataSource={this.state.dataList}
                         footer={<div><b>service list</b> footer part</div>}
                         renderItem={(item:IServ) => (
                             <List.Item key={item.Title} className="main_container_content_list_item">
-                                <Link to="/serviceInfo" className="title">{item.Title}</Link>
+                                <Link to="/serviceInfo" className="title" onClick={this.turnToServPage}>{item.Title}</Link>
                                 <Rate disabled={true} allowHalf={true} value={item.Rank} className="rank"/><br/>
                                 <span><Icon className="icon" type="compass"/>Location: {item.Location}</span>
                                 <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {item.GeoLocation[0]},{item.GeoLocation[1]}</span><br/>
@@ -144,6 +149,12 @@ class DataSearch extends React.Component<Props, State> {
             }
         });
         locatioNMap.addControl(drawControl);
+        locatioNMap.on(L.Draw.Event.DRAWSTART,function(e){
+            if (Object.keys(drawnItems["_layers"]).length !== 0){
+                const layer = drawnItems["_layers"][Object.keys(drawnItems["_layers"])[0]];
+                drawnItems.removeLayer(layer);
+            };
+        })
         locatioNMap.on(L.Draw.Event.CREATED, function(e){
             const layer = e["layer"];
             drawnItems.addLayer(layer);
@@ -162,7 +173,30 @@ class DataSearch extends React.Component<Props, State> {
 
     // init service list by sending http request 
     public initData = () => {
-        console.log('this is something')
+        this.getServList({
+            page: 0,
+            size: this.paginationSize
+        },{
+            keywords: '1'
+        });
+    }
+
+    // Function: send http request to get service list data
+    // When to transfer: init render DataSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
+    // @param  params:object = {keyword?:string, bound?:number[], page:number, size:number}
+    public async getServList(pagePar:object, bodyPar:object) {
+        const baseUrl:string = 'search/queryWMSList';
+        const url:string = reqUrl(pagePar,baseUrl);
+        console.log(url)
+        try {
+            const res: any = await $req(url, {
+                body: bodyPar,
+                method: HttpMethod.post
+            })
+            console.log(res);
+        } catch(e) {
+            alert(e.message)
+        }
     }
 
     // init to render condition selector menu (submenu item)
@@ -185,6 +219,14 @@ class DataSearch extends React.Component<Props, State> {
             </SubMenu>               
         );
     }
+
+    // response function of clicking the service item title to turn to the individual service info page
+    public turnToServPage = () =>{
+        const container = document.getElementsByClassName('content')[0];
+        container.className = 'content sr-only';
+        window.location.reload();
+    }
+
 }
   
 export default DataSearch;
