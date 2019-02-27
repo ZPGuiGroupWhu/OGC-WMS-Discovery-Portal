@@ -3,41 +3,17 @@ import 'antd/dist/antd.css';
 import '../../style/_home.scss';
 import * as L from 'leaflet';     
 import 'leaflet-draw';     
-import $req, { HttpMethod } from '../../util/fetch';                                                                
-import {stringFilter, reqUrl} from '../../util/util';
+import $req, { HttpMethod } from '../../util/fetch';      
+import {mapDrawConfig} from '../../util/config';                                                 
+import {stringFilter, reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
+import { IMenu, ISubMenu, IServ, IBody, IPageInfo } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
 import * as menuListData from '../../assets/data/filterCondition.json';
-import * as servListData from '../../assets/data/testServList.json';
+import * as testData from '../../assets/data/testServList.json';
 import { Layout, Menu, Icon, List, Rate, Input, Button } from 'antd';
 
 const { SubMenu } = Menu;
 const { Content, Sider} = Layout;
-
-// menu item variable type
-interface IMenu{
-    name: string;
-    icon: string;
-    children: object[];
-}
-
-// submenu item variable type
-interface ISubMenu{
-    name: string;
-    count: number;
-}
-
-// service item variable type
-interface IServ{
-    Title : string;
-    URL : string;
-    Rank : number;
-    ResponseTime: string;
-    Image : string;
-    Abstract : string;
-    Keywords : string;
-    Location: string;
-    GeoLocation : number[]; 
-}
 
 interface Props {
     history: any;
@@ -45,21 +21,29 @@ interface Props {
 
 interface State {
     dataList: object[];
-    geoBox: string;
     listTotal: number;
+    geoBoxStr: string;
+    bodyPar: IBody;
+    pageInfo: IPageInfo;
 }
 
 class DataSearch extends React.Component<Props, State> {
     private menuList = menuListData[0]; // condition selector menu 
-    private servList = servListData[0]; // service data
-    private paginationSize = 10; // data count in each page of the pagination 
 
     constructor (props:Props) {
         super(props);
         this.state = {
-            dataList: this.servList,
-            geoBox: 'Filter Geo-Range',
-            listTotal: this.servList.length
+            dataList: [],
+            geoBoxStr: 'Filter Geo-Range',
+            listTotal: 100,
+            bodyPar: {
+                keywords: '',
+                bound: []
+            },
+            pageInfo: {
+                page: 0,
+                size: 10
+            }
         };
     }
 
@@ -74,8 +58,10 @@ class DataSearch extends React.Component<Props, State> {
                 <Sider width={300} className="main_container_sider">
                     <div className="main_container_sider_icon"><Icon type="global"/><span className="title">Filte By Location</span></div>
                     <div className="main_container_sider_title">
-                        <Input disabled={true} value={this.state.geoBox}/>
-                        <Button type="primary">Apply</Button>
+                        <Input disabled={true} value={this.state.geoBoxStr}/>
+                        <Button 
+                                onClick={()=>{this.getServList(this.state.pageInfo,this.state.bodyPar);}}><Icon type="search" />
+                        </Button>
                     </div>
                     <div className="main_container_sider_map" id="location_map" />
                     <Menu
@@ -95,27 +81,34 @@ class DataSearch extends React.Component<Props, State> {
                         itemLayout="vertical"
                         size="large"
                         pagination={{
-                            pageSize: this.paginationSize,
+                            pageSize: this.state.pageInfo.size,
                             hideOnSinglePage: true,
-                            total: this.state.listTotal
+                            total: this.state.listTotal,
+                            current: this.state.pageInfo.page+1,
+                            onChange: this.handlePaginate
                         }}
                         dataSource={this.state.dataList}
                         footer={<div><b>service list</b> footer part</div>}
                         renderItem={(item:IServ) => (
-                            <List.Item key={item.Title} className="main_container_content_list_item">
-                                <Link to="/serviceInfo" className="title" onClick={this.turnToServPage}>{item.Title}</Link>
-                                <Rate disabled={true} allowHalf={true} value={item.Rank} className="rank"/><br/>
-                                <span><Icon className="icon" type="compass"/>Location: {item.Location}</span>
-                                <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {item.GeoLocation[0]},{item.GeoLocation[1]}</span><br/>
-                                Service was public at the website: <a href={item.URL}>{item.URL}</a><br/>
-                                {stringFilter(item.Abstract)}<br/>
-                                <b>Keywords: </b><span>{stringFilter(item.Keywords)}</span>
+                            <List.Item key={item.id} className="main_container_content_list_item">
+                                <Link to="/serviceInfo" className="title" onClick={this.turnToServPage}>{item.title ? item.title : 'null'}</Link>
+                                <Rate disabled={true} allowHalf={true} value={testData[0][0].Rank} className="rank"/><br/>
+                                <span><Icon className="icon" type="compass"/>Location: {item.administrative_unit}</span>
+                                <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {testData[0][0].GeoLocation[0]},{testData[0][0].GeoLocation[1]}</span><br/>
+                                Service was public at the website: <a href={item.url}>{item.url}</a><br/>
+                                {testData[0][0].Abstract ? stringFilter(testData[0][0].Abstract) : 'There is no abstract in the service capability document.'}<br/>
+                                <b>Keywords: </b><span>{item.keywords ? stringFilter(item.keywords): 'no keywords'}</span>
                             </List.Item>
                         )}
                     />
                 </Content>
             </Layout>
         );
+    }
+
+    // init service list by sending http request 
+    public initData = () => {
+        this.getServList(this.state.pageInfo,this.state.bodyPar);
     }
 
     // init leaflet map, init add leaflet draw control
@@ -130,19 +123,7 @@ class DataSearch extends React.Component<Props, State> {
         locatioNMap.addLayer(drawnItems);
         const drawControl = new L.Control.Draw({
             position:'topleft',
-            draw: {
-                polyline: false,
-                polygon: false,
-                marker: false,
-                circle: false,
-                circlemarker: false,
-                rectangle: {
-                    shapeOptions: {
-                        weight: 1
-                    },
-                    repeatMode: false
-                },
-            },
+            draw: mapDrawConfig,
             edit: {
                 featureGroup: drawnItems,
                 edit: false
@@ -159,26 +140,30 @@ class DataSearch extends React.Component<Props, State> {
             const layer = e["layer"];
             drawnItems.addLayer(layer);
             const bound = e["layer"]["_bounds"];
-            const rangeStr = `[${(bound["_southWest"]["lat"].toFixed(1))},${(bound["_southWest"]["lng"].toFixed(1))}],[${(bound["_northEast"]["lat"]).toFixed(1)},${(bound["_northEast"]["lng"]).toFixed(1)}]`
+            const boxArr = [bound["_southWest"]["lng"].toFixed(1),bound["_northEast"]["lng"].toFixed(1),bound["_southWest"]["lat"].toFixed(1),bound["_northEast"]["lat"].toFixed(1)]
+            const rangeStr = `lng(${boxArr[0]},${boxArr[1]}),lat(${boxArr[2]},${boxArr[3]})`;
+            const bodyPar = self.state.bodyPar;
+            bodyPar.bound = boxArr;
             self.setState({
-                geoBox: rangeStr
+                geoBoxStr: rangeStr,
+                bodyPar,
             })
         });
         locatioNMap.on(L.Draw.Event.DELETED, function(e){
             self.setState({
-                geoBox: 'Filter Geo-Range'
+                geoBoxStr: 'Filter Geo-Range'
             })
         })
     }
 
-    // init service list by sending http request 
-    public initData = () => {
-        this.getServList({
-            page: 0,
-            size: this.paginationSize
-        },{
-            keywords: '1'
-        });
+    // paginate to request new data
+    public handlePaginate = (cur:number) => {
+        const pageInfo = this.state.pageInfo;
+        pageInfo.page = cur-1;
+        this.setState({
+            pageInfo,
+        })
+        this.getServList(this.state.pageInfo,this.state.bodyPar).then(smoothscroll);
     }
 
     // Function: send http request to get service list data
@@ -187,13 +172,15 @@ class DataSearch extends React.Component<Props, State> {
     public async getServList(pagePar:object, bodyPar:object) {
         const baseUrl:string = 'search/queryWMSList';
         const url:string = reqUrl(pagePar,baseUrl);
-        console.log(url)
+        const body = delEmptyKey(bodyPar);
         try {
             const res: any = await $req(url, {
-                body: bodyPar,
+                body,
                 method: HttpMethod.post
             })
-            console.log(res);
+            this.setState({
+                dataList: JSON.parse(res)
+            })
         } catch(e) {
             alert(e.message)
         }
@@ -221,7 +208,7 @@ class DataSearch extends React.Component<Props, State> {
     }
 
     // response function of clicking the service item title to turn to the individual service info page
-    public turnToServPage = () =>{
+    public turnToServPage = () => {
         const container = document.getElementsByClassName('content')[0];
         container.className = 'content sr-only';
         window.location.reload();

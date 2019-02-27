@@ -50,3 +50,22 @@ export function reqUrl(params:object,baseUrl:string){
     url = url.substring(0,url.length-1);
     return url;
 }
+
+// delete the empty key of object
+export function delEmptyKey(obj:object){
+    for (const key of Object.keys(obj)) {
+        if( obj[key].length === 0 ) {
+            delete obj[key];
+        }
+    }
+    return obj
+}
+
+// scroll to the top
+export function smoothscroll(){
+    const currentScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    if (currentScroll > 0) {
+         window.requestAnimationFrame(smoothscroll);
+         window.scrollTo (0,currentScroll - (currentScroll/5));
+    }
+}

@@ -47,10 +47,12 @@
         &_title{
             padding-right: $bound_padding;
             button{
-                margin-left: $bound_padding * 0.5;
+                background-color: $light_grey;
+                margin-left: -4px;
             }
             input{
                 color: $dark_grey_black;
+                border-right:none;
             }
         }
         &_map{
@@ -113,8 +115,13 @@
 }
 
 // style for the service detailed info page
-.info_container{
-    background-color: $white;
-    margin-top: $bound_padding;
-    padding: $bound_padding;
+._info{
+    header{
+        margin-top: $bound_padding;
+    }
+    &_container{
+        background-color: $white;
+        margin-top: $bound_padding;
+        padding: $bound_padding;
+    }
 }

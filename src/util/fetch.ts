@@ -21,7 +21,7 @@ const $req = async (url: string, config: IReqConfig) => {
         'Content-Type': 'application/json'
       },
       method: HttpMethod.post,
-      mode: 'no-cors'
+      mode: 'cors'
     })
   } 
   return handleRes(promise)
