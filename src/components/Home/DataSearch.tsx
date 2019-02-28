@@ -45,7 +45,7 @@ class DataSearch extends React.Component<Props, State> {
     }
 
     public componentWillReceiveProps(){
-        this.getServList(this.state.pageInfo,this.state.getServListBody);
+        this.queryWMSList(this.state.pageInfo,this.state.getServListBody);
     }
 
     public render() {
@@ -76,7 +76,7 @@ class DataSearch extends React.Component<Props, State> {
     // init service list by sending http request 
     public initData = () => {
         const self = this;
-        this.getServList(this.state.pageInfo,this.state.getServListBody).then(setLoading);
+        this.queryWMSList(this.state.pageInfo,this.state.getServListBody).then(setLoading);
         function setLoading(){
             self.setState({
                 listFootShow: 'block',
@@ -98,13 +98,13 @@ class DataSearch extends React.Component<Props, State> {
         this.setState({
             pageInfo,
         })
-        this.getServList(this.state.pageInfo,this.state.getServListBody).then(smoothscroll);
+        this.queryWMSList(this.state.pageInfo,this.state.getServListBody).then(smoothscroll);
     }
 
     // Function: send http request to get service list data
     // When to transfer: init render DataSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
     // @param  params:object = {keyword?:string, bound?:number[], page:number, size:number}
-    public async getServList(pagePar:object, getServListBody:object) {
+    public async queryWMSList(pagePar:object, getServListBody:object) {
         const baseUrl:string = 'search/queryWMSList';
         const url:string = reqUrl(pagePar,baseUrl,'8081');
         const body = delEmptyKey(getServListBody);
@@ -113,6 +113,7 @@ class DataSearch extends React.Component<Props, State> {
                 body,
                 method: HttpMethod.post
             })
+            console.log(res)
             this.setState({
                 dataList: JSON.parse(res)
             })
