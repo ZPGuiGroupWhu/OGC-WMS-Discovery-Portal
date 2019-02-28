@@ -40,8 +40,8 @@ export function stringFilter(article:string){
    @params  prams    [the request params]        
             baseUrl  [the base url before the params of request url]
 */
-export function reqUrl(params:object,baseUrl:string){
-    let url = `http://localhost:8080/${baseUrl}?`; 
+export function reqUrl(params:object,baseUrl:string,domain:string){
+    let url = `http://localhost:${domain}/${baseUrl}?`; 
     for ( const key of Object.keys(params)) {
         if ( params[key] !== null) {
             url += `${key}=${params[key]}&`;

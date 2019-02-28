@@ -22,96 +22,96 @@
             margin-left: -($bound_padding/2);
         }
     }
-}
-
-// style for Home/DataSearch.tsx
-.main_container{
-    padding: $bound_padding_tb;
-    height: 100%;
-    background-color: $white;
-    // sider condition selector container 
-    &_sider{
+    .main_container{
+        padding: $bound_padding_tb;
+        height: 100%;
         background-color: $white;
-        border-right: $border_right;
-        &_icon,&_title{
-            width: 100%;
-            height: 40px;
-            padding-left: $bound_padding;
-            display: flex;
-            align-items: center;
-            .title{
-                margin-left: $bound_padding * 0.5;
-                font-weight: bold;
-            }
-        }
-        &_title{
-            padding-right: $bound_padding;
-            button{
-                background-color: $light_grey;
-                margin-left: -4px;
-            }
-            input{
-                color: $dark_grey_black;
-                border-right:none;
-            }
-        }
-        &_map{
-            width: 270px;
-            height: 240px;
-            margin: $bound_padding;
-            background-color: rgba(0,0,0,0.05);
-        }
-        &_menu{
-            border:none !important;
-            .ant-menu-submenu-title{
-                padding-left: $bound_padding !important;
-            }
-            li.ant-menu-item{
-                padding-left: 2 * $bound_padding !important;
-            }
-            &_item{
-                span{
-                    margin-left: 0 !important;
+        // sider condition selector container 
+        &_sider{
+            background-color: $white;
+            border-right: $border_right;
+            &_icon,&_title{
+                width: 100%;
+                height: 40px;
+                padding-left: $bound_padding;
+                display: flex;
+                align-items: center;
+                .title{
+                    margin-left: $bound_padding * 0.5;
                     font-weight: bold;
                 }
             }
-        }
-    }
-    // data list container
-    &_content{
-        padding: $bound_padding_lr;
-        position: relative;
-        &_list{
-            &_item{
-                line-height: $header_font_size;
-                .title{
-                    text-decoration: none;
-                    font-weight: bold;
+            &_title{
+                padding-right: $bound_padding;
+                input{
                     color: $dark_grey_black;
                 }
-                .title:hover{
-                    text-decoration: underline;
+            }
+            &_map{
+                width: 270px;
+                height: 240px;
+                margin: $bound_padding;
+                background-color: rgba(0,0,0,0.05);
+            }
+            &_menu{
+                border:none !important;
+                .ant-menu-submenu-title{
+                    padding-left: $bound_padding !important;
                 }
-                .rank{
-                    margin-left: $bound_padding;
-                    font-size: $nav_font_size !important;
+                li.ant-menu-item{
+                    padding-left: 2 * $bound_padding !important;
                 }
-                u{
-                    margin-left: 5px;
-                }
-                span{
-                    word-wrap:break-word;
-                    word-break:break-all;
-                }
-                .icon{
-                    margin-right: 5px;
-                }
-                .span{
-                    margin-left: $bound_padding;
+                &_item{
+                    span{
+                        margin-left: 0 !important;
+                        font-weight: bold;
+                    }
                 }
             }
         }
+        // data list container
+        &_content{
+            padding: $bound_padding_lr;
+            position: relative;
+        }
     }
+}
+
+// style for DataSearch component
+.main_container_content_list{
+    &_item{
+        line-height: $header_font_size;
+        .title{
+            text-decoration: none;
+            font-weight: bold;
+            color: $dark_grey_black;
+        }
+        .title:hover{
+            text-decoration: underline;
+        }
+        .rank{
+            margin-left: $bound_padding;
+            font-size: $nav_font_size !important;
+        }
+        u{
+            margin-left: 5px;
+        }
+        span{
+            word-wrap:break-word;
+            word-break:break-all;
+        }
+        .icon{
+            margin-right: 5px;
+        }
+        .span{
+            margin-left: $bound_padding;
+        }
+    }
+}
+
+// style for layerSearch component
+.main_container_content_imglist{
+
 }
 
 // style for the service detailed info page

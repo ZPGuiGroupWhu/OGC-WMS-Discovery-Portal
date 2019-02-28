@@ -31,5 +31,5 @@ $border_right: 1px solid #e8e8e8;
     color: $blue;
 }
 .sr-only {
-    display: none;
+    display: none !important;
 }
