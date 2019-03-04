@@ -23,6 +23,7 @@ public class WmsController {
     @Autowired
     private WmsService wmsService;
 //动态查询分页
+    @CrossOrigin
     @PostMapping("/search/queryWMSList")
     //page表示分页之后显示的页面，0表示第一页。size表示每页的数据条数，默认显示第一页，每页10条数据，按照id递增排序
     //如果需要改变page和size，只需要改变url即可，形如：/search/queryWMSList？page=1&size=2,表示显示第二页数据，每页2条数据
@@ -44,6 +45,7 @@ public class WmsController {
         }
         return JSON.toJSONString(wms_results);
     }
+
 
 
 }
