@@ -6,7 +6,7 @@ import '../../style/_home.scss';
 import DataSearch from './DataSearch';
 import LayerSearch from './LayerSearch';
 import {mapDrawConfig} from '../../util/config'; 
-import { IMenu, ISubMenu, IBody } from "../../util/interface";
+import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
 import * as menuListData from '../../assets/data/filterCondition.json';
 import { Layout, Input, Radio, Select, Icon, Menu } from 'antd';
 
@@ -19,7 +19,7 @@ interface Props {
 
 interface State {
   geoBoxStr: string;
-  getServListBody: IBody;
+  queryPar: IQueryPar;
 }
 
 class Home extends React.Component<Props,State> {
@@ -30,9 +30,10 @@ class Home extends React.Component<Props,State> {
     super(props);
     this.state = {
       geoBoxStr: this.geoBoxStrDefault,
-      getServListBody: {
+      queryPar: {
           bound: [],
-          keywords: ''   
+          continent: '',
+          keywords: '',
       },
     };
   }
@@ -69,7 +70,7 @@ class Home extends React.Component<Props,State> {
                   </Menu>
               </Sider>
               <Content className="main_container_content">
-                <DataSearch getServListBody={this.state.getServListBody}/>
+                <DataSearch queryPar={this.state.queryPar}/>
                 <LayerSearch/>
               </Content>
           </Layout>
@@ -108,28 +109,28 @@ class Home extends React.Component<Props,State> {
           const bound = e["layer"]["_bounds"];
           const boxArr = [bound["_southWest"]["lng"].toFixed(1),bound["_northEast"]["lng"].toFixed(1),bound["_southWest"]["lat"].toFixed(1),bound["_northEast"]["lat"].toFixed(1)]
           const rangeStr = `lng(${boxArr[0]},${boxArr[1]}),lat(${boxArr[2]},${boxArr[3]})`;
-          const getServListBody = self.state.getServListBody;
-          getServListBody.bound = boxArr;
+          const queryPar = self.state.queryPar;
+          queryPar.bound = boxArr;
           self.setState({
             geoBoxStr: rangeStr,
-            getServListBody,             
+            queryPar,             
           })
       });
       locatioNMap.on(L.Draw.Event.DELETED, (e) => {
-          const getServListBody = self.state.getServListBody;
-          getServListBody.bound = [];
+          const queryPar = self.state.queryPar;
+          queryPar.bound = [];
           self.setState({
               geoBoxStr: this.geoBoxStrDefault,
-              getServListBody,
+              queryPar,
           })
       })
   }
 
   // input something and search
   public handleInputSearch = (value: string) => {
-    const getServListBody = this.state.getServListBody;
-    getServListBody.keywords = value;
-    this.setState({getServListBody});
+    const queryPar = this.state.queryPar;
+    queryPar.keywords = value;
+    this.setState({queryPar});
   }
 
   // switch to service data search page, handle the radio button background color

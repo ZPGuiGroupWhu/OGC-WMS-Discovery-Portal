@@ -11,53 +11,43 @@ export interface ISubMenu{
     name: string;
 }
 
-// service item variable type
-export interface IServ{
-    Abstract : string; // 
-    administrative_unit: string;
-    GeoLocation : number[]; //
-    id: string;
-    Image : string; //
-    keywords : string;
-    Rank : number; // 
-    ResponseTime: string; //
-    title : string;
-    url : string;
-}
-
 // individual service type in serviceInfo component
 export interface IServInfo{
-    Abstract: string;
+    abstr: string;
     administrative_unit: string;
+    geoLocation: number[];
     id: number;
-    IP: string;
-    Keywords: string;
+    ip: string;
+    keywords: string;
     layer: object[];
-    Title: string;
-    Version: string;
+    title: string;
+    url: string;
+    version: string;
 }
 
+// layers of each service in ServiceInfo component
 export interface ILayer{
-    Abstract: string;
-    Attribution: string;
+    abstr: string;
+    attribution: string;
     bbox: number[][];
     id: number;
     imagepath: string;
-    Keywords: string;
-    Name: string;
+    keywords: string;
+    name: string;
     projection: string;
-    Title: string;
-    URL: string;
+    title: string;
+    url: string;
 }
 
 // service list request body interface
-export interface IBody{
+export interface IQueryPar{
     bound: number[];
+    continent: string;
     keywords: string; 
 }
 
 // service list request par interface,also is the page info of the list and pagination
 export interface IPageInfo{
-    page: number;
-    size: number;
+    pageNum: number;
+    pageSize: number;
 }

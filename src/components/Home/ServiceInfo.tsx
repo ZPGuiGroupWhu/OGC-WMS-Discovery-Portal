@@ -26,14 +26,16 @@ class ServiceInfo extends React.Component<Props,State>{
         this.state = {
             layerData:[],
             servInfoData: {
-                Abstract: '',
-                IP: '',
-                Keywords: '',
-                Title: '',
-                Version: '',
+                abstr: '',
                 administrative_unit: '',
+                geoLocation: [],
                 id: 0,
+                ip: '',
+                keywords: '',
                 layer: [],
+                title: '',
+                url: '',
+                version: ''
             },
         }
     }
@@ -45,20 +47,20 @@ class ServiceInfo extends React.Component<Props,State>{
     public render() {
         return (
             <Layout className="_info">
-                <header><Icon type="home"/><Link to="/">Home</Link> / {this.state.servInfoData.Title}</header>
+                <header><Icon type="home"/><Link to="/">Home</Link> / {this.state.servInfoData.title}</header>
                 <Content className="_info_container">
-                    <b className="_info_container_header">{this.state.servInfoData.Title}</b><br/>
+                    <b className="_info_container_header">{this.state.servInfoData.title}</b><br/>
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_content">
                             <span><Icon className="icon" type="compass"/><b>Location：</b>{this.state.servInfoData.administrative_unit}</span>
-                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>{testData[0][0].GeoLocation[0]},{testData[0][0].GeoLocation[1]}</span><br/>
-                            <p>{this.state.servInfoData.Abstract ? this.state.servInfoData.Abstract : 'There is no abstract in the service capability document.'}</p><br/>
+                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>{this.state.servInfoData.geoLocation[0]},{this.state.servInfoData.geoLocation[1]}</span><br/>
+                            <p>{this.state.servInfoData.abstr ? this.state.servInfoData.abstr : 'There is no abstract in the service capability document.'}</p><br/>
                         </Content>
                     </Content>
                     <Content className="_info_container_section">
                         <b className="_info_container_section_header">Access & Use Information</b><br/>
                         <Content className="_info_container_section_content">
-                            <Icon className="icon" type="link" /><b>Access link：</b><a href={testData[0][0].URL}>{testData[0][0].URL}</a><br/>
+                            <Icon className="icon" type="link" /><b>Access link：</b><a href={this.state.servInfoData.url}>{this.state.servInfoData.url}</a><br/>
                             <Icon className="icon" type="user" /><b>Contact Person：</b><span>{testData[0][0].ContactPerson}</span>
                         </Content>
                     </Content>
@@ -74,12 +76,12 @@ class ServiceInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryWMSInfo';
-        const url:string = reqUrl({id:1},baseUrl,'8002');
+        const url:string = reqUrl({id:1},baseUrl,'8080');
         try {
             const res: any = await $req(url,{})
             console.log(res)
             this.setState({
-                servInfoData: JSON.parse(res)["re_wms"]
+                servInfoData: JSON.parse(res).data
             })
         } catch(e) {
             alert(e.message)

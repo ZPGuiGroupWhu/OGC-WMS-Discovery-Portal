@@ -1,20 +1,20 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';  
-import $req, { HttpMethod } from '../../util/fetch';                                                  
-import {stringFilter, reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
-import { IServ, IPageInfo } from "../../util/interface";
+import $req from '../../util/fetch';                                                  
+import {stringFilter, reqUrl, smoothscroll, delEmptyKey } from '../../util/util';
+import { IServInfo, IPageInfo, IQueryPar } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
 import * as testData from '../../assets/data/testServList.json';
 import { Icon, List, Rate } from 'antd';
 
 interface Props {
-    getServListBody: object;
+    queryPar: IQueryPar;
 }
 
 interface State {
     dataList: object[];
-    getServListBody: any;
+    queryPar: IQueryPar;
     listFootShow: string;
     listTotal: number;
     loading: boolean;
@@ -28,15 +28,15 @@ class DataSearch extends React.Component<Props, State> {
         super(props);
         this.state = {
             dataList: [],
-            getServListBody: this.props.getServListBody,
             listFootShow: 'none',
-            listTotal: 100,
+            listTotal: 1,
             loading: true,
             pageInfo: {
-                page: 0,
-                size: 10
+                pageNum: 0,
+                pageSize: 10
             },
             paginationConfig: false,
+            queryPar: this.props.queryPar,
         };
     }
 
@@ -45,7 +45,7 @@ class DataSearch extends React.Component<Props, State> {
     }
 
     public componentWillReceiveProps(){
-        this.queryWMSList(this.state.pageInfo,this.state.getServListBody);
+        this.queryWMSList(this.state.pageInfo,this.state.queryPar);
     }
 
     public render() {
@@ -58,7 +58,7 @@ class DataSearch extends React.Component<Props, State> {
                 loading = {this.state.loading}
                 dataSource={this.state.dataList}
                 footer={<div style={{"display":this.state.listFootShow}}><b>service list</b> footer part</div>}
-                renderItem={(item:IServ) => (
+                renderItem={(item:IServInfo) => (
                     <List.Item key={item.id} className="main_container_content_list_item">
                         <Link to="/serviceInfo" className="title" onClick={this.turnToServPage}>{item.title ? item.title : 'null'}</Link>
                         <Rate disabled={true} allowHalf={true} value={testData[0][0].Rank} className="rank"/><br/>
@@ -76,7 +76,7 @@ class DataSearch extends React.Component<Props, State> {
     // init service list by sending http request 
     public initData = () => {
         const self = this;
-        this.queryWMSList(this.state.pageInfo,this.state.getServListBody).then(setLoading);
+        this.queryWMSList(this.state.pageInfo,this.state.queryPar).then(setLoading);
         function setLoading(){
             self.setState({
                 listFootShow: 'block',
@@ -84,7 +84,7 @@ class DataSearch extends React.Component<Props, State> {
                 paginationConfig: {
                     hideOnSinglePage: true,
                     onChange: self.handlePaginate,
-                    pageSize: self.state.pageInfo.size,
+                    pageSize: self.state.pageInfo.pageSize,
                     total: self.state.listTotal
                 }
             })
@@ -94,28 +94,27 @@ class DataSearch extends React.Component<Props, State> {
     // paginate to request new data
     public handlePaginate = (cur:number) => {
         const pageInfo = this.state.pageInfo;
-        pageInfo.page = cur-1;
+        pageInfo.pageNum = cur-1;
         this.setState({
             pageInfo,
         })
-        this.queryWMSList(this.state.pageInfo,this.state.getServListBody).then(smoothscroll);
+        this.queryWMSList(this.state.pageInfo,this.state.queryPar).then(smoothscroll);
     }
 
     // Function: send http request to get service list data
     // When to transfer: init render DataSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
     // @param  params:object = {keyword?:string, bound?:number[], page:number, size:number}
-    public async queryWMSList(pagePar:object, getServListBody:object) {
+    public async queryWMSList(pagePar:object, queryPar:object) {
         const baseUrl:string = 'search/queryWMSList';
-        const url:string = reqUrl(pagePar,baseUrl,'8081');
-        const body = delEmptyKey(getServListBody);
+        const reqPar:object = Object.assign(pagePar,queryPar);
+        const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8080');
         try {
-            const res: any = await $req(url, {
-                body,
-                method: HttpMethod.post
-            })
+            const res: any = await $req(url, {})
+            const resBody:any  = JSON.parse(res)
             console.log(res)
             this.setState({
-                dataList: JSON.parse(res)
+                dataList: resBody.data,
+                listTotal: resBody.total
             })
         } catch(e) {
             alert(e.message)
