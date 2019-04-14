@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="gsv:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="gsv-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="gsv:war exploded" />
+    </root>
+  </artifact>
+</component>
