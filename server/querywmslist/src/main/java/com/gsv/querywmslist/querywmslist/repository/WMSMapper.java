@@ -67,19 +67,19 @@ public interface WMSMapper {
 
     @Select("<script>" +
             "SELECT id,url,Abstract as abstr,Keywords,Title,CONCAT(Country,',',StateOrProvince,',',City) as administrative_unit,Latitude,Longitude from wms where 1=1 " +
-            "<if test='#{keywords}!=null' >" +
+            "<if test='keywords!=null' >" +
             " and (Title LIKE CONCAT('%',#{keywords},'%') " +
             "OR Abstract like CONCAT('%',#{keywords},'%') " +
             "OR url LIKE CONCAT('%',#{keywords},'%') )" +
             "</if>  " +
-            "<if test='#{bound}!=null ' > " +
+            "<if test='bound!=null ' > " +
             " and ( Latitude BETWEEN #{bound[0]} AND #{bound[1]} " +
             "AND Longitude BETWEEN #{bound[2]} AND #{bound[3]} )" +
             "</if>  " +
-            "<if test='#{continent} !=null '>  " +
+            "<if test='continent !=null '>  " +
             " and Continent=#{continent} " +
             "</if>  " +
-            "<if test='#{topicArray}!=null '>  " +
+            "<if test='topicArray[0]!=null '>  " +
             "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
             "Topic like CONCAT('%',#{item},'%')" +
             "</foreach> )" +
@@ -104,5 +104,9 @@ public interface WMSMapper {
  "<if test='#{continent} !=null '>  " +
  " and Continent=#{continent} " +
  "</if>  " +
-
+ "<if test='#{topicArray}!=null '>  " +
+ "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
+ "Topic like CONCAT('%',#{item},'%')" +
+ "</foreach> )" +
+ "</if>  " +
  */

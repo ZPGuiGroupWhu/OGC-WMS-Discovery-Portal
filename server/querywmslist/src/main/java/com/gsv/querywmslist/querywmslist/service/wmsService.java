@@ -93,10 +93,6 @@ public class wmsService {
         List<WMSList>data=new ArrayList<>();
         String [] topicArray=new String[100];
         if(topic!=null){
-//            int result=topic.indexOf(",");
-//            if(result!=-1){
-//                topicArray=topic.split(",");}
-//            else topicArray[0]=topic;
             topicArray=topic.split(",");
         }
         data=wmsMapper.getWMSListResult(keywords,bound,continent,topicArray,pageNum,pageSize);
