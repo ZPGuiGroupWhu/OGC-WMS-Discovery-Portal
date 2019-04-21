@@ -70,7 +70,8 @@ public interface WMSMapper {
             "<if test='keywords!=null' >" +
             " and (Title LIKE CONCAT('%',#{keywords},'%') " +
             "OR Abstract like CONCAT('%',#{keywords},'%') " +
-            "OR url LIKE CONCAT('%',#{keywords},'%') )" +
+            "OR url LIKE CONCAT('%',#{keywords},'%') " +
+            "OR Keywords like CONCAT('%',#{keywords},'%'))" +
             "</if>  " +
             "<if test='bound!=null ' > " +
             " and ( Latitude BETWEEN #{bound[0]} AND #{bound[1]} " +
