@@ -16,7 +16,7 @@ const { Content } = Layout;
 class App extends React.Component {
     public render() {
       return (
-        <BrowserRouter forceRefresh={true}>
+        <BrowserRouter forceRefresh={false}>
             <Layout className="app">
                 <Header/>
                 <Content className="app_container">

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "echarts": "^4.2.1",
+    "echarts-for-react": "^2.0.15-beta.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-scripts-ts": "3.1.0"
@@ -25,7 +27,7 @@
     "antd": "^3.11.2",
     "css-loader": "^2.0.1",
     "leaflet": "^1.4.0",
-    "leaflet-draw":"^1.0.4",
+    "leaflet-draw": "^1.0.4",
     "node-sass": "^4.11.0",
     "qs": "^6.6.0",
     "react-router-dom": "^4.3.1",

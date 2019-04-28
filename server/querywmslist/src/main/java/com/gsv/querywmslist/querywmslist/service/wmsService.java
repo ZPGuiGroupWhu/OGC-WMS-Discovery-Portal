@@ -84,4 +84,18 @@ public class wmsService {
 
         return data;
     }
+
+
+
+
+
+    public  List<WMSList> getWMSListResult(String keywords, float[] bound, String continent, String topic, Integer pageNum, Integer pageSize){
+        List<WMSList>data=new ArrayList<>();
+        String [] topicArray=new String[100];
+        if(topic!=null){
+            topicArray=topic.split(",");
+        }
+        data=wmsMapper.getWMSListResult(keywords,bound,continent,topicArray,pageNum,pageSize);
+        return data;
+    }
 }
