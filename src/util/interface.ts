@@ -43,7 +43,10 @@ export interface ILayer{
 export interface IQueryPar{
     bound: number[];
     continent: string;
-    keywords: string; 
+    keywords: string;
+    organization: string;
+    organization_type: string; 
+    topic: string;
 }
 
 // service list request par interface,also is the page info of the list and pagination

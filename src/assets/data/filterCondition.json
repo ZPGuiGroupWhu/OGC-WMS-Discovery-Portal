@@ -3,69 +3,70 @@
             "name" : "Topic",
             "icon" : "user",
             "children" : [
-                { "name" : "Agriculture", "count" : 111 },
-                { "name" : "Biodiversity", "count" : 111 },
-                { "name" : "Climate", "count" : 111 },
-                { "name" : "Disaster", "count" : 111 },
-                { "name" : "Ecosystem", "count" : 111 },
-                { "name" : "Energy", "count" : 111 },
-                { "name" : "Geology", "count" : 111 },
-                { "name" : "Health", "count" : 111 },
-                { "name" : "Water", "count" : 111 },
-                { "name" : "Weather", "count" : 111 }
-            ]
-        },{
-            "name" : "Keyword",
-            "icon" : "key",
-            "children" : [
-                { "name" : "Rock", "count" : 111},
-                { "name" : "GeoChemical", "count" : 111 },
-                { "name" : "Fire", "count" : 111 },
-                { "name" : "Fish", "count" : 111 },
-                { "name" : "Carbon", "count" : 111 }
+                { "name" : "Agriculture", "count" : 0 },
+                { "name" : "Biodiversity", "count" : 0 },
+                { "name" : "Climate", "count" : 0 },
+                { "name" : "Disaster", "count" : 0 },
+                { "name" : "Ecosystem", "count" : 0 },
+                { "name" : "Energy", "count" : 0 },
+                { "name" : "Geology", "count" : 0 },
+                { "name" : "Health", "count" : 0 },
+                { "name" : "Water", "count" : 0 },
+                { "name" : "Weather", "count" : 0 }
             ]
         },{
             "name" : "Organization Type",
-            "icon" : "pushpin",
+            "icon" : "tag",
             "children" : [
-                { "name" : "Education Organization", "count" : 111},
-                { "name" : "Government", "count" : 111 },
-                { "name" : "Academic Organization", "count" : 111 },
-                { "name" : "Industry", "count" : 111 },
-                { "name" : "Others", "count" : 111 }
+                { "name" : "Survey", "count" : 0},
+                { "name" : "University", "count" : 0 },
+                { "name" : "Organization", "count" : 0 },
+                { "name" : "Department", "count" : 0 },
+                { "name" : "Program", "count" : 0 }
             ]
         },{
             "name" : "Public Organization",
             "icon" : "laptop",
             "children" : [
-                { "name" : "Earth Data Analysis Center", "count" : 111},
-                { "name" : "NOAA", "count" : 111 },
-                { "name" : "FAO", "count" : 111 },
-                { "name" : "NCEI", "count" : 111 },
-                { "name" : "Arizona Geological Survey", "count" : 111 },
-                { "name" : "Geological Survey Mineral Resources Program", "count" : 111 }
+                { "name" : "Earth Data Analysis Center", "count" : 0},
+                { "name" : "NOAA", "count" : 0 },
+                { "name" : "miso", "count" : 0 },
+                { "name" : "FAO", "count" : 0 },
+                { "name" : "NCEI", "count" : 0 },
+                { "name" : "Arizona Geological Survey", "count" : 0 },
+                { "name" : "U.S. Geological Survey", "count" : 0 },
+                { "name" : "Amt Unterspreewald", "count" : 0},
+                { "name" : "Illinois State Geological Survey", "count" : 0 },
+                { "name" : "Partenariat GeoBretagne", "count" : 0 },
+                { "name" : "National Centers for Environmental Information", "count" : 0 },
+                { "name" : "Gemeinde Kloster Lehnin", "count" : 0 },
+                { "name" : "Kansas Biological Survey", "count" : 0 },
+                { "name" : "AIV", "count" : 0 },
+                { "name" : "LGB", "count" : 0},
+                { "name" : "Amt Spreenhagen", "count" : 0 },
+                { "name" : "PIGMA", "count" : 0 },
+                { "name" : "Gemeinde Hoppegarten", "count" : 0 },
+                { "name" : "PDOK", "count" : 0 },
+                { "name" : "University of Hawaii", "count" : 0 },
+                { "name" : "Province of British Columbia", "count" : 0 },
+                { "name" : "Centre for Ecology & Hydrology", "count" : 0},
+                { "name" : "EROS", "count" : 0 },
+                { "name" : "MAGRAMA", "count" : 0 },
+                { "name" : "USGS", "count" : 0 },
+                { "name" : "NASA", "count" : 0 },
+                { "name" : "Iowa State University", "count" : 0 }
             ]
         },{
             "name" : "Continent",
             "icon" : "notification",
             "children" : [
-                { "name" : "Africa", "count" : 111},
-                { "name" : "Antarctica", "count" : 111 },
-                { "name" : "Asia", "count" : 111 },
-                { "name" : "Europea", "count" : 111 },
-                { "name" : "North America", "count" : 111 },
-                { "name" : "South America", "count" : 111 },
-                { "name" : "Oceania", "count" : 111 }
-            ]
-        },{
-            "name" : "Public Time",
-            "icon" : "bulb",
-            "children" : [
-                { "name" : "1995-2000", "count" : 111},
-                { "name" : "2000-2005", "count" : 111 },
-                { "name" : "2005-2010", "count" : 111 },
-                { "name" : "2010-2015", "count" : 111 },
-                { "name" : "2015-2020", "count" : 111 }
+                { "name" : "Africa", "count" : 0},
+                { "name" : "Antarctica", "count" : 0 },
+                { "name" : "Asia", "count" : 0 },
+                { "name" : "Europea", "count" : 0 },
+                { "name" : "North America", "count" : 0 },
+                { "name" : "South America", "count" : 0 },
+                { "name" : "Oceania", "count" : 0 }
             ]
         }
  ]

@@ -78,6 +78,16 @@
 }
 
 // style for DataSearch component
+.main_container_content_statis,.main_container_content_imglist_statis{
+    display: flex;
+    align-items: flex-end;
+    &_value{
+        padding-right: $bound_padding;
+    }
+    span{
+        padding-bottom: 5px;
+    }
+}
 .main_container_content_list{
     &_item{
         line-height: $header_font_size;
@@ -111,7 +121,7 @@
 
 // style for layerSearch component
 .main_container_content_imglist{
-
+    background: $white;
 }
 
 // style for the service detailed info page

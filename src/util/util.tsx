@@ -69,3 +69,12 @@ export function smoothscroll(){
          window.scrollTo (0,currentScroll - (currentScroll/5));
     }
 }
+
+// push the value of an object in an array
+export function pushKeyValueToArr(arr:object[]){
+    const result = new Array();
+    arr.map((item:any)=>{
+        result.push(item['name']);
+    })
+    return result;
+}

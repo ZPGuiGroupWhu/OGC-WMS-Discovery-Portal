@@ -7,11 +7,16 @@ import DataSearch from './DataSearch';
 import LayerSearch from './LayerSearch';
 import {mapDrawConfig} from '../../util/config'; 
 import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
+import { pushKeyValueToArr } from "../../util/util";
 import * as menuListData from '../../assets/data/filterCondition.json';
 import { Layout, Input, Radio, Select, Icon, Menu } from 'antd';
 
 const { SubMenu } = Menu;
 const { Content, Sider} = Layout;
+const topic:any = [];
+const organization:any = [];
+const organizationType:any = [];
+const continent:any = [];
 
 interface Props {
   history: any;
@@ -25,6 +30,10 @@ interface State {
 class Home extends React.Component<Props,State> {
   private menuList = menuListData[0]; // condition selector menu 
   private geoBoxStrDefault = 'Filter Geo-Range'; // place-holder of input text in front of the map
+  private topicArr = pushKeyValueToArr(this.menuList[0].children);
+  private organizationTypeArr = pushKeyValueToArr(this.menuList[1].children);
+  private organizationArr = pushKeyValueToArr(this.menuList[2].children);
+  private continentArr = pushKeyValueToArr(this.menuList[3].children);
 
   constructor (props:Props) {
     super(props);
@@ -34,6 +43,9 @@ class Home extends React.Component<Props,State> {
           bound: [],
           continent: '',
           keywords: '',
+          organization: '',
+          organization_type: '', 
+          topic: ''
       },
     };
   }
@@ -137,16 +149,55 @@ class Home extends React.Component<Props,State> {
   public handleRatio = (active: number) => { 
     const dataComp = document.getElementsByClassName('main_container_content_list')[0];
     const imgComp = document.getElementsByClassName('main_container_content_imglist')[0];
+    const dataSta = document.getElementsByClassName('main_container_content_statis')[0];
+    const imgSta = document.getElementsByClassName('main_container_content_imglist_statis')[0];
     const target = active === 0 ? dataComp : imgComp;
     const untarget = active === 0 ? imgComp : dataComp;
     target.className = target.className.replace('sr-only','');
     untarget.className = `${untarget.className} sr-only`;
+    const sta = active === 0 ? dataSta : imgSta;
+    const unsta = active === 0 ? imgSta : dataSta;
+    sta.className = sta.className.replace('sr-only','');
+    unsta.className = `${unsta.className} sr-only`;
+  }
+
+  // click submenu to choose search parameters
+  public handleMenuClick = (e:any) => {
+    if(this.topicArr.indexOf(e.key) !== -1){
+      this.setConditionPar(e.key,topic);
+    }else if(this.organizationArr.indexOf(e.key) !== -1){
+      this.setConditionPar(e.key,organization);
+    }else if(this.organizationTypeArr.indexOf(e.key) !== -1){
+      this.setConditionPar(e.key,organizationType);
+    }else if(this.continentArr.indexOf(e.key) !== -1){
+      this.setConditionPar(e.key,continent);
+    }else{
+      alert('There is something wrong in menu')
+    }
+    const queryPar = this.state.queryPar;
+    queryPar.topic = topic.join(',');
+    queryPar.organization = organization.join(',');
+    queryPar.organization_type = organizationType.join(',');
+    queryPar.continent = continent.join(',');
+    this.setState({
+      queryPar
+    })
+  }
+
+  public setConditionPar = (par:string,result:any) => {
+    const index = result.indexOf(par);
+    if( index !== -1){
+      result.splice(index,1);
+    }else{
+      result.push(par);
+    }
+    return result;
   }
 
   // init to render condition selector menu (submenu item)
   public addSubMenuItem = (subMenu: ISubMenu) => {
     return (
-        <Menu.Item key={subMenu.name}>{subMenu.name}</Menu.Item>                
+        <Menu.Item key={subMenu.name} onClick = { this.handleMenuClick}>{subMenu.name}</Menu.Item>                
     )
   }
 
@@ -154,7 +205,7 @@ class Home extends React.Component<Props,State> {
   public addMenuItem = (menu: IMenu) => {
       return (
           <SubMenu 
-              className="main_container_sider_menu_item" key={menu.name} 
+              className="main_container_sider_menu_item" key={menu.name}
               title={<span><Icon className="icon" type={menu.icon} />Filte By {menu.name}</span>}
           >
               {menu.children.map((item:ISubMenu)=>{
