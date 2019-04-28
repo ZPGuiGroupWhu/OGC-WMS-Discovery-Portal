@@ -146,7 +146,7 @@ class Home extends React.Component<Props,State> {
   // init to render condition selector menu (submenu item)
   public addSubMenuItem = (subMenu: ISubMenu) => {
     return (
-        <Menu.Item key={subMenu.name}>{subMenu.name} ({subMenu.count})</Menu.Item>                
+        <Menu.Item key={subMenu.name}>{subMenu.name}</Menu.Item>                
     )
   }
 
