@@ -11,6 +11,7 @@ public class re_layers {
     public Integer id;
     public String imagepath;
     public String projection;
+    public String topic;
 
     public void setBbox(layers layers){
         this.bbox=new float[2][2];
@@ -52,5 +53,6 @@ public class re_layers {
         this.imagepath=layers.imagepath;
         this.url=layers.URL;
         this.projection=layers.projection;
+        this.topic=layers.Topic;
     }
 }

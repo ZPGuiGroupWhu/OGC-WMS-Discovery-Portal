@@ -24,4 +24,5 @@ public class layers {
         public String bbox;
         @Column(name="extcrs")
         public String projection;
+        public String Topic;
 }

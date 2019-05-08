@@ -13,8 +13,9 @@ public class re_wms {
     public String keywords;
     public String title;
     public String url;
-    //public String crs;
+    public String topic;
     public List<re_layers> layer;
+
 
     //将经纬度组成一个数组
     public void setLocation(wms wms){
@@ -35,6 +36,7 @@ public class re_wms {
         this.version=wms.Version;
         this.title=wms.Title;
         this.keywords=wms.Keywords;
+        this.topic=wms.Topic;
     }
     //对layer某些属性格式进行修改
     public void setLayerList(List<layers> layers){

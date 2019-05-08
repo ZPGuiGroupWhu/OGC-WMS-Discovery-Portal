@@ -7,8 +7,17 @@ public class WMSList2 {
     private String title;
     private  String administrative_unit;
     private  String abstr;
+    private  String topic;
     private  float[] geoLocation;
     public WMSList2() {
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public Integer getId() {

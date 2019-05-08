@@ -70,18 +70,20 @@ public class wmsController {
 
 
     @GetMapping("/search/queryWMSList")
-    @ApiOperation(value = "根据关键词、经纬度、大洲及主题进行查询")
+    @ApiOperation(value = "根据关键词、经纬度、大洲、主题、组织、组织类型进行查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keywords",value = "输入与title、Abstract、keywords以及url匹配的关键词",required = false),
             @ApiImplicitParam(name = "bound",value = "输入经纬度",required = false),
             @ApiImplicitParam(name = "continent",value = "输入所在大洲",required = false),
             @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
+            @ApiImplicitParam(name = "organization",value = "输入组织",required = false),
+            @ApiImplicitParam(name = "organizationType",value = "输入组织类型",required = false),
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
             @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
-    public String getWMSList(String keywords, float[] bound, String continent, String topic, Integer pageNum, Integer pageSize){
+    public String getWMSList(String keywords, float[] bound, String continent, String topic,String organization,String organizationType, Integer pageNum, Integer pageSize){
         PageHelper.startPage(pageNum,pageSize);
-        List<WMSList> data=wmsService.getWMSListResult(keywords,bound,continent,topic,pageNum,pageSize);
+        List<WMSList> data=wmsService.getWMSListResult(keywords,bound,continent,topic,organization,organizationType,pageNum,pageSize);
         PageInfo<WMSList> wmsResultPageInfo=new PageInfo<>(data);
         WMSResult wmsResult=new WMSResult();
         List<WMSList2>list2s=new ArrayList<>();
@@ -95,6 +97,7 @@ public class wmsController {
             result.setKeywords(origin.getKeywords());
             result.setTitle(origin.getTitle());
             result.setUrl(origin.getUrl());
+            result.setTopic(origin.getTopic());
             list2s.add(result);
         }
         try {

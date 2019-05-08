@@ -13,14 +13,20 @@ import java.util.List;
 public class LayerQueryService {
     @Autowired
     LayerQueryMapper layerQueryMapper;
-    public List<LayerList>  getlayerlist(String keywords,String topic){
+    public List<LayerList>  getlayerlist(String keywords,String topic,Integer pageNum, Integer pageSize){
         List<LayerList>layerLists=new ArrayList<>();
         List<LayerList_temp> layerList_temps=new ArrayList<>();
+        String keywordsNew=new String();
+        if(keywords!=null & keywords!="")
+        {  keywordsNew=keywords.toLowerCase();}
+        String topicNew=new String();
+        if(topic!=null & topic!="")
+        {topicNew=topic.toLowerCase();}
         String [] topicArray=new String[100];
         if(topic!=null){
-            topicArray=topic.split(",");
+            topicArray=topicNew.split(",");
         }
-        layerList_temps=layerQueryMapper.getlayerlist(keywords,topicArray);
+        layerList_temps=layerQueryMapper.getlayerlist(keywordsNew,topicArray,pageNum,pageSize);
         for(LayerList_temp layerList_temp:layerList_temps){
             LayerList layerList=new LayerList();
             layerList.setAbstr(layerList_temp.getAbstr());

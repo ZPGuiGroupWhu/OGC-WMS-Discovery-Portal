@@ -1,6 +1,5 @@
 package com.gsv.querywmslist.querywmslist.bean;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -23,4 +22,5 @@ public class wms {
     public String City;
     public float Latitude;
     public float Longitude;
+    public String Topic;
 }

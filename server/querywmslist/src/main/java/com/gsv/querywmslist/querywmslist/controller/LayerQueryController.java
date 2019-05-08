@@ -34,7 +34,7 @@ public class LayerQueryController {
     })
     public String getLayerList(String keywords,String topic,Integer pageNum, Integer pageSize){
         Page page= PageHelper.startPage(pageNum,pageSize);
-        List<LayerList> layerListResult=layerQueryService.getlayerlist(keywords,topic);
+        List<LayerList> layerListResult=layerQueryService.getlayerlist(keywords,topic,pageNum,pageSize);
         PageInfo<LayerList> layerListPageInfo=new PageInfo<>(layerListResult);
         LayerResult layerResult=new LayerResult();
         try {
