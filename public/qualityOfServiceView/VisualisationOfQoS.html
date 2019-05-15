@@ -1,0 +1,45 @@
+<html  class="child-html">
+
+<head>
+    <meta charset="utf-8">
+    <title>Qogis</title>
+    <style type="text/css">
+    body {
+        margin: 0;
+        height: 100%;
+    }
+    #main {
+        width: 100%;
+        height: 100%;
+    }
+    </style>
+</head>
+
+<body class="child-html">
+    <div class="row">
+        <div class="col-md-10">
+            <div id="main"></div>
+        </div>
+    </div>
+    <!--?<div class="col-md-2">-->
+    <!--?<div id="part"></div>-->
+    <!--?</div>-->
+    <script  src="js/echarts.js"></script>
+    <script  type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=jnNYxmFKk8IuFosU4NGgnSRUpCTIVGEE"></script>
+    <script  src="js/jquery.min.js"></script>
+    <script src="extension/BMap/doc/data.js"></script>
+    <script src="extension/BMap/doc/monitor.js"></script>
+    <script src="extension/BMap/doc/countryData.js"></script>
+    <script src="extension/BMap/doc/example.js"></script>
+    <script type="text/javascript">
+    $('iframe', window.parent.document).height(window.parent.document.body.scrollHeight - 70 + 'px');
+    $('iframe', window.parent.document).width(window.parent.document.body.scrollWidth + 'px');
+
+    function resizeChild() {
+        $('iframe', window.parent.document).width(window.parent.document.body.scrollWidth + 'px');
+        $('iframe', window.parent.document).height(window.parent.document.body.scrollHeight - 70 + 'px');
+    }
+    </script>
+</body>
+
+</html>

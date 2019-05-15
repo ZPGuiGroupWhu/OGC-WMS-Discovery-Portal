@@ -17,7 +17,7 @@ body {
 
 .app {
   min-width: $body_min_width;
-  &_container {
-    padding: $bound_padding_lr;
-  }
+  // &_container {
+  //   padding: $bound_padding_lr;
+  // }
 }
