@@ -2,6 +2,7 @@ package com.gsv.querywmslist.querywmslist.service;
 
 import com.gsv.querywmslist.querywmslist.bean.LayerList;
 import com.gsv.querywmslist.querywmslist.bean.LayerList_temp;
+import com.gsv.querywmslist.querywmslist.commons.ImageDemo;
 import com.gsv.querywmslist.querywmslist.repository.LayerQueryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ public class LayerQueryService {
     LayerQueryMapper layerQueryMapper;
     public List<LayerList>  getlayerlist(String keywords,String topic,Integer pageNum, Integer pageSize){
         List<LayerList>layerLists=new ArrayList<>();
+        List<LayerList_temp> layerList_temps1=new ArrayList<>();
         List<LayerList_temp> layerList_temps=new ArrayList<>();
         String keywordsNew=new String();
         if(keywords!=null & keywords!="")
@@ -26,7 +28,8 @@ public class LayerQueryService {
         if(topic!=null){
             topicArray=topicNew.split(",");
         }
-        layerList_temps=layerQueryMapper.getlayerlist(keywordsNew,topicArray,pageNum,pageSize);
+        layerList_temps1=layerQueryMapper.getlayerlist(keywordsNew,topicArray,pageNum,pageSize);
+        layerList_temps= ImageDemo.readLayerList(layerList_temps1);
         for(LayerList_temp layerList_temp:layerList_temps){
             LayerList layerList=new LayerList();
             layerList.setAbstr(layerList_temp.getAbstr());
@@ -40,6 +43,7 @@ public class LayerQueryService {
             layerList.setTopic(layerList_temp.getTopic());
             layerList.setProjection(layerList_temp.getBoundingbox().split(" ")[0]);
             layerList.setBbox(layerList_temp);
+            layerList.setPhoto(layerList_temp.getPhoto());
             layerLists.add(layerList);
         }
 

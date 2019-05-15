@@ -12,6 +12,16 @@ public class LayerList {
     private String imagepath;
     private String projection;
     private String topic;
+    private String photo;
+
+    public String getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(String photo) {
+        this.photo = photo;
+    }
+
     public String getAbstr() {
         return abstr;
     }
