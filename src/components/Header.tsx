@@ -17,10 +17,9 @@ class PortalHeader extends React.Component<{},State>{
       this.state={
       current:'1',
          }
-      this.handleClick=this.handleClick.bind(this);
     }
 
-    public handleClick(e:any){
+    public handleClick =(e:any) =>{
       this.setState({current: e.key});
      }
    
@@ -37,7 +36,7 @@ class PortalHeader extends React.Component<{},State>{
                 className="header_menu"
                 defaultSelectedKeys={['1']}
                 selectedKeys={[this.state.current]}
-                onClick={this.handleClick}
+                onClick= {this.handleClick}
             >
                 <Menu.Item  key="1"><Link   className="header_menu_nav" exact={true}  to="/" >Home</Link></Menu.Item>
                 <Menu.SubMenu key="2" className="header_menu_dropdown" title={<span>Theme Map</span>}>
