@@ -9,8 +9,17 @@ public class LayerOrigin {
     private String  url;
     private String  boundingbox;
     private Integer id;
-    private String  imagepath;
+    private String  photo;
     private String  topic;
+    private Integer  service_id;
+
+    public Integer getService_id() {
+        return service_id;
+    }
+
+    public void setService_id(Integer service_id) {
+        this.service_id = service_id;
+    }
 
     public String getAbstr() {
         return abstr;
@@ -76,12 +85,12 @@ public class LayerOrigin {
         this.id = id;
     }
 
-    public String getImagepath() {
-        return imagepath;
+    public String getPhoto() {
+        return photo;
     }
 
-    public void setImagepath(String imagepath) {
-        this.imagepath = imagepath;
+    public void setPhoto(String photo) {
+        this.photo = photo;
     }
 
     public String getTopic() {

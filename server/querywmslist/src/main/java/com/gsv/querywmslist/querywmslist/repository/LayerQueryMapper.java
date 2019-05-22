@@ -10,17 +10,17 @@ import java.util.List;
 @Mapper
 public interface LayerQueryMapper {
     @Select("<script>" +
-            "SELECT id,Abstract as abstr,Attribution as attribution,Keywords as keywords,`Name` as name,Title as title,URL as url,BoundingBox as boundingbox,imagePath,Topic as topic from layerlist where 1=1 " +
+            "SELECT id,Abstract as abstr,Attribution as attribution,Keywords as keywords,`Name` as name,Title as title,URL as url,BoundingBox as boundingbox,Topic as topic from layerlist where 1=1 " +
             "<if test='keywordsNew!=null' >" +
-            " and (Title LIKE CONCAT('%',#{keywordsNew},'%') " +
-            "OR Abstract like CONCAT('%',#{keywordsNew},'%') " +
-            "OR `Name` LIKE CONCAT('%',#{keywordsNew},'%') " +
-            "OR Attribution LIKE CONCAT('%',#{keywordsNew},'%') " +
-            "OR Keywords like CONCAT('%',#{keywordsNew},'%'))" +
+            " and (LOWER(Title) LIKE CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(Abstract) like CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(`Name`) LIKE CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(Attribution) LIKE CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(Keywords) like CONCAT('%',#{keywordsNew},'%'))" +
             "</if>  " +
             "<if test='topicArray[0]!=null '>  " +
             "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
-            "Topic like CONCAT('%',#{item},'%')" +
+            "LOWER(Topic) like CONCAT('%',#{item},'%')" +
             "</foreach> )" +
             "</if>  " +
             "ORDER BY id " +

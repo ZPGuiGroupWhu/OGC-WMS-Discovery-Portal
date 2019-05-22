@@ -68,33 +68,33 @@ public interface WMSMapper {
     @Select("<script>" +
             "select x.* from (select m.* from (SELECT id,topic,url,Abstract as abstr,Keywords,Title,CONCAT(Country,',',StateOrProvince,',',City) as administrative_unit,Latitude,Longitude from wms where 1=1 " +
             "<if test='keywordsNew!=null and  keywordsNew!=\"\" ' >" +
-            " and (Title LIKE CONCAT('%',#{keywordsNew},'%') " +
-            "OR Abstract like CONCAT('%',#{keywordsNew},'%') " +
-            "OR url LIKE CONCAT('%',#{keywordsNew},'%') " +
-            "OR Keywords like CONCAT('%',#{keywordsNew},'%'))" +
+            " and (LOWER(Title) LIKE CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(Abstract) like CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(url) LIKE CONCAT('%',#{keywordsNew},'%') " +
+            "OR LOWER(Keywords) like CONCAT('%',#{keywordsNew},'%'))" +
             "</if>  " +
             "<if test='bound!=null ' > " +
             " and ( Latitude BETWEEN #{bound[0]} AND #{bound[1]} " +
             "AND Longitude BETWEEN #{bound[2]} AND #{bound[3]} )" +
             "</if>  " +
             "<if test='continentNew !=null and  continentNew!=\"\" '>  " +
-            " and Continent=#{continentNew} " +
+            " and LOWER(Continent)=#{continentNew} " +
             "</if>  " +
             "<if test='topicArray[0]!=null '>  " +
             "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
-            "Topic like CONCAT('%',#{item},'%')" +
+            "LOWER(Topic) like CONCAT('%',#{item},'%')" +
             "</foreach> )" +
             "</if>)m  " +
             " right join"+
             " (SELECT  service_id  from contactinformation WHERE 1=1"+
             "<if test='organizationArray[0]!=null '>  " +
             " and (<foreach collection='organizationArray' item='item' index='index' separator='and'> " +
-            " Organization like CONCAT('%',#{item},'%')" +
+            " LOWER(Organization) like CONCAT('%',#{item},'%')" +
             "</foreach> )" +
             "</if>  " +
             "<if test='organizationTypeArray[0]!=null '>  " +
             " and (<foreach collection='organizationTypeArray' item='item' index='index' separator='and'> " +
-            " Organization like CONCAT('%',#{item},'%')" +
+            " LOWER(Organization) like CONCAT('%',#{item},'%')" +
             "</foreach> )" +
             "</if> )n " +
             " on m.id=n.service_id"+

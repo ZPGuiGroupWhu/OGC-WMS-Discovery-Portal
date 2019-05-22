@@ -13,7 +13,7 @@ import java.util.List;
 public interface SingleWMSMapper {
     @Select("SELECT id,url,ip,abstract as abstr,version,title,keywords,country,stateorprovince,city,latitude,longitude,topic from wms WHERE id=#{id}")
     WmsOrigin getWMSInfo(@Param("id")Integer id);
-    @Select("SELECT abstract as abstr,attribution,keywords,name,title,url,boundingbox,id,imagepath,topic from layerlist WHERE service_id=#{id}")
+    @Select("SELECT abstract as abstr,attribution,keywords,name,title,url,boundingbox,id,topic from layerlist WHERE service_id=#{id}")
     List<LayerOrigin> getLayerInfo(@Param("id")Integer id);
     @Select("SELECT organization,person,position,address,city,stateOrProvince,country,postCode,voiceTelephone,facsimileTelephone,electronicMailAddress from contactinformation WHERE service_id=#{id}")
     ContactInfoOrigin getContactInfo(@Param("id")Integer id);

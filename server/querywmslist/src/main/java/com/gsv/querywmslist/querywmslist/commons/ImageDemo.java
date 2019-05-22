@@ -1,6 +1,7 @@
 package com.gsv.querywmslist.querywmslist.commons;
 
 import com.gsv.querywmslist.querywmslist.bean.LayerList_temp;
+import com.gsv.querywmslist.querywmslist.bean.singleWms.LayerOrigin;
 import sun.misc.BASE64Encoder;
 
 import java.io.ByteArrayOutputStream;
@@ -127,7 +128,6 @@ public class ImageDemo {
                     layerList_temp.setAttribution(layerList_temps1.get(m).getAttribution());
                     layerList_temp.setBoundingbox(layerList_temps1.get(m).getBoundingbox());
                     layerList_temp.setId(layerList_temps1.get(m).getId());
-                    layerList_temp.setImagepath(layerList_temps1.get(m).getImagepath());
                     layerList_temp.setKeywords(layerList_temps1.get(m).getKeywords());
                     layerList_temp.setName(layerList_temps1.get(m).getName());
                     layerList_temp.setTitle(layerList_temps1.get(m).getTitle());
@@ -159,4 +159,128 @@ public class ImageDemo {
 
         }
     return layerList_temps;}
+
+    // 读取数据库中单个图层图片
+    public static List<LayerOrigin> readLayer(List<LayerOrigin> layerOrigins) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String result="";
+        List<LayerOrigin> layerList_temps=new ArrayList<>();
+        try {
+
+            conn = DBUtil.getConn();
+            for(int m=0;m<layerOrigins.size();m++) {
+                String sql = "select photo from photos where name=?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1, layerOrigins.get(m).getId());
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    InputStream in = rs.getBinaryStream("photo");
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[100];
+                    int n = 0;
+                    while (-1 != (n = in.read(buffer))) {
+                        output.write(buffer, 0, n);
+                    }
+                    result = new BASE64Encoder().encode(output.toByteArray()).replaceAll("\\r\\n","");
+                    output.close();
+                    LayerOrigin layerOrigin = new LayerOrigin();
+                    layerOrigin.setAbstr(layerOrigins.get(m).getAbstr());
+                    layerOrigin.setAttribution(layerOrigins.get(m).getAttribution());
+                    layerOrigin.setBoundingbox(layerOrigins.get(m).getBoundingbox());
+                    layerOrigin.setId(layerOrigins.get(m).getId());
+                    layerOrigin.setKeywords(layerOrigins.get(m).getKeywords());
+                    layerOrigin.setName(layerOrigins.get(m).getName());
+                    layerOrigin.setTitle(layerOrigins.get(m).getTitle());
+                    layerOrigin.setTopic(layerOrigins.get(m).getTopic());
+                    layerOrigin.setUrl(layerOrigins.get(m).getUrl());
+                    layerOrigin.setPhoto(result);
+                    layerList_temps.add(layerOrigin);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.closeConn(conn);
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return layerList_temps;}
+    // 读取数据库中单个图层图片 singleLayer
+    public static LayerOrigin readSingleLayer(LayerOrigin layerOrigin) {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String result="";
+        LayerOrigin layerOrigin1 = new LayerOrigin();
+        try {
+
+            conn = DBUtil.getConn();
+                String sql = "select photo from photos where name=?";
+                ps = conn.prepareStatement(sql);
+                ps.setInt(1, layerOrigin.getId());
+                rs = ps.executeQuery();
+
+                while (rs.next()) {
+                    InputStream in = rs.getBinaryStream("photo");
+                    ByteArrayOutputStream output = new ByteArrayOutputStream();
+                    byte[] buffer = new byte[100];
+                    int n = 0;
+                    while (-1 != (n = in.read(buffer))) {
+                        output.write(buffer, 0, n);
+                    }
+                    result = new BASE64Encoder().encode(output.toByteArray()).replaceAll("\\r\\n","");
+                    output.close();
+
+                    layerOrigin1.setAbstr(layerOrigin.getAbstr());
+                    layerOrigin1.setAttribution(layerOrigin.getAttribution());
+                    layerOrigin1.setBoundingbox(layerOrigin.getBoundingbox());
+                    layerOrigin1.setId(layerOrigin.getId());
+                    layerOrigin1.setKeywords(layerOrigin.getKeywords());
+                    layerOrigin1.setName(layerOrigin.getName());
+                    layerOrigin1.setTitle(layerOrigin.getTitle());
+                    layerOrigin1.setTopic(layerOrigin.getTopic());
+                    layerOrigin1.setUrl(layerOrigin.getUrl());
+                    layerOrigin1.setPhoto(result);
+                }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.closeConn(conn);
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return layerOrigin1;}
+
 }

@@ -5,7 +5,7 @@ public class Layer {
     private String attribution;
     private float[][] bbox;
     private Integer id;
-    private String imagepath;
+    private String photo;
     private String keywords;
     private String name;
     private String projection;
@@ -29,8 +29,8 @@ public class Layer {
         return id;
     }
 
-    public String getImagepath() {
-        return imagepath;
+    public String getPhoto() {
+        return photo;
     }
 
     public String getKeywords() {
@@ -59,7 +59,7 @@ public class Layer {
 
     public void setAll(LayerOrigin layerOrigin){
         this.id = layerOrigin.getId();
-        this.imagepath = layerOrigin.getImagepath();
+        this.photo = layerOrigin.getPhoto();
         this.keywords = layerOrigin.getKeywords();
         this.name = layerOrigin.getName();
         this.projection = layerOrigin.getBoundingbox().split(" ")[0];
