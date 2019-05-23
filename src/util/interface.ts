@@ -31,12 +31,14 @@ export interface ILayer{
     attribution: string;
     bbox: number[][];
     id: number;
-    imagepath: string;
     keywords: string;
     name: string;
+    photo: string;
     projection: string;
     title: string;
+    topic: string;
     url: string;
+    service: object;
 }
 
 // service list request body interface

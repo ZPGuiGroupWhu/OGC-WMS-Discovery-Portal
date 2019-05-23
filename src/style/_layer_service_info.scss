@@ -1,0 +1,50 @@
+// style file of LayerInfo.tsx and ServiceInfo.tsx
+@import '_common-style.scss';
+
+// style for layerSearch component
+.main_container_content_imglist{
+    background: $white;
+}
+
+// style for the service detailed info page
+._info{
+    font-size: $nav_font_size;
+    header{
+        margin-top: $bound_padding;
+        a{
+            margin-left: $bound_padding * 0.5;
+        }
+    }
+    &_container{
+        background-color: $white;
+        margin-top: $bound_padding;
+        padding: $bound_padding;
+        &_header{
+            font-size: $nav_font_size + 5px;
+        }
+        &_section{
+            margin-bottom: $bound_padding;
+            &_header{
+                font-size: $nav_font_size;
+            }
+            &_content{
+                margin-top: $bound_padding;
+                .icon{
+                    margin-right:  $bound_padding * 0.5;
+                }
+                .span{
+                    margin-left: $bound_padding;
+                }
+                span,p{
+                    word-wrap:break-word;
+                    word-break:break-all;
+                }
+                p{
+                    padding: 0;
+                    margin-top: $bound_padding;
+                    margin-bottom:0;
+                }
+            }
+        }
+    }
+}

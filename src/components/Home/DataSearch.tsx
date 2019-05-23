@@ -5,7 +5,6 @@ import $req from '../../util/fetch';
 import {stringFilter, reqUrl, smoothscroll, delEmptyKey } from '../../util/util';
 import { IServInfo, IPageInfo, IQueryPar } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
-import * as testData from '../../assets/data/testServList.json';
 import { Layout, Icon, List, Rate, Statistic } from 'antd';
 
 const { Content } = Layout;
@@ -71,12 +70,12 @@ class DataSearch extends React.Component<Props, State> {
                     footer={<div style={{"display":this.state.listFootShow}}><b>service list</b> footer part</div>}
                     renderItem={(item:IServInfo) => (
                         <List.Item key={item.id} className="main_container_content_list_item">
-                            <Link to="/serviceInfo" className="title" onClick={this.turnToServPage}>{item.title ? item.title : 'null'}</Link>
-                            <Rate disabled={true} allowHalf={true} value={testData[0][0].Rank} className="rank"/><br/>
+                            <Link to="/serviceInfo" className="title" >{item.title ? item.title : 'null'}</Link>
+                            <Rate disabled={true} allowHalf={true} value={4.5} className="rank"/><br/>
                             <span><Icon className="icon" type="compass"/>Location: {item.administrative_unit}</span>
-                            <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {testData[0][0].GeoLocation[0]},{testData[0][0].GeoLocation[1]}</span><br/>
+                            <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {item.geoLocation[0]},{item.geoLocation[1]}</span><br/>
                             Service was public at the website: <a href={item.url}>{item.url}</a><br/>
-                            {testData[0][0].Abstract ? stringFilter(testData[0][0].Abstract) : 'There is no abstract in the service capability document.'}<br/>
+                            {item.abstr ? stringFilter(item.abstr) : 'There is no abstract in the service capability document.'}<br/>
                             <b>Keywords: </b><span>{item.keywords ? stringFilter(item.keywords): 'no keywords'}</span>
                         </List.Item>
                     )}
@@ -109,7 +108,7 @@ class DataSearch extends React.Component<Props, State> {
 
     // Function: send http request to get service list data
     // When to transfer: init render DataSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
-    // @param  params:object = {keyword?:string, bound?:number[], page:number, size:number}
+    // @param  params:object = {keyword?:string, bound?:number[], pageNum:number, pageSize:number, topic?:string, organization?:string, organization_type?:string, continent?:string}
     public async queryWMSList(pagePar:object, queryPar:object) {
         const baseUrl:string = 'search/queryWMSList';
         const reqPar:object = Object.assign(pagePar,queryPar);
@@ -118,7 +117,7 @@ class DataSearch extends React.Component<Props, State> {
         try {
             const res: any = await $req(url, {})
             const resBody:any  = JSON.parse(res)
-            console.log(res)
+            // console.log(res)
             this.setState({
                 dataList: resBody.data,
                 listTotal: resBody.total
@@ -129,11 +128,11 @@ class DataSearch extends React.Component<Props, State> {
     }
 
     // response function of clicking the service item title to turn to the individual service info page
-    public async turnToServPage(){
-        const container = document.getElementsByClassName('content')[0];
-        container.className = 'content sr-only';
-        // window.location.reload();
-    }
+    // public async turnToServPage(){
+    //     const container = document.getElementsByClassName('content')[0];
+    //     container.className = 'content sr-only';
+    //     // window.location.reload();
+    // }
 
 }
   

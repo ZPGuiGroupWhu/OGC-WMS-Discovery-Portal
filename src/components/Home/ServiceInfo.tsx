@@ -1,11 +1,10 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
-import '../../style/_home.scss';
+import '../../style/_layer_service_info.scss';
 import { Layout, Icon } from 'antd';
 import $req from '../../util/fetch';
 import {reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
-import * as testData from '../../assets/data/testServList.json';
 import { IServInfo, ILayer } from "../../util/interface";
 
 const { Content} = Layout;
@@ -61,7 +60,7 @@ class ServiceInfo extends React.Component<Props,State>{
                         <b className="_info_container_section_header">Access & Use Information</b><br/>
                         <Content className="_info_container_section_content">
                             <Icon className="icon" type="link" /><b>Access link：</b><a href={this.state.servInfoData.url}>{this.state.servInfoData.url}</a><br/>
-                            <Icon className="icon" type="user" /><b>Contact Person：</b><span>{testData[0][0].ContactPerson}</span>
+                            <Icon className="icon" type="user" /><b>Contact Person：</b>
                         </Content>
                     </Content>
                     <Content className="_info_container_section">

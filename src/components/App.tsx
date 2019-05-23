@@ -3,6 +3,7 @@ import Header from './Header';
 import Footer from './Footer';
 import Home from './Home/Home';
 import ServiceInfo from './Home/ServiceInfo';
+import LayerInfo from './Home/LayerInfo';
 import Distribution from './ThemeMap/Distribution';
 import LayerStatis from './ThemeMap/LayerStatis';
 import ServiceQuality from './ThemeMap/ServiceQuality';
@@ -27,6 +28,7 @@ class App extends React.Component {
                     <Route path="/serviceQuality" component={ServiceQuality}/>
                     <Route path="/dataAnalysis" component={DataAnalysis}/>
                     <Route path="/serviceInfo" component={ServiceInfo}/>
+                    <Route path="/layerInfo" component={LayerInfo}/>
                 </Switch>
                 </Content>
                 <Footer />

@@ -83,7 +83,7 @@ class Home extends React.Component<Props,State> {
               </Sider>
               <Content className="main_container_content">
                 <DataSearch queryPar={this.state.queryPar}/>
-                <LayerSearch/>
+                <LayerSearch queryPar={this.state.queryPar}/>
               </Content>
           </Layout>
         </Content>
@@ -179,6 +179,7 @@ class Home extends React.Component<Props,State> {
     queryPar.organization = organization.join(',');
     queryPar.organization_type = organizationType.join(',');
     queryPar.continent = continent.join(',');
+    // console.log(queryPar);
     this.setState({
       queryPar
     })
