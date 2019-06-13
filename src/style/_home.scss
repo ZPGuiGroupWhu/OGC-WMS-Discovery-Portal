@@ -123,6 +123,9 @@
 // style for layerSearch component
 .main_container_content_imglist{
     background: $white;
+    &_item{
+        line-height: $header_font_size;
+    }
 }
 
 // style for the service detailed info page
