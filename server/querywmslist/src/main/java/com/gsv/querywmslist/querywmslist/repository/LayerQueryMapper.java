@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface LayerQueryMapper {
     @Select("<script>" +
-            "SELECT id,Abstract as abstr,Attribution as attribution,Keywords as keywords,`Name` as name,Title as title,URL as url,BoundingBox as boundingbox,Topic as topic from layerlist where 1=1 " +
+            "SELECT id,Abstract as abstr,Attribution as attribution,Keywords as keywords,`Name` as name,Title as title,URL as url,BoundingBox as boundingbox,Topic as topic from layerlist where imagePath is not null  " +
             "<if test='keywordsNew!=null' >" +
             " and (LOWER(Title) LIKE CONCAT('%',#{keywordsNew},'%') " +
             "OR LOWER(Abstract) like CONCAT('%',#{keywordsNew},'%') " +
