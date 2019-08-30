@@ -1,0 +1,78 @@
+.about {
+    header{
+        position: relative;
+        width: 100%;
+        height: 420px;
+        background: url(//mapopen-website-wiki.cdn.bcebos.com/banner%2Fabroad-banner.jpg) no-repeat center #1b1c23;
+        background-size: 1440px 420px;
+        .about_header_title{
+            margin: 120px 20% 5px;
+            width: 980px;
+            height: 98px;
+            font-size: 100px;
+            color: orangered;
+            font-family: 'Microsoft YaHei';
+        }
+        .about_header_body{
+           margin: 50px;
+           vertical-align: middle;
+           text-align: center;
+           font-size: 50px;
+           color: orangered;
+           font-family: 'Microsoft YaHei';
+        }
+    }
+    body{
+        padding:40px;
+        width: 100%;
+        height: auto;
+        .about_body_title{
+            text-align: center;
+            font-size: 50px;
+            color: black;
+            font-family: 'Microsoft YaHei';
+        }
+        .about_body_container_parent{
+            float:left;
+            .about_body_container{
+                float:left;
+                padding:10px 0px 10px 120px;
+                .avatar{
+                    float:left;
+                    margin: 10px 30px;
+                }
+                .about_body_container_description{  
+                float: left;
+                margin: 3px;
+                b,icon{
+                    font-size: 25px;
+                    margin: inherit;
+                }
+                span{
+                    font-size: 20px;
+                    word-wrap:break-word;
+                    word-break:break-all;
+                }
+              }
+            } 
+        }
+        
+        .about_body_container_parent2{
+            padding-top: 50px;
+            .about_body_container2{
+                float: left;
+                padding: 100px 0 0 120px;
+                h1{
+                    font-size: 50px;
+                    text-align: left;
+                  }
+                  h2{
+                    font-size: 20px;
+                    line-height: 26px;
+                    text-align: left;
+                    width: 600px;
+                  }
+            }
+        }
+    }
+}

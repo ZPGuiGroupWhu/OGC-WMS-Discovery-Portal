@@ -8,6 +8,7 @@ import Distribution from './ThemeMap/Distribution';
 import LayerStatis from './ThemeMap/LayerStatis';
 import ServiceQuality from './ThemeMap/ServiceQuality';
 import DataAnalysis from './DataAnalysis/DataAnalysis';
+import About from './About';
 import {BrowserRouter, Route, Switch, withRouter} from 'react-router-dom';
 import 'antd/dist/antd.css';
 import '../style/_app.scss';
@@ -27,6 +28,7 @@ class App extends React.Component {
                     <Route path="/layerStatis" component={LayerStatis}/>
                     <Route path="/serviceQuality" component={ServiceQuality}/>
                     <Route path="/dataAnalysis" component={DataAnalysis}/>
+                    <Route path="/about" component={About} />
                     <Route path="/serviceInfo" component={ServiceInfo}/>
                     <Route path="/layerInfo" component={LayerInfo}/>
                 </Switch>

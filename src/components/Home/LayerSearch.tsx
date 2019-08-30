@@ -42,7 +42,7 @@ class LayerSearch extends React.Component<Props,State> {
   }
 
   public render() {
-    if(this.state.isUpdate){
+    if(this.state.isUpdate){   
       this.data=[[this.state.dataList[0],this.state.dataList[1],this.state.dataList[2],this.state.dataList[3],this.state.dataList[4],this.state.dataList[5]],
                  [this.state.dataList[6],this.state.dataList[7],this.state.dataList[8],this.state.dataList[9],this.state.dataList[10],this.state.dataList[11]],
                  [this.state.dataList[12],this.state.dataList[13],this.state.dataList[14],this.state.dataList[15],this.state.dataList[16],this.state.dataList[17]],

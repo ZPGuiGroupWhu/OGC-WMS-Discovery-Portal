@@ -15,12 +15,26 @@ export interface ISubMenu{
 export interface IServInfo{
     abstr: string;
     administrative_unit: string;
+    contact_info: {
+        address: string,
+        administrative_unit: string,
+        city: string,
+        email: string,
+        fascimile_tel: string,
+        organization: string,
+        person: string,
+        position: string,
+        post_code: string,
+        state_province: string,
+        voice_tel: string
+    },
     geoLocation: number[];
     id: number;
     ip: string;
     keywords: string;
-    layer: object[];
+    layer: ILayer[];
     title: string;
+    topic: string;
     url: string;
     version: string;
 }

@@ -40,11 +40,12 @@ class PortalHeader extends React.Component<{},State>{
             >
                 <Menu.Item  key="1"><Link   className="header_menu_nav" exact={true}  to="/" >Home</Link></Menu.Item>
                 <Menu.SubMenu key="2" className="header_menu_dropdown" title={<span>Theme Map</span>}>
-                    <Menu.Item key="4"><Link to="/distribution">Service Distribution</Link></Menu.Item>
-                    <Menu.Item key="5"><Link to="/serviceQuality">Service Quality</Link></Menu.Item>
-                    <Menu.Item key="6"><Link to="/layerStatis">Layer Statistic</Link></Menu.Item>
+                    <Menu.Item key="5"><Link to="/distribution">Service Distribution</Link></Menu.Item>
+                    <Menu.Item key="6"><Link to="/serviceQuality">Service Quality</Link></Menu.Item>
+                    <Menu.Item key="7"><Link to="/layerStatis">Layer Statistic</Link></Menu.Item>
                 </Menu.SubMenu>
                 <Menu.Item key="3"><Link className="header_menu_nav" to="/dataAnalysis" >Data Analysis</Link></Menu.Item>
+                <Menu.Item key="4"><Link className="header_menu_nav" to="/about" >About</Link></Menu.Item>
             </Menu>
           </Header>
       );

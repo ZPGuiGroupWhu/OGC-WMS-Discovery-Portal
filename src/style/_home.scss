@@ -13,7 +13,6 @@
         }
         &_search{
             flex:1;
-            margin-left: $bound_padding
         }
         &_radio{
             flex: 0 0 $ratio_width;
@@ -123,9 +122,6 @@
 // style for layerSearch component
 .main_container_content_imglist{
     background: $white;
-    &_item{
-        line-height: $header_font_size;
-    }
 }
 
 // style for the service detailed info page
@@ -165,6 +161,77 @@
                     padding: 0;
                     margin-top: $bound_padding;
                     margin-bottom:0;
+                }
+                span.tag{
+                    margin-left: $bound_padding;
+                    border:2px solid Silver ;
+                    border-radius:5px;
+                    text-align: center;
+                    padding: 2px 8px;
+                    text-decoration: none;
+                    display: inline-block;
+                    margin: 2px 2px;
+                }
+                span.tagnull{
+                    margin-left: $bound_padding;
+                    background: MintCream ;
+                    border:2px solid Silver ;
+                    border-radius:5px;
+                    text-align: center;
+                    padding: 2px 8px;
+                    text-decoration: none;
+                    display: inline-block;
+                    margin: 2px 2px;
+                }
+                span.double{
+                    margin-left: $bound_padding;
+                    margin-right: $bound_padding*10;
+                }
+                div.img {
+                    border: 1px solid #ccc;
+                }
+                
+                div.img:hover {
+                    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                }
+                
+                div.img img {
+                    width: 100%;
+                    height: auto;
+                }
+                
+                div.desc {
+                    padding: 15px;
+                    text-align: center;
+                }
+                
+                * {
+                    box-sizing: border-box;
+                }
+                
+                .responsive {
+                    padding: 20px 80px;
+                    float: left;
+                    width: 49.99999%;
+                }
+                
+                @media only screen and (max-width: 700px){
+                    .responsive {
+                        width: 49.99999%;
+                        margin: 6px 0;
+                    }
+                }
+                
+                @media only screen and (max-width: 500px){
+                    .responsive {
+                        width: 100%;
+                    }
+                }
+                
+                .clearfix:after {
+                    content: "";
+                    display: table;
+                    clear: both;
                 }
             }
         }
