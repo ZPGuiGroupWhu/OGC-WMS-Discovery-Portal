@@ -13,6 +13,7 @@
         }
         &_search{
             flex:1;
+            margin-left: $bound_padding
         }
         &_radio{
             flex: 0 0 $ratio_width;
@@ -122,6 +123,9 @@
 // style for layerSearch component
 .main_container_content_imglist{
     background: $white;
+    &_item{
+        line-height: $header_font_size;
+    }
 }
 
 // style for the service detailed info page
@@ -142,6 +146,10 @@
         }
         &_section{
             margin-bottom: $bound_padding;
+            &_photo{
+                float: right;
+                margin-right: 6%;
+            }
             &_header{
                 font-size: $nav_font_size;
             }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';
-import { Layout, Icon } from 'antd';
+import { Layout, Icon, Card } from 'antd';
 import $req from '../../util/fetch';
 import {reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
@@ -74,14 +74,13 @@ class ServiceInfo extends React.Component<Props,State>{
     public showphoto = (Layer: ILayer) => {
         return (
         <div className="responsive">
-             <div className="img">
-             <img src={Layer.url} />
-             <div className="desc">
+            <Link to='/layerInfo'>
+               <Card hoverable={true} cover={<img src={Layer.url} />} bodyStyle={{padding:2, textAlign: "center"}}>
                  <b>Keywords：</b><span>{Layer.keywords ? Layer.keywords : 'null'}</span><br/>
-                 <b>Title：</b><span>{Layer.title ? Layer.title : 'null'}</span>
-            </div>
-            </div>
-        </div>            
+                <b>Title：</b><span>{Layer.title ? Layer.title : 'null'}</span>
+              </Card>
+            </Link>
+        </div>     
         );
     }
 
@@ -136,8 +135,8 @@ class ServiceInfo extends React.Component<Props,State>{
                             <span><Icon className="icon" type="paper-clip" /><b>IP：</b>{ this.state.servInfoData.ip }</span><br/><br/>
                         </Content> 
                     </Content>
-                    <Content className="_info_container_section">
-                        <b className="_info_container_section_header">Layer Info</b><br/>
+                    <Content className="_info_container">
+                        <b className="_info_container_header">Layer Info</b><br/>
                         <Content className="_info_container_section_content">
                             {this.showphotos(this.state.servInfoData.layer)}
                         </Content> 
