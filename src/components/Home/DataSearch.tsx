@@ -7,6 +7,7 @@ import { IServInfo, IPageInfo, IQueryPar } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
 import { Layout, Icon, List, Rate, Statistic } from 'antd';
 
+
 const { Content } = Layout;
 
 interface Props {
@@ -81,6 +82,7 @@ class DataSearch extends React.Component<Props, State> {
                     )}
                 />
             </Content>
+              
         );
     }
 

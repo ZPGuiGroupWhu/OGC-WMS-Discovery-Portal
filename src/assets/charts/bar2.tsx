@@ -6,8 +6,11 @@ export default class Bar2 extends React.Component{
         const myChart = ec.init(document.getElementById('bar2_chart'));
         const option = {
             title: {
-                text: 'WMS 主题词统计',
-                x:'center'
+                text: 'Subject Statistics of WMS',
+                x:'center',
+                textStyle:{
+                    fontSize:25 ,
+                }
             },
             tooltip: {
                 trigger: 'axis',

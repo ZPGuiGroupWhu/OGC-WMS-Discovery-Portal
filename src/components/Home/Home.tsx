@@ -9,7 +9,8 @@ import {mapDrawConfig} from '../../util/config';
 import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
 import { pushKeyValueToArr } from "../../util/util";
 import * as menuListData from '../../assets/data/filterCondition.json';
-import { Layout, Input, Radio, Select, Icon, Menu } from 'antd';
+import { Layout, Input, Radio, Select, Icon, Menu} from 'antd';
+
 
 const { SubMenu } = Menu;
 const { Content, Sider} = Layout;
@@ -25,6 +26,7 @@ interface Props {
 interface State {
   geoBoxStr: string;
   queryPar: IQueryPar;
+  collapsed: boolean;
 }
 
 class Home extends React.Component<Props,State> {
@@ -47,11 +49,17 @@ class Home extends React.Component<Props,State> {
           organization_type: '', 
           topic: ''
       },
+      collapsed: false,
     };
   }
 
   public componentDidMount(){
       this.initMap();
+  }
+
+// hide left sider
+  public toggle =()=>{
+    this.setState({collapsed:!this.state.collapsed});
   }
 
   public render() {
@@ -70,16 +78,24 @@ class Home extends React.Component<Props,State> {
               <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
             </Select>
           </div> 
-          <Layout className="main_container">
-              <Sider width={300} className="main_container_sider">
-                  <div className="main_container_sider_icon"><Icon type="global"/><span className="title">Filte By Location</span></div>
-                  <div className="main_container_sider_title"><Input disabled={true} value={this.state.geoBoxStr}/></div>
-                  <div className="main_container_sider_map" id="location_map" />
-                  <Menu className="main_container_sider_menu" defaultOpenKeys={['Topic']} mode="inline" multiple={true} > 
+          <Layout className="main_container" >
+              <Sider 
+              collapsible={true} collapsed={this.state.collapsed}  collapsedWidth={20} trigger={null}
+              width={300} className="main_container_leftsider"
+              >
+                <div style={{display:this.state.collapsed?'none':'inline'}}>
+                  <div className="main_container_leftsider_icon"><Icon type="global"/><span className="title">Filte By Location</span></div>
+                  <div className="main_container_leftsider_title"><Input disabled={true} value={this.state.geoBoxStr}/></div>
+                  <div className="main_container_leftsider_map" id="location_map" />
+                  <Menu className="main_container_leftsider_menu" defaultOpenKeys={['Topic']} mode="inline" multiple={true} > 
                       {this.menuList.map((menu:IMenu)=>{ 
                           return this.addMenuItem(menu) 
                       })}
                   </Menu>
+                </div>
+                <div className="main_container_leftsider_trigger" onClick={this.toggle}>
+                     <Icon  type={this.state.collapsed?"double-right":"double-left"} />
+                </div>
               </Sider>
               <Content className="main_container_content">
                 <DataSearch queryPar={this.state.queryPar}/>

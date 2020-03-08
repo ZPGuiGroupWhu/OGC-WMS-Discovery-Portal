@@ -1,11 +1,15 @@
 import * as React from 'react';
 import '../../style/_home.scss'; 
-import { Layout, Statistic,List,Card} from 'antd';
+import { Layout, Statistic,List,Card,Icon} from 'antd';
 import $req from '../../util/fetch';    
 import { IQueryPar, IPageInfo,ILayer } from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
+import {NavLink as Link} from 'react-router-dom';
+
+const { Content, Sider} = Layout;
 
 interface Props {
+  // tslint:disable-next-line: ban-types
   queryPar: IQueryPar;
 }
 
@@ -16,7 +20,8 @@ interface State {
   isUpdate: boolean;
   listFootShow: string;
   listTotal: number;
-  loading: boolean
+  loading: boolean;
+  collapsed: boolean;
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -34,12 +39,19 @@ class LayerSearch extends React.Component<Props,State> {
       listFootShow: 'none',
       listTotal: 0,
       loading: true,
+      collapsed: false,
     };
   }
 
   public componentDidMount(){
     this.initData();
   }
+
+ // hide right sider
+  public toggle =()=>{
+     this.setState({collapsed:!this.state.collapsed});
+   }
+
 
   public render() {
     if(this.state.isUpdate){   
@@ -55,6 +67,7 @@ class LayerSearch extends React.Component<Props,State> {
     }
     return (
         <Layout className="main_container_content_imglist sr-only">
+          <Content className="main_container_content">
           <div className="main_container_content_imglist_statis">
             <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal}/>
             <span> layer images have been found. </span>
@@ -83,16 +96,29 @@ class LayerSearch extends React.Component<Props,State> {
                     dataSource={item}
                     renderItem={(childItem:ILayer) => (
                         <List.Item key={childItem.id} className="main_container_content_imglist_item">
-                          <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />} bodyStyle={{padding:2, textAlign: "center"}}>
-                            {childItem.name}
-                          </Card>
+                           <Link to='/layerInfo'>
+                             <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />} bodyStyle={{padding:2, textAlign: "center"}}>
+                               {childItem.name}
+                             </Card>
+                           </Link>
                         </List.Item>
                        )}
                     />
                 </List.Item>
                  )}
           />
+           </Content>
+           <Sider 
+           collapsible={true} collapsed={this.state.collapsed}   collapsedWidth={10} reverseArrow={true} trigger={null}
+           className="main_container_rightsider"  width={300}
+           >
+
+              <div className="main_container_rightsider_trigger" onClick={this.toggle}>
+                <Icon  type={this.state.collapsed?"double-left":"double-right"} />
+               </div>
+            </Sider>
         </Layout>
+       
     );
   }
 
