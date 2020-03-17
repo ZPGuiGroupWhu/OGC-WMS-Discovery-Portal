@@ -6,11 +6,15 @@ import $req from '../../util/fetch';
 import {reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
 import { IServInfo, ILayer } from "../../util/interface";
+import {connect} from 'react-redux'
+import {conveyLayerID} from '../../redux/action'
 
 const { Content} = Layout;
 
 interface Props{
-    name: string;
+   // name: string;
+    serviceID: number;
+    dispatch: (action: any)=>void;
 }
 
 interface State{
@@ -41,7 +45,7 @@ class ServiceInfo extends React.Component<Props,State>{
                     voice_tel: ''
                 },
                 geoLocation: [],
-                id: 0,
+                id: 1,
                 ip: '',
                 keywords: '',
                 layer: [],
@@ -73,9 +77,9 @@ class ServiceInfo extends React.Component<Props,State>{
 
     public showphoto = (Layer: ILayer) => {
         return (
-        <div className="responsive">
-            <Link to='/layerInfo'>
-               <Card hoverable={true} cover={<img src={Layer.url} />} bodyStyle={{padding:2, textAlign: "center"}}>
+        <div key={Layer.id} className="responsive">
+            <Link to='/layerInfo'onClick={()=>{this.props.dispatch(conveyLayerID(Layer.id))}}>
+               <Card hoverable={true} cover={<img src={'data:image/png;base64,'+Layer.photo} />} bodyStyle={{padding:2, textAlign: "center"}}>
                  <b>Keywords：</b><span>{Layer.keywords ? Layer.keywords : 'null'}</span><br/>
                 <b>Title：</b><span>{Layer.title ? Layer.title : 'null'}</span>
               </Card>
@@ -149,7 +153,7 @@ class ServiceInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryWMSInfo';
-        const url:string = reqUrl({id:1},baseUrl,'8080');
+        const url:string = reqUrl({id:this.props.serviceID},baseUrl,'8080');
         try {
             const res: any = await $req(url,{})
             // console.log(res)
@@ -162,4 +166,10 @@ class ServiceInfo extends React.Component<Props,State>{
     }
 }
 
-export default ServiceInfo;
+// get serviceID from store(state.conveyIDReducer)
+const mapStateToProps = (state:any)=>{
+    return{
+        serviceID:state.conveyIDReducer.serviceID
+    }
+}
+export default connect(mapStateToProps)(ServiceInfo);

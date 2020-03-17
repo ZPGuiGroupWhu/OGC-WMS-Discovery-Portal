@@ -10,7 +10,8 @@ import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
 import { pushKeyValueToArr } from "../../util/util";
 import * as menuListData from '../../assets/data/filterCondition.json';
 import { Layout, Input, Radio, Select, Icon, Menu} from 'antd';
-
+import {connect} from 'react-redux'
+import {conveyQueryPar} from '../../redux/action'
 
 const { SubMenu } = Menu;
 const { Content, Sider} = Layout;
@@ -21,6 +22,7 @@ const continent:any = [];
 
 interface Props {
   history: any;
+  dispatch: (acion:any)=>void;
 }
 
 interface State {
@@ -55,11 +57,6 @@ class Home extends React.Component<Props,State> {
 
   public componentDidMount(){
       this.initMap();
-  }
-
-// hide left sider
-  public toggle =()=>{
-    this.setState({collapsed:!this.state.collapsed});
   }
 
   public render() {
@@ -98,8 +95,8 @@ class Home extends React.Component<Props,State> {
                 </div>
               </Sider>
               <Content className="main_container_content">
-                <DataSearch queryPar={this.state.queryPar}/>
-                <LayerSearch queryPar={this.state.queryPar}/>
+                <DataSearch />
+                <LayerSearch />
               </Content>
           </Layout>
         </Content>
@@ -143,6 +140,7 @@ class Home extends React.Component<Props,State> {
             geoBoxStr: rangeStr,
             queryPar,             
           })
+          this.props.dispatch(conveyQueryPar(queryPar)); // dispatch conveyQueryPar action
       });
       locatioNMap.on(L.Draw.Event.DELETED, (e) => {
           const queryPar = self.state.queryPar;
@@ -151,6 +149,7 @@ class Home extends React.Component<Props,State> {
               geoBoxStr: this.geoBoxStrDefault,
               queryPar,
           })
+          this.props.dispatch(conveyQueryPar(queryPar)); // dispatch conveyQueryPar action
       })
   }
 
@@ -159,6 +158,7 @@ class Home extends React.Component<Props,State> {
     const queryPar = this.state.queryPar;
     queryPar.keywords = value;
     this.setState({queryPar});
+    this.props.dispatch(conveyQueryPar(queryPar)); // dispatch conveyQueryPar action
   }
 
   // switch to service data search page, handle the radio button background color
@@ -199,6 +199,7 @@ class Home extends React.Component<Props,State> {
     this.setState({
       queryPar
     })
+    this.props.dispatch(conveyQueryPar(queryPar)); // dispatch conveyQueryPar action
   }
 
   public setConditionPar = (par:string,result:any) => {
@@ -232,6 +233,10 @@ class Home extends React.Component<Props,State> {
       );
   }
 
+  // hide left sider
+  public toggle =()=>{
+    this.setState({collapsed:!this.state.collapsed});
+  }
 }
 
-export default Home;
+export default connect()(Home);

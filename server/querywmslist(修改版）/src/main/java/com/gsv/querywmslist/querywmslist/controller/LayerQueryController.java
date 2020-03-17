@@ -36,6 +36,7 @@ public class LayerQueryController {
         Page page= PageHelper.startPage(pageNum,pageSize);
         List<LayerList> layerListResult=layerQueryService.getlayerlist(keywords,topic,pageNum,pageSize);
         PageInfo<LayerList> layerListPageInfo=new PageInfo<>(layerListResult);
+
         LayerResult layerResult=new LayerResult();
         try {
             layerResult.setErrCode(1001);
@@ -43,6 +44,7 @@ public class LayerQueryController {
             layerResult.setErrCode(1002);
         }
         layerResult.setTotal((int) page.getTotal());
+        layerResult.setCurrentPageSize(layerListPageInfo.getPageSize());
         layerResult.setData(layerListResult);
         if(layerResult.getData()==null || layerResult.getTotal()==0){
             layerResult.setErrCode(1002);

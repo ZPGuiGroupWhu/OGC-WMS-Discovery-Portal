@@ -6,17 +6,19 @@ import {stringFilter, reqUrl, smoothscroll, delEmptyKey } from '../../util/util'
 import { IServInfo, IPageInfo, IQueryPar } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
 import { Layout, Icon, List, Rate, Statistic } from 'antd';
-
+import {connect}from 'react-redux'
+import {conveyServiceID} from '../../redux/action'
 
 const { Content } = Layout;
 
 interface Props {
     queryPar: IQueryPar;
+    dispatch: (action:any)=>void
 }
 
 interface State {
     dataList: object[];
-    queryPar: IQueryPar;
+    // queryPar: IQueryPar;
     listFootShow: string;
     listTotal: number;
     loading: boolean;
@@ -36,7 +38,7 @@ class DataSearch extends React.Component<Props, State> {
                 pageNum: 0,
                 pageSize: 10
             },
-            queryPar: this.props.queryPar,
+           // queryPar: this.props.queryPar,
         };
     }
 
@@ -44,8 +46,11 @@ class DataSearch extends React.Component<Props, State> {
         this.initData();
     }
 
-    public componentWillReceiveProps(){
-        this.queryWMSList(this.state.pageInfo,this.state.queryPar);
+    public componentWillReceiveProps(nextProps:any){
+        // this.setState({
+        //     loading: true
+        //   })
+        this.queryWMSList(this.state.pageInfo,nextProps.queryPar);
     }
 
     public render() {
@@ -71,7 +76,7 @@ class DataSearch extends React.Component<Props, State> {
                     footer={<div style={{"display":this.state.listFootShow}}><b>service list</b> footer part</div>}
                     renderItem={(item:IServInfo) => (
                         <List.Item key={item.id} className="main_container_content_list_item">
-                            <Link to="/serviceInfo" className="title" >{item.title ? item.title : 'null'}</Link>
+                            <Link to="/serviceInfo" className="title" onClick={()=>{this.props.dispatch(conveyServiceID(item.id))}}>{item.title ? item.title : 'null'}</Link>
                             <Rate disabled={true} allowHalf={true} value={4.5} className="rank"/><br/>
                             <span><Icon className="icon" type="compass"/>Location: {item.administrative_unit}</span>
                             <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {item.geoLocation[0]},{item.geoLocation[1]}</span><br/>
@@ -89,7 +94,7 @@ class DataSearch extends React.Component<Props, State> {
     // init service list by sending http request 
     public initData = () => {
         const self = this;
-        this.queryWMSList(this.state.pageInfo,this.state.queryPar).then(setLoading);
+        this.queryWMSList(this.state.pageInfo,this.props.queryPar).then(setLoading);
         function setLoading(){
             self.setState({
                 listFootShow: 'block',
@@ -104,8 +109,9 @@ class DataSearch extends React.Component<Props, State> {
         pageInfo.pageNum = cur-1;
         this.setState({
             pageInfo,
+            loading: true,
         })
-        this.queryWMSList(this.state.pageInfo,this.state.queryPar).then(smoothscroll);
+        this.queryWMSList(this.state.pageInfo,this.props.queryPar).then(smoothscroll);
     }
 
     // Function: send http request to get service list data
@@ -122,21 +128,29 @@ class DataSearch extends React.Component<Props, State> {
             // console.log(res)
             this.setState({
                 dataList: resBody.data,
-                listTotal: resBody.total
+                listTotal: resBody.total,
+                loading: false,
             })
         } catch(e) {
             alert(e.message)
         }
     }
 
-    // response function of clicking the service item title to turn to the individual service info page
-    // public async turnToServPage(){
-    //     const container = document.getElementsByClassName('content')[0];
-    //     container.className = 'content sr-only';
+    // // response function of clicking the service item title to turn to the individual service info page
+    // public turnToServPage(serviceid:number){
+    //     // const container = document.getElementsByClassName('content')[0];
+    //     // container.className = 'content sr-only';
     //     // window.location.reload();
+    //     // this.props.dispatch(conveyServiceID(serviceid));
     // }
-
 }
-  
-export default DataSearch;
+
+// get queryPar from store(state.conveyQueryParReducer)
+const mapStateToProps = (state:any) =>{
+   return {
+       queryPar: state.conveyQueryParReducer.queryPar,
+   }
+ }
+
+export default connect(mapStateToProps)(DataSearch);
   

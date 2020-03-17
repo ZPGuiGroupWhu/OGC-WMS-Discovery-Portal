@@ -6,11 +6,14 @@ import $req from '../../util/fetch';
 import {reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
 import { ILayer } from "../../util/interface";
+import {connect} from 'react-redux';
+import {conveyServiceID} from '../../redux/action'
 
 const { Content} = Layout;
 
 interface Props{
-    name: string;
+    layerID: number;
+    dispatch: (action:any) => void;
 }
 
 interface State{
@@ -89,7 +92,7 @@ class LayerInfo extends React.Component<Props,State>{
                 <b className="_info_container_header">LayerInfo</b><br/>
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_photo">
-                           <Card hoverable={true} cover={<img src={this.state.layerInfoData.url} />} bodyStyle={{padding:2, textAlign: "center"}}>
+                           <Card hoverable={true} cover={<img src={'data:image/png;base64,'+this.state.layerInfoData.photo} />} bodyStyle={{padding:2, textAlign: "center"}}>
                                 <span><b>Name:</b>{this.state.layerInfoData.name}</span><br/>
                                 <span><b>Title:</b>{this.state.layerInfoData.title}</span>
                           </Card>
@@ -151,7 +154,12 @@ class LayerInfo extends React.Component<Props,State>{
                             </Content>
                             <Content className="_info_container_section">
                                 <Content className="_info_container_section_content">
-                                      <Link to='/serviceInfo'><Button type='primary'>Learn more <Icon type='right'/></Button></Link>
+                                      <Link to='/serviceInfo'>
+                                          <Button type='primary' onClick={()=>{this.props.dispatch(conveyServiceID(this.state.layerInfoData.service["id"]))}}>
+                                              Learn more 
+                                              <Icon type='right'/>
+                                          </Button>
+                                      </Link>
                                 </Content>
                             </Content>
                     </Content>
@@ -163,7 +171,7 @@ class LayerInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryLayerInfo';
-        const url:string = reqUrl({id:2},baseUrl,'8080');
+        const url:string = reqUrl({id:this.props.layerID},baseUrl,'8080');
         try {
             const res: any = await $req(url,{})
             console.log(res)
@@ -176,4 +184,10 @@ class LayerInfo extends React.Component<Props,State>{
     }
 }
 
-export default LayerInfo;
+// get layerID from store(state.conveyIDReducer)
+const mapStateToProps = (state:any)=>{
+    return{
+        layerID:state.conveyIDReducer.layerID
+    }
+}
+export default connect(mapStateToProps) (LayerInfo);

@@ -47,6 +47,7 @@ export interface ILayer{
     id: number;
     keywords: string;
     name: string;
+    // opt: false; // describe whether the layer is selected or not
     photo: string;
     projection: string;
     title: string;

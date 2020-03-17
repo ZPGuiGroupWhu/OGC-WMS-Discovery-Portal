@@ -7,7 +7,11 @@
     "echarts-for-react": "^2.0.15-beta.0",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "react-scripts-ts": "3.1.0"
+    "react-redux": "^7.2.0",
+    "react-router-dom": "^4.3.1",
+    "react-scripts-ts": "3.1.0",
+    "redux": "^4.0.5",
+    "redux-persist": "^6.0.0"
   },
   "scripts": {
     "start": "react-scripts-ts start",

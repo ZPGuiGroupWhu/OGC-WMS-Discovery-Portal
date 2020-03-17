@@ -139,6 +139,24 @@
     background: $white;
     &_item{
         line-height: $header_font_size;
+        &_popover_description{
+            float: left;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            width: 300px;
+           .icon{
+            margin-right:  $bound_padding * 0.5;
+            }
+        }
+        &_popover_button{
+            float: left;
+            border: $bound_padding *0.3;
+            .button{
+                margin: $bound_padding * 0.5;
+                margin-top: 70px;
+            }
+        }
     }
 }
 
