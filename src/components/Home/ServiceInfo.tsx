@@ -89,13 +89,9 @@ class ServiceInfo extends React.Component<Props,State>{
     }
 
     public showphotos = (Layers: ILayer[]) => {
-        return (
-            <div>
-                {Layers.map((item:ILayer)=>{
-                    return this.showphoto(item); 
-                })}
-            </div>               
-        );
+        return ( Layers.map((item:ILayer)=>{
+            return this.showphoto(item); 
+        })) 
     }
 
     public render() {
