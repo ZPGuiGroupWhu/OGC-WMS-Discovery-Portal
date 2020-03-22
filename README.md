@@ -1,6 +1,6 @@
 ﻿#项目名称
 
-GeoGraphic Service Catalogue (以下简称为GSV) 目的是为了搭建一个Web平台，支持WMS（Web Map Service, 网络地图服务）的搜索查询，帮助用户对全球范围下WMS的基本概况和具体WMS的详细信息有一个大致的把握。
+Geographic Service Catalogue (以下简称为GSC)项目旨在搭建一个基于Web的地理信息资源检索平台，特别是支持WMS（Web Map Service, 网络地图服务）的多模态/跨模态搜索查询功能（如文本检索、时空查询、基于主题及提供者的检索，以及以图搜图等推荐功能），以帮助不同背景与领域的用户快速准确地找到感兴趣的WMS，同时对全球在线WMS资源的基本概况有一个大致的认识。
 
 #数据库下载
 
