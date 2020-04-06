@@ -4,10 +4,11 @@ import { Layout, Statistic,List,Card,Icon,Popover,Button,Carousel,Divider} from 
 import $req from '../../util/fetch';    
 import { IQueryPar, IPageInfo,ILayer } from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
+import IntensionExp from './IntentionExp'
 import {connect} from 'react-redux';
 import {conveyLayerID} from '../../redux/action'
 
-const { Content, Sider} = Layout;
+const { Content} = Layout;
 
 interface Props { 
   queryPar: IQueryPar;
@@ -46,7 +47,7 @@ class LayerSearch extends React.Component<Props,State> {
       optionList: [],
       pageInfo: {
           pageNum: 1,
-          pageSize: 64  // should be multiple of 8
+          pageSize: 48  // should be multiple of 8
       },
       // queryPar: this.props.queryPar,
       recycleList: [],
@@ -121,7 +122,7 @@ class LayerSearch extends React.Component<Props,State> {
                  <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>         
                  <div className="buttons">
                    <Button className="button" type="primary" disabled={this.state.bSideCollapsed?true:false} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
-                   <Button className="button" type="ghost">Summit</Button>
+                   <Button className="button" type="ghost" onClick={()=>{this.handleSummit()}}>Summit</Button>
                 </div>
                </div>
                <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
@@ -129,15 +130,7 @@ class LayerSearch extends React.Component<Props,State> {
                </div>
            </div>
            </Content>
-
-           <Sider 
-           collapsible={true} collapsed={this.state.rSideCollapsed}   collapsedWidth={10} reverseArrow={true} trigger={null}
-           className="main_container_rightsider"  width={300}
-           >
-              <div className="main_container_rightsider_trigger" onClick={this.toggle}>
-                <Icon  type={this.state.rSideCollapsed?"double-left":"double-right"} />
-               </div>
-            </Sider>
+           <IntensionExp collapsed={this.state.rSideCollapsed}/>
         </Layout>
        
     );
@@ -346,6 +339,14 @@ class LayerSearch extends React.Component<Props,State> {
       })
     }
 }
+
+  // handle Summit button in the shopping cart
+  public handleSummit = () =>{
+    smoothscroll();
+    this.setState({
+      rSideCollapsed: false,
+    })
+  }
 
   // foreach List to find whether the layer is existed or not
   public forList = (layer:ILayer,arraylist:ILayer[]) =>{
