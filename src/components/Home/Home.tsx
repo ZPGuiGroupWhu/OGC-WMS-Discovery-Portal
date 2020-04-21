@@ -81,7 +81,7 @@ class Home extends React.Component<Props,State> {
               width={300} className="main_container_leftsider"
               >
                 <div style={{display:this.state.collapsed?'none':'inline'}}>
-                  <div className="main_container_leftsider_icon"><Icon type="global"/><span className="title">Filte By Location</span></div>
+                  <div className="main_container_leftsider_icon"><Icon type="global"/><span className="title">Filter By Location</span></div>
                   <div className="main_container_leftsider_title"><Input disabled={true} value={this.state.geoBoxStr}/></div>
                   <div className="main_container_leftsider_map" id="location_map" />
                   <Menu className="main_container_leftsider_menu" defaultOpenKeys={['Topic']} mode="inline" multiple={true} > 
@@ -224,7 +224,7 @@ class Home extends React.Component<Props,State> {
       return (
           <SubMenu 
               className="main_container_sider_menu_item" key={menu.name}
-              title={<span><Icon className="icon" type={menu.icon} />Filte By {menu.name}</span>}
+              title={<span><Icon className="icon" type={menu.icon} />Filter By {menu.name}</span>}
           >
               {menu.children.map((item:ISubMenu)=>{
                   return this.addSubMenuItem(item); 

@@ -97,13 +97,13 @@ public class ImageDemo {
 
             conn = DBUtil.getConn();
             for(int m=0;m<layerList_temps1.size();m++) {
-                String sql = "select photo from photos where name=?";
+                String sql = "select Image from photos where LayerID=?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1, layerList_temps1.get(m).getId());
                 rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    InputStream in = rs.getBinaryStream("photo");
+                    InputStream in = rs.getBinaryStream("Image");
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                     byte[] buffer = new byte[100];
                     int n = 0;
@@ -171,13 +171,13 @@ public class ImageDemo {
 
             conn = DBUtil.getConn();
             for(int m=0;m<layerOrigins.size();m++) {
-                String sql = "select photo from photos where name=?";
+                String sql = "select Image from photos where LayerID=?";
                 ps = conn.prepareStatement(sql);//预编译，提高多次检索的效率
                 ps.setInt(1, layerOrigins.get(m).getId());//将id赋予sql检索语句中的第一个参数
                 rs = ps.executeQuery();//执行检索
 
                 while (rs.next()) {
-                    InputStream in = rs.getBinaryStream("photo");
+                    InputStream in = rs.getBinaryStream("Image");
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                     byte[] buffer = new byte[100];
                     int n = 0;
@@ -232,13 +232,13 @@ public class ImageDemo {
         try {
 
             conn = DBUtil.getConn();
-                String sql = "select photo from photos where name=?";
+                String sql = "select Image from photos where LayerID=?";
                 ps = conn.prepareStatement(sql);
                 ps.setInt(1, layerOrigin.getId());
                 rs = ps.executeQuery();
 
                 while (rs.next()) {
-                    InputStream in = rs.getBinaryStream("photo");
+                    InputStream in = rs.getBinaryStream("Image");
                     ByteArrayOutputStream output = new ByteArrayOutputStream();
                     byte[] buffer = new byte[100];
                     int n = 0;

@@ -15,7 +15,7 @@
                 { "name" : "Weather", "count" : 0 }
             ]
         },{
-            "name" : "Organization Type",
+            "name" : "Provider Type",
             "icon" : "tag",
             "children" : [
                 { "name" : "Survey", "count" : 0},
@@ -63,7 +63,7 @@
                 { "name" : "Africa", "count" : 0},
                 { "name" : "Antarctica", "count" : 0 },
                 { "name" : "Asia", "count" : 0 },
-                { "name" : "Europea", "count" : 0 },
+                { "name" : "Europe", "count" : 0 },
                 { "name" : "North America", "count" : 0 },
                 { "name" : "South America", "count" : 0 },
                 { "name" : "Oceania", "count" : 0 }

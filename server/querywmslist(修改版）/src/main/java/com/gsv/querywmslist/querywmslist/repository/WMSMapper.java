@@ -83,18 +83,18 @@ public interface WMSMapper {
             "</foreach> )" +
             "</if>)m  " +
             " right join"+
-            " (SELECT  service_id  from contactinformation WHERE 1=1"+
+            " (SELECT  ServiceID  from contactinformation WHERE 1=1"+
             "<if test='organizationArray[0]!=null '>  " +
             " and (<foreach collection='organizationArray' item='item' index='index' separator='and'> " +
-            " LOWER(Organization) like CONCAT('%',#{item},'%')" +
+            "  MATCH (Organization) AGAINST (#{item})" +
             "</foreach> )" +
             "</if>  " +
             "<if test='organizationTypeArray[0]!=null '>  " +
             " and (<foreach collection='organizationTypeArray' item='item' index='index' separator='and'> " +
-            " LOWER(Organization) like CONCAT('%',#{item},'%')" +
+            " MATCH (Organization) AGAINST (#{item})" +
             "</foreach> )" +
             "</if> )n " +
-            " on m.id=n.service_id"+
+            " on m.id=n.ServiceID"+
             " ORDER BY m.id )x where x.id is not null" +
             "</script>")
     List<WMSList> getWMSListResult(@Param("keywordsNew") String keywordsNew, @Param("bound") float[] bound, @Param("continentNew") String continentNew,@Param("topicArray")String [] topicArray,@Param("organizationArray")String [] organizationArray,@Param("organizationTypeArray")String [] organizationTypeArray, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);

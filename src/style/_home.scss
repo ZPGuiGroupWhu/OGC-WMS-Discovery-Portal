@@ -209,6 +209,7 @@
     align-items: flex-end;
     &_value{
         padding-right: $bound_padding;
+        margin-right: $bound_padding;
     }
     span{
         padding-bottom: 5px;

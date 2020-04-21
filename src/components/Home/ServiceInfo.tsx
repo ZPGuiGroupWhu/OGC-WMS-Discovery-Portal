@@ -1,7 +1,7 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';
-import { Layout, Icon, Card } from 'antd';
+import { Layout, Icon, Card,List } from 'antd';
 import $req from '../../util/fetch';
 import {reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
@@ -75,25 +75,6 @@ class ServiceInfo extends React.Component<Props,State>{
     }
     
 
-    public showphoto = (Layer: ILayer) => {
-        return (
-        <div key={Layer.id} className="responsive">
-            <Link to='/layerInfo'onClick={()=>{this.props.dispatch(conveyLayerID(Layer.id))}}>
-               <Card hoverable={true} cover={<img src={'data:image/png;base64,'+Layer.photo} />} bodyStyle={{padding:2, textAlign: "center"}}>
-                 <b>Keywords：</b><span>{Layer.keywords ? Layer.keywords : 'null'}</span><br/>
-                <b>Title：</b><span>{Layer.title ? Layer.title : 'null'}</span>
-              </Card>
-            </Link>
-        </div>     
-        );
-    }
-
-    public showphotos = (Layers: ILayer[]) => {
-        return ( Layers.map((item:ILayer)=>{
-            return this.showphoto(item); 
-        })) 
-    }
-
     public render() {
         return (
             <Layout className="_info">
@@ -138,7 +119,7 @@ class ServiceInfo extends React.Component<Props,State>{
                     <Content className="_info_container">
                         <b className="_info_container_header">Layer Info</b><br/>
                         <Content className="_info_container_section_content">
-                            {this.showphotos(this.state.servInfoData.layer)}
+                            {this.layerInfo(this.state.servInfoData.layer)}
                         </Content> 
                     </Content>
                 </Content>  
@@ -146,6 +127,54 @@ class ServiceInfo extends React.Component<Props,State>{
         );
     }
 
+  
+    public layerInfo = (layers:ILayer[]) =>{
+        const col=6;  // every row has six picture
+        const round=Math.floor(layers.length/col);
+        const remainder=layers.length%col;
+        const data:ILayer[][]=[];
+         for(let i=0;i<round;++i){
+            data[i]=[]
+            for(let k=0;k<col;++k){
+                data[i][k]=layers[i*col+k];
+            }
+          }
+          if (remainder!==0){
+            data[round]=[]
+            for(let m=0;m<remainder;++m){
+                 data[round][m]=layers[round*col+m]
+             }
+          }
+        return (
+            <List
+            itemLayout="vertical"
+            size="small"
+            dataSource={data}
+            renderItem={(item:ILayer[])=>(
+               <List.Item>
+                   <List
+                   className="main_container_content_childimglist"
+                   itemLayout="horizontal"
+                   size="small"
+                   grid={{gutter:25,column:6}}
+                   dataSource={item}
+                   renderItem={(childItem:ILayer) => (
+                       <List.Item key={childItem.id} className="main_container_content_imglist_item">
+                           <Link to='/layerInfo'>
+                            <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.props.dispatch(conveyLayerID(childItem.id))}}
+                                  bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
+                                    {childItem.name}
+                            </Card>
+                            </Link>
+                       </List.Item>
+                      )}
+                   />
+               </List.Item>
+                )}
+         />
+          )
+    }
+    
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryWMSInfo';

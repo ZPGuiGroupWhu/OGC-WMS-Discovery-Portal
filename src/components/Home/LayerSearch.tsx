@@ -29,6 +29,7 @@ interface State {
    // queryPar: IQueryPar;
    recycleList: ILayer[];
    rSideCollapsed: boolean;
+   time: number;
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -47,11 +48,12 @@ class LayerSearch extends React.Component<Props,State> {
       optionList: [],
       pageInfo: {
           pageNum: 1,
-          pageSize: 48  // should be multiple of 8
+          pageSize: 48// should be multiple of 8
       },
       // queryPar: this.props.queryPar,
       recycleList: [],
       rSideCollapsed: true,
+      time: 0,
     };
   }
 
@@ -73,8 +75,8 @@ class LayerSearch extends React.Component<Props,State> {
       <Layout className="main_container_content_imglist sr-only">
         <Content className="main_container_content">
           <div className="main_container_content_imglist_statis">
-             <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal}/>
-             <span> layer images have been found. </span>
+             <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
+             <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
           </div>
           <List
              className="main_container_content_imglist"
@@ -384,9 +386,12 @@ class LayerSearch extends React.Component<Props,State> {
     const baseUrl:string = 'search/querylayerlist';
     const reqPar:object = Object.assign(pagePar,queryPar);
     const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8080');
+    let requestTime:number=0;  // record request time
     console.log(url)
     try {
+        const timer=setInterval(()=>{++requestTime},10)
         const res: any = await $req(url, {})
+        clearInterval(timer);
         const resBody:any  = JSON.parse(res)
         this.setState({
             currentSize: resBody.currentPageSize,
@@ -394,6 +399,7 @@ class LayerSearch extends React.Component<Props,State> {
             listTotal: resBody.total,
             isUpdate: true,
             loading: false,
+            time: requestTime*0.01,
         })
     } catch(e) {
         alert(e.message)

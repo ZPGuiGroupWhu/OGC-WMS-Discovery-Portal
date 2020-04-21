@@ -23,6 +23,7 @@ interface State {
     listTotal: number;
     loading: boolean;
     pageInfo: IPageInfo;
+    time: number;
 }
 
 class DataSearch extends React.Component<Props, State> {
@@ -39,6 +40,7 @@ class DataSearch extends React.Component<Props, State> {
                 pageSize: 10
             },
            // queryPar: this.props.queryPar,
+           time: 0,
         };
     }
 
@@ -57,8 +59,8 @@ class DataSearch extends React.Component<Props, State> {
         return (
             <Content>
                 <div className="main_container_content_statis">
-                    <Statistic className="main_container_content_statis_value" value={this.state.listTotal}/>
-                    <span> services have been found.</span>
+                    <Statistic className="main_container_content_statis_value" value={this.state.listTotal}  suffix="services have been found."/>
+                    <Statistic className="main_container_content_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
                 </div>
                 <List
                     className="main_container_content_list"
@@ -121,15 +123,19 @@ class DataSearch extends React.Component<Props, State> {
         const baseUrl:string = 'search/queryWMSList';
         const reqPar:object = Object.assign(pagePar,queryPar);
         const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8080');
+        let requestTime:number=0;  // record request time
         console.log(url)
         try {
+            const timer=setInterval(()=>{++requestTime},10);
             const res: any = await $req(url, {})
+            clearInterval(timer);
             const resBody:any  = JSON.parse(res)
             // console.log(res)
             this.setState({
                 dataList: resBody.data,
                 listTotal: resBody.total,
                 loading: false,
+                time: requestTime*0.01,
             })
         } catch(e) {
             alert(e.message)

@@ -2,6 +2,7 @@ import * as React from 'react';
 import '../../style/_home.scss'; 
 import {SketchPicker} from 'react-color';
 import { Layout,Icon,Radio,Switch,Select,Tag,Button,Popover,Card,Tooltip,Checkbox} from 'antd';
+import WordCloud from '../../assets/charts/WordCloud'
 
 declare const require:any;
 const {Option} =  Select;
@@ -92,6 +93,17 @@ const MyIcon=Icon.createFromIconfontCN({
                    })}   
                  </div>
              </div>
+
+             <div className="main_container_rightsider_body_list">
+               <span className="span">Keywords:</span><br/>
+               <WordCloud/>
+             </div>
+
+             <div className="main_container_rightsider_body_list">
+               <span className="span">Production:</span><br/>
+               <Tag className="tag" color="#1890ff">{this.state.settingPar.generation}</Tag>
+             </div>
+
              <div className="main_container_rightsider_body_list">
                <span className="span">Topic:</span><br/>
                <div className="iconList">
@@ -105,10 +117,7 @@ const MyIcon=Icon.createFromIconfontCN({
                )})}
                </div>
              </div>
-             <div className="main_container_rightsider_body_list">
-               <span className="span">Generation:</span><br/>
-               <Tag className="tag" color="#1890ff">{this.state.settingPar.generation}</Tag>
-             </div>
+
              <div className="main_container_rightsider_body_list">
                <span className="span">Style:</span><br/>
                {this.state.settingPar.style.length===0?
@@ -121,14 +130,12 @@ const MyIcon=Icon.createFromIconfontCN({
                    </Card> 
                )})}
              </div>
+
              <div className="main_container_rightsider_body_list">
                <span className="span">Shape:</span><br/>
                
              </div>
-             <div className="main_container_rightsider_body_list">
-               <span className="span">Statistic Information:</span><br/>
-               
-             </div>
+
            </div>
       )
     }
@@ -158,20 +165,7 @@ const MyIcon=Icon.createFromIconfontCN({
       </div>
 
       <div className="main_container_rightsider_body_setting">
-          <span className="span">Topic:</span><br/>  
-              <Select mode="multiple" className="select" defaultValue={this.state.settingPar.topic} optionLabelProp="label"
-                 placeholder="Select a Topic" onChange={this.onTopicChange}>
-                {Topic.map((item:string)=>{
-                   return(
-                     <Option key={item} label={<MyIcon style={{fontSize:20, marginRight:3}} type={"icon-"+item}/>} value={item} style={{fontSize:16}}>
-                     <MyIcon style={{fontSize:20, marginRight:5}} type={"icon-"+item}/>{item}
-                     </Option>)
-                })}
-              </Select>
-      </div>
-
-      <div className="main_container_rightsider_body_setting">
-         <span className="span">Generation:</span><br/>
+         <span className="span">Production:</span><br/>
          <Radio.Group className="radioGroup" value={this.state.settingPar.generation} onChange={this.onSourceChange}>
            {Generation.map((item:string,index:number)=>{
             return (    
@@ -184,6 +178,21 @@ const MyIcon=Icon.createFromIconfontCN({
             )})}
          </Radio.Group>
       </div>
+      
+      <div className="main_container_rightsider_body_setting">
+          <span className="span">Topic:</span><br/>  
+              <Select mode="multiple" className="select" defaultValue={this.state.settingPar.topic} optionLabelProp="label"
+                 placeholder="Select a Topic" onChange={this.onTopicChange}>
+                {Topic.map((item:string)=>{
+                   return(
+                     <Option key={item} label={<MyIcon style={{fontSize:20, marginRight:3}} type={"icon-"+item}/>} value={item} style={{fontSize:16}}>
+                     <MyIcon style={{fontSize:20, marginRight:5}} type={"icon-"+item}/>{item}
+                     </Option>)
+                })}
+              </Select>
+      </div>
+
+      
       <div className="main_container_rightsider_body_setting">
          <span className="span">Style:</span><br/>
          

@@ -77,13 +77,13 @@ public class wmsController {
             @ApiImplicitParam(name = "continent",value = "输入所在大洲",required = false),
             @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
             @ApiImplicitParam(name = "organization",value = "输入组织",required = false),
-            @ApiImplicitParam(name = "organizationType",value = "输入组织类型",required = false),
+            @ApiImplicitParam(name = "organization_type",value = "输入组织类型",required = false),
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
             @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
-    public String getWMSList(String keywords, float[] bound, String continent, String topic,String organization,String organizationType, Integer pageNum, Integer pageSize){
+    public String getWMSList(String keywords, float[] bound, String continent, String topic,String organization,String organization_type, Integer pageNum, Integer pageSize){
          PageHelper.startPage(pageNum,pageSize);
-        List<WMSList> data=wmsService.getWMSListResult(keywords,bound,continent,topic,organization,organizationType,pageNum,pageSize);
+        List<WMSList> data=wmsService.getWMSListResult(keywords,bound,continent,topic,organization,organization_type,pageNum,pageSize);
         PageInfo<WMSList> wmsResultPageInfo=new PageInfo<>(data);
         WMSResult wmsResult=new WMSResult();
         List<WMSList2>list2s=new ArrayList<>();
