@@ -19,6 +19,9 @@ const topic:any = [];
 const organization:any = [];
 const organizationType:any = [];
 const continent:any = [];
+const MyIcon=Icon.createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_1728748_zijylit9brj.js', // use some icon from iconfont
+});
 
 interface Props {
   history: any;
@@ -215,7 +218,7 @@ class Home extends React.Component<Props,State> {
   // init to render condition selector menu (submenu item)
   public addSubMenuItem = (subMenu: ISubMenu) => {
     return (
-        <Menu.Item key={subMenu.name} onClick = { this.handleMenuClick}>{subMenu.name}</Menu.Item>                
+        <Menu.Item key={subMenu.name} onClick = { this.handleMenuClick}><MyIcon className="myIcon" type={this.handleMyIconType(subMenu.name)}/>{subMenu.name}</Menu.Item>                
     )
   }
 
@@ -223,7 +226,7 @@ class Home extends React.Component<Props,State> {
   public addMenuItem = (menu: IMenu) => {
       return (
           <SubMenu 
-              className="main_container_sider_menu_item" key={menu.name}
+              className="main_container_leftsider_menu_item" key={menu.name}
               title={<span><Icon className="icon" type={menu.icon} />Filter By {menu.name}</span>}
           >
               {menu.children.map((item:ISubMenu)=>{
@@ -233,6 +236,14 @@ class Home extends React.Component<Props,State> {
       );
   }
 
+  // replace " " with "_" in the submenu.name to show Icon
+  public handleMyIconType =(name:string)=>{
+    const type=name;
+    if(type.indexOf(" ")!==-1){
+      return "icon-"+type.replace(" ","_");
+    }
+    return "icon-"+type;
+  }
   // hide left sider
   public toggle =()=>{
     this.setState({collapsed:!this.state.collapsed});

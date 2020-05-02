@@ -28,13 +28,14 @@ public class LayerQueryController {
     @ApiOperation(value = "根据关键词及主题进行查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "keywords",value = "输入与Name，Title，Abstract，Attribution，Keywords匹配的关键词",required = false),
+            @ApiImplicitParam(name = "bound",value = "输入经纬度范围",required = false),
             @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
             @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
-    public String getLayerList(String keywords,String topic,Integer pageNum, Integer pageSize){
+    public String getLayerList(String keywords,float[] bound, String topic,Integer pageNum, Integer pageSize){
         Page page= PageHelper.startPage(pageNum,pageSize);
-        List<LayerList> layerListResult=layerQueryService.getlayerlist(keywords,topic,pageNum,pageSize);
+        List<LayerList> layerListResult=layerQueryService.getlayerlist(keywords,bound,topic,pageNum,pageSize);
         PageInfo<LayerList> layerListPageInfo=new PageInfo<>(layerListResult);
 
         LayerResult layerResult=new LayerResult();

@@ -1,0 +1,36 @@
+[
+    {
+       "name":"Topic",
+       "children" : [
+        { "name" : "Agriculture" },
+        { "name" : "Biodiversity" },
+        { "name" : "Climate" },
+        { "name" : "Disaster" },
+        { "name" : "Ecosystem" },
+        { "name" : "Energy" },
+        { "name" : "Geology" },
+        { "name" : "Health" },
+        { "name" : "Water" },
+        { "name" : "Weather"}
+        ]
+    },
+    {
+        "name":"Production",
+        "children" : [
+         { "name" : "Camera" },
+         { "name" : "Computer" },
+         { "name" : "Paper Scanner" }
+         ]
+    },
+    {
+        "name":"Style",
+        "children" : [
+         { "name" : "Chart" },
+         { "name" : "Line" },
+         { "name" : "Point" },
+         { "name" : "Satellite" },
+         { "name" : "Scope" },
+         { "name" : "Text" }
+         ]
+    }
+]

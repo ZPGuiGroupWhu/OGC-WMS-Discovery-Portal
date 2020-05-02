@@ -10,79 +10,79 @@ export default class WordCloud extends React.Component{
         },
         {
         name: 'stream',
-        value: 95
+        value: 90
         },
         {
         name: 'ocean',
-        value: 95
+        value: 90
         },
         {
         name: 'rain',
-        value: 90
+        value: 80
         },
         {
         name: 'snow',
-        value: 90
+        value: 80
         },
         {
         name: 'undergroudWater',
-        value: 85
+        value: 70
         },
         {
         name: 'surfaceWater',
-        value: 85
+        value: 70
         },
         {
         name: 'ice',
-        value: 80
+        value: 60
         },
         {
         name: 'flood',
-        value: 80
+        value: 60
         },
         {
         name: 'sea',
-        value: 75
+        value: 50
         },
         {
         name: 'river',
-        value: 75
+        value: 50
         },
         {
         name: 'vapor',
-        value: 70
+        value: 50
         },
         {
         name: 'cloud',
-        value: 70
+        value: 40
         },
         {
         name: 'waterfall',
-        value: 65
+        value: 40
         },
         {
         name: 'brook',
-        value: 65
+        value: 40
         },
         {
         name: 'pond',
-        value: 60
+        value: 30
         },
         {
         name: 'fog',
-        value: 60
+        value: 30
         },
         {
         name: 'lake',
-        value: 55
+        value: 30
         },
         {
         name: 'sewage',
-        value: 55
+        value: 20
         },
         {       
         name: 'pool',
-        value: 50
+        value: 20
         },]
 
     public componentDidMount() {

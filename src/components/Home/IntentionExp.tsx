@@ -7,13 +7,14 @@ import WordCloud from '../../assets/charts/WordCloud'
 declare const require:any;
 const {Option} =  Select;
 const { Sider} = Layout;
-const Topic =["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water"];
+
+const Topic =["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"];
 const Generation=["Camera","Computer","Paper Scanner"];
 const Style=["Chart","Line","Point","Satellite","Scope","Text"];
 const generationImg=Generation.map((item:string)=>require("../../assets/img/generation/"+item+".jpg"));
 const styleImg=Style.map((item:string)=>require("../../assets/img/style/"+item+".jpg"));
 const MyIcon=Icon.createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1728748_7bxuuq9h31d.js', // use some icon from iconfont
+  scriptUrl: '//at.alicdn.com/t/font_1728748_zijylit9brj.js', // use some icon from iconfont
 });
 
 
@@ -131,10 +132,10 @@ const MyIcon=Icon.createFromIconfontCN({
                )})}
              </div>
 
-             <div className="main_container_rightsider_body_list">
+             {/* <div className="main_container_rightsider_body_list">
                <span className="span">Shape:</span><br/>
                
-             </div>
+             </div> */}
 
            </div>
       )
@@ -186,7 +187,7 @@ const MyIcon=Icon.createFromIconfontCN({
                 {Topic.map((item:string)=>{
                    return(
                      <Option key={item} label={<MyIcon style={{fontSize:20, marginRight:3}} type={"icon-"+item}/>} value={item} style={{fontSize:16}}>
-                     <MyIcon style={{fontSize:20, marginRight:5}} type={"icon-"+item}/>{item}
+                     <MyIcon style={{fontSize:25, marginRight:5}} type={"icon-"+item}/>{item}
                      </Option>)
                 })}
               </Select>
@@ -205,10 +206,10 @@ const MyIcon=Icon.createFromIconfontCN({
             )})}
          </Checkbox.Group>
       </div>
-      <div className="main_container_rightsider_body_setting">
+      {/* <div className="main_container_rightsider_body_setting">
          <span className="span">Shape:</span><br/>
          
-      </div>
+      </div> */}
     </div>
       )}
   }

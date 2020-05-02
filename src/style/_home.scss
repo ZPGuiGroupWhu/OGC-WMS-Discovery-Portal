@@ -68,6 +68,10 @@
                             margin-left: 0 !important;
                             font-weight: bold;
                         }
+                        .myIcon{
+                            font-size: 25px;
+                            margin-right: $bound_padding*0.3;
+                        }
                     }
                 }
                 &_trigger{

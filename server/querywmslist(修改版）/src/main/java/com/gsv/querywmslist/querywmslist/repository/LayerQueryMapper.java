@@ -14,12 +14,15 @@ public interface LayerQueryMapper {
             "<if test='keywordsNew!=null and  keywordsNew != \"\" ' >" +
             " AND MATCH ( Title, Abstract, `Name`, Attribution, Keywords, URL ) AGAINST ( #{keywordsNew} )" +
             "</if>  " +
+            "<if test='polygon!=\"\" '>" +
+            "and MBRCONTAINS (Box,ST_GeomFromText('${polygon}',4326))" +
+            "</if>" +
             "<if test='topicArray[0]!=null '>  " +
             "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
-            "LOWER(Topic) like CONCAT('%',#{item},'%')" +
+            "LOWER(Topic) = #{item}" +
             "</foreach> )" +
             "</if>  " +
             "ORDER BY id " +
             "</script>")
-    List<LayerList_temp> getlayerlist(@Param("keywordsNew") String keywordsNew, @Param("topicArray")String [] topicArray, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
+    List<LayerList_temp> getlayerlist(@Param("keywordsNew") String keywordsNew, @Param("polygon") String Polygon, @Param("topicArray")String [] topicArray, @Param("pageNum") Integer pageNum, @Param("pageSize") Integer pageSize);
 }

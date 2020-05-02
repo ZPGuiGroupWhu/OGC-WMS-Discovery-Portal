@@ -48,7 +48,7 @@ class LayerSearch extends React.Component<Props,State> {
       optionList: [],
       pageInfo: {
           pageNum: 1,
-          pageSize: 48// should be multiple of 8
+          pageSize: 24// should be multiple of 8
       },
       // queryPar: this.props.queryPar,
       recycleList: [],

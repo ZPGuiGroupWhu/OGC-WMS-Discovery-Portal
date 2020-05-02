@@ -14,21 +14,39 @@ import java.util.List;
 public class LayerQueryService {
     @Autowired
     LayerQueryMapper layerQueryMapper;
-    public List<LayerList>  getlayerlist(String keywords,String topic,Integer pageNum, Integer pageSize){
+    public List<LayerList>  getlayerlist(String keywords,float[] bound,String topic,Integer pageNum, Integer pageSize){
         List<LayerList>layerLists=new ArrayList<>();
         List<LayerList_temp> layerList_temps1=new ArrayList<>();
         List<LayerList_temp> layerList_temps=new ArrayList<>();
         String keywordsNew=new String();
+        String Polygon=new String();
+
         if(keywords!=null & keywords!="")
         {  keywordsNew=keywords.toLowerCase();}
         String topicNew=new String();
+
         if(topic!=null & topic!="")
         {topicNew=topic.toLowerCase();}
         String [] topicArray=new String[100];
         if(topic!=null){
             topicArray=topicNew.split(",");
         }
-        layerList_temps1=layerQueryMapper.getlayerlist(keywordsNew,topicArray,pageNum,pageSize);
+
+        if(bound!=null){
+            float maxLat,maxLon,minLat,minLon;
+            minLon=bound[0];maxLon=bound[1];
+            minLat=bound[2];maxLat=bound[3];
+            Polygon="Polygon(("+maxLat+" "+minLon+","+
+                    maxLat+" "+maxLon+","+
+                    minLat+" "+maxLon+","+
+                    minLat+" "+minLon+","+
+                    maxLat+" "+minLon+"))";
+            //从左上角开始顺时针写矩形，矩形第一个点和最后一个点必须一致
+        }else{
+            Polygon="";
+        }
+
+        layerList_temps1=layerQueryMapper.getlayerlist(keywordsNew,Polygon,topicArray,pageNum,pageSize);
         layerList_temps= ImageDemo.readLayerList(layerList_temps1);
         for(LayerList_temp layerList_temp:layerList_temps){
             LayerList layerList=new LayerList();

@@ -4,7 +4,7 @@ Geographic Service Catalogue (以下简称为GSC)项目旨在搭建一个基于W
 
 #数据库下载
 
-下载WMS Portal开发群里最新的layerlist.sql和wms.sql
+百度网盘：https://pan.baidu.com/s/1Jj3hxJ8zXjukMFJso3hWMA   提取码：kjkl
 
 #项目地址
 

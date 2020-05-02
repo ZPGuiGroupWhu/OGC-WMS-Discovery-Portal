@@ -71,15 +71,15 @@ public interface WMSMapper {
             " and MATCH (Title,Abstract,url,Keywords) AGAINST (#{keywordsNew}) " +
             "</if>  " +
             "<if test='bound!=null ' > " +
-            " and ( Latitude BETWEEN #{bound[0]} AND #{bound[1]} " +
-            "AND Longitude BETWEEN #{bound[2]} AND #{bound[3]} )" +
+            " and ( Latitude BETWEEN #{bound[2]} AND #{bound[3]} " +
+            "AND Longitude BETWEEN #{bound[0]} AND #{bound[1]} )" +
             "</if>  " +
             "<if test='continentNew !=null and  continentNew!=\"\" '>  " +
             " and LOWER(Continent)=#{continentNew} " +
             "</if>  " +
             "<if test='topicArray[0]!=null '>  " +
             "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
-            "LOWER(Topic) like CONCAT('%',#{item},'%')" +
+            "LOWER(Topic) = #{item}" +
             "</foreach> )" +
             "</if>)m  " +
             " right join"+
