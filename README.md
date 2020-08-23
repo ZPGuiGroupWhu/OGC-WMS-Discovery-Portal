@@ -41,7 +41,8 @@ https://github.com/ZPGuiGroupWhu/geographic-services-catalogue
 **样式修改**
 前端样式配置：进入node_modules/react-script-ts/config/webpack.config.dev.js目录下
 在130行添加修改如下代码
-  module: {
+··· 
+module: {
       strictExportPresence: true,
       rules: [
         {
@@ -55,7 +56,9 @@ https://github.com/ZPGuiGroupWhu/geographic-services-catalogue
           test: /\.scss$/,
           loader: ['style-loader','css-loader','sass-loader'],
         },`
+···
 在238行添加修改如下代码
+···
   {
               // Exclude `js` files to keep "css" loader working as it injects
               // its runtime that would otherwise processed through "file" loader.
@@ -67,5 +70,6 @@ https://github.com/ZPGuiGroupWhu/geographic-services-catalogue
                 name: 'static/media/[name].[hash:8].[ext]',
               },
             },
+···
 
 
