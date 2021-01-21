@@ -19,7 +19,7 @@ public interface LayerQueryMapper {
             "</if>" +
             "<if test='topicArray[0]!=null '>  " +
             "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
-            "LOWER(Topic) = #{item}" +
+            "LOWER(Topic) like CONCAT('%',#{item},'%')" +
             "</foreach> )" +
             "</if>  " +
             "ORDER BY id " +

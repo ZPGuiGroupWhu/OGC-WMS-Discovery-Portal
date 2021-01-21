@@ -171,7 +171,7 @@ class LayerInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryLayerInfo';
-        const url:string = reqUrl({id:this.props.layerID},baseUrl,'8080');
+        const url:string = reqUrl({id:this.props.layerID},baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
             console.log(res)

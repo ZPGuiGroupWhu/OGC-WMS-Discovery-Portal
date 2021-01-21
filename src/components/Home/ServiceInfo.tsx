@@ -178,7 +178,7 @@ class ServiceInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryWMSInfo';
-        const url:string = reqUrl({id:this.props.serviceID},baseUrl,'8080');
+        const url:string = reqUrl({id:this.props.serviceID},baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
             // console.log(res)

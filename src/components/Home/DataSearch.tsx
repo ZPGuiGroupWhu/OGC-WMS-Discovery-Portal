@@ -49,10 +49,13 @@ class DataSearch extends React.Component<Props, State> {
     }
 
     public componentWillReceiveProps(nextProps:any){
-        // this.setState({
-        //     loading: true
-        //   })
-        this.queryWMSList(this.state.pageInfo,nextProps.queryPar);
+        this.setState({
+            loading: true,
+            pageInfo:{
+                pageNum: 1,
+                pageSize: 10
+            }
+          },()=>{this.queryWMSList(this.state.pageInfo,nextProps.queryPar)})
     }
 
     public render() {
@@ -67,6 +70,7 @@ class DataSearch extends React.Component<Props, State> {
                     itemLayout="vertical"
                     size="large"
                     pagination={{
+                        current: this.state.pageInfo.pageNum,
                         hideOnSinglePage: true,
                         onChange: this.handlePaginate,
                         pageSize: this.state.pageInfo.pageSize,
@@ -122,7 +126,7 @@ class DataSearch extends React.Component<Props, State> {
     public async queryWMSList(pagePar:object, queryPar:object) {
         const baseUrl:string = 'search/queryWMSList';
         const reqPar:object = Object.assign(pagePar,queryPar);
-        const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8080');
+        const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8081');
         let requestTime:number=0;  // record request time
         console.log(url)
         try {

@@ -53,15 +53,15 @@ const MyIcon=Icon.createFromIconfontCN({
     }
 
   public componentWillReceiveProps =()=>{
-    this.setState({
-      collapsed: false,
-    })
+    // this.setState({
+    //   collapsed: false,
+    // })
   }
 
   public render(){
     return(
         <Sider  collapsible={true} collapsed={this.state.collapsed}   collapsedWidth={10} reverseArrow={true} trigger={null}
-                className="main_container_rightsider"  width={300}>
+                className="main_container_rightsider"  width={'300'}>
           <div style={{display:this.state.collapsed?'none':'inline'}}>
             <div className="main_container_rightsider_head">
               <Icon className="icon" type="bar-chart" />

@@ -27,7 +27,7 @@
         padding: $bound_padding_tb;
         height: 100%;
         background-color: $white;
-        // leftsider condition selector container 
+        // leftsider condition selector container
         &_leftsider{
             background-color: $white;
             border-right: $border_right;
@@ -86,7 +86,7 @@
             position: relative;
         }
 
-        // rightsider condition selector container 
+        // rightsider condition selector container
         &_rightsider{
             background-color: $white;
             border-left: $border_left;
@@ -143,7 +143,7 @@
                         margin: $bound_padding*0.3 30px;
                         font-size: 16px;
                     }
-                    
+
                 }
                 &_setting{
                     margin-bottom: $bound_padding*0.5;
@@ -192,17 +192,37 @@
                             margin: $bound_padding*0.5 $bound_padding;
                             font-size: $nav_font_size;
                             width: 200px;
-                            float: left;       
+                            float: left;
                         }
                     }
 
                 }
-                
+
             }
             &_trigger{
                 text-align: center;
                 cursor: pointer;
             }
+        }
+
+        // summit modal style
+        &_modal{
+            &_title{
+                .icon{
+                    font-size: $header_font_size
+                }
+                .span{
+                    margin-left: $bound_padding * 0.5;
+                    font-weight: bold;
+                    font-size: $nav_font_size*6;
+                }
+            }
+
+            .icon_small{
+                font-size: $nav_font_size;
+                margin-left:  $bound_padding * 0.5;
+            }
+
         }
     }
 }
@@ -294,19 +314,19 @@
             margin-left: $bound_padding * 0.5;
             font-weight: bold;
             font-size: $nav_font_size*1.3;
-        } 
+        }
         .value{
             float: left;
         }
         .buttons{
             position: relative;
            // margin-right: $bound_padding;
-            left: 70%;
+            left: 60%;
            button{
              margin-right: $bound_padding*2;
-           } 
+           }
         }
- 
+
     }
     &_body{
         padding:$bound_padding * 0.5;
@@ -318,6 +338,28 @@
                 background:#8395a7;
                 overflow: hidden;
                 padding: $bound_padding * 0.5;
+            }
+            // style for picture wall in the shopping cart
+            .ant-upload-list-picture-card .ant-upload-list-item {
+                // height:  100%;
+                width: 100%;
+              }
+            .ant-upload-list-picture-card-container{
+                // height: 80%;
+                width: 15%;
+                margin: 0 10px 10px 0;
+            }
+            .ant-upload.ant-upload-select-picture-card{
+
+                width: 15%;
+            }
+            .ant-upload-select-picture-card i {
+                font-size: 32px;
+                color: #999;
+              }
+            .ant-upload-select-picture-card .ant-upload-text {
+                margin-top: 8px;
+                color: #666;
             }
         }
     }
@@ -393,44 +435,44 @@
                 div.img {
                     border: 1px solid #ccc;
                 }
-                
+
                 div.img:hover {
                     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
                 }
-                
+
                 div.img img {
                     width: 100%;
                     height: auto;
                 }
-                
+
                 div.desc {
                     padding: 15px;
                     text-align: center;
                 }
-                
+
                 * {
                     box-sizing: border-box;
                 }
-                
+
                 .responsive {
                     padding: 20px 80px;
                     float: left;
                     width: 49.99999%;
                 }
-                
+
                 @media only screen and (max-width: 700px){
                     .responsive {
                         width: 49.99999%;
                         margin: 6px 0;
                     }
                 }
-                
+
                 @media only screen and (max-width: 500px){
                     .responsive {
                         width: 100%;
                     }
                 }
-                
+
                 .clearfix:after {
                     content: "";
                     display: table;
@@ -447,5 +489,26 @@
     .okBtn, .cancelBtn{
         left: 100px;
         margin: 5px 0px 0px 10px;
+
+    }
+}
+
+ // style for modal
+.main_container_modal{
+    &_title{
+        .icon{
+            font-size: $nav_font_size*1.2;
+        }
+        .span{
+            margin-left: $bound_padding * 0.5;
+            font-weight: bold;
+            font-size: $nav_font_size*1.2 // $nav_font_size*1.5;
+        }
+    }
+    &_body{
+        font-size: $nav_font_size;
+        .sub_title{
+            font-weight: bold;
+        }
     }
 }

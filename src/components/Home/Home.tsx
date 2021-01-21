@@ -81,7 +81,7 @@ class Home extends React.Component<Props,State> {
           <Layout className="main_container" >
               <Sider 
               collapsible={true} collapsed={this.state.collapsed}  collapsedWidth={20} trigger={null}
-              width={300} className="main_container_leftsider"
+              width={'300'} className="main_container_leftsider"
               >
                 <div style={{display:this.state.collapsed?'none':'inline'}}>
                   <div className="main_container_leftsider_icon"><Icon type="global"/><span className="title">Filter By Location</span></div>

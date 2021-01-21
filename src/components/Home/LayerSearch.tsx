@@ -1,12 +1,13 @@
 import * as React from 'react';
 import '../../style/_home.scss'; 
-import { Layout, Statistic,List,Card,Icon,Popover,Button,Carousel,Divider} from 'antd';
+import { Layout, Statistic,List,Card,Icon,Popover,Button,Carousel,Divider,message,Modal} from 'antd';
 import $req from '../../util/fetch';    
 import { IQueryPar, IPageInfo,ILayer } from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
 import IntensionExp from './IntentionExp'
 import {connect} from 'react-redux';
 import {conveyLayerID} from '../../redux/action'
+
 
 const { Content} = Layout;
 
@@ -27,9 +28,13 @@ interface State {
   optionList: ILayer[];
   pageInfo: IPageInfo;
    // queryPar: IQueryPar;
-   recycleList: ILayer[];
-   rSideCollapsed: boolean;
-   time: number;
+  queryType: string;
+  recycleList: ILayer[];
+  rSideCollapsed: boolean;
+  summitVisible: boolean;
+  time: number;
+  uploadNum: number;
+
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -48,12 +53,16 @@ class LayerSearch extends React.Component<Props,State> {
       optionList: [],
       pageInfo: {
           pageNum: 1,
-          pageSize: 24// should be multiple of 8
+          pageSize: 40// should be multiple of 8
       },
       // queryPar: this.props.queryPar,
+      queryType: 'byMetadata',
       recycleList: [],
       rSideCollapsed: true,
+      summitVisible: false,
       time: 0,
+      uploadNum: 0,
+      
     };
   }
 
@@ -64,12 +73,16 @@ class LayerSearch extends React.Component<Props,State> {
 
   public componentWillReceiveProps(nextProps:any){
     this.setState({
-      loading: true
-    })
-    this.queryLayerList(this.state.pageInfo,nextProps.queryPar);
+      loading: true,
+      pageInfo:{
+        pageNum: 1,
+        pageSize: 40,
+      },
+    },()=>{this.queryLayerList(this.state.pageInfo,nextProps.queryPar)})
 }
   
   public render() {
+    
     this.prepareData();
     return (
       <Layout className="main_container_content_imglist sr-only">
@@ -83,6 +96,7 @@ class LayerSearch extends React.Component<Props,State> {
              itemLayout="vertical"
              size="small"
              pagination={{
+             current: this.state.pageInfo.pageNum,
              hideOnSinglePage: true,
              onChange: this.handlePaginate,
              pageSize: this.state.pageInfo.pageSize,
@@ -123,8 +137,12 @@ class LayerSearch extends React.Component<Props,State> {
                  <Icon className="icon_small" type={this.state.bSideCollapsed?"down-square":"up-square"} onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/><br/>
                  <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>         
                  <div className="buttons">
+                
+                     <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
+                     <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
+              
                    <Button className="button" type="primary" disabled={this.state.bSideCollapsed?true:false} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
-                   <Button className="button" type="ghost" onClick={()=>{this.handleSummit()}}>Summit</Button>
+                   <Button className="button" type="primary" disabled={this.state.optionList.length===0?true:false} onClick={()=>{this.setState({summitVisible: true})}}>Submit</Button>
                 </div>
                </div>
                <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
@@ -133,6 +151,24 @@ class LayerSearch extends React.Component<Props,State> {
            </div>
            </Content>
            <IntensionExp collapsed={this.state.rSideCollapsed}/>
+
+           <Modal className="main_container_modal" visible={this.state.summitVisible} onOk={()=>{this.handleSummitOk()}} onCancel={()=>{this.setState({summitVisible: false})}} closable={false}
+                  title={
+                  <div className="main_container_modal_title">
+                    <Icon className="icon" type="setting" /><span className="span">Summit Setting</span>
+                  </div>} 
+                footer={[
+                  <Button key="back" onClick={()=>{this.setState({summitVisible: false})}}>Return</Button>,
+                  <Button key="submit" type="primary" onClick={()=>{this.handleSummitOk()}}>Submit</Button>,]}>
+
+              <div className="main_container_modal_body">
+                <span className="sub_title">Retrieval Method:</span><br/>
+                <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
+                <span className="sub_title">Description:</span><br/>
+                <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and map content. Firstly, the map is roughly classified according to cartography methods. Then explore the best feature fusion modes corresponding to the maps with same cartography methods, and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer retrieval.</p>
+              </div>
+
+           </Modal>
         </Layout>
        
     );
@@ -151,7 +187,7 @@ class LayerSearch extends React.Component<Props,State> {
            </div>
            <div className="main_container_content_imglist_item_popover_button">
                {this.popoverContentStar(layer)}
-               <Popover trigger="hover" content={<span>Learn more ></span>} placement="top" >
+               <Popover trigger="hover" content={<span>Learn more </span>} placement="top">
                  <Button className="button"  icon="more" onClick={()=>{this.props.dispatch(conveyLayerID(layer.id))}} href='layerInfo'/>
                </Popover>
             </div>
@@ -202,15 +238,17 @@ class LayerSearch extends React.Component<Props,State> {
           temp[round][m]=this.state.optionList[round*col+m]
          }
       }
-      
+
       return (
-        <Carousel className="main_container_content_shoppingCart_body_carousel">
+        <Carousel  className="main_container_content_shoppingCart_body_carousel">
             {temp.map((item:ILayer[],index:number)=>{
               return this.carouselComponent(item,index)
           })}
         </Carousel>
+
         )
     }
+ 
 
   // carouse component in the shopping cart 
   public carouselComponent = (layer:ILayer[],index: number) =>{
@@ -236,6 +274,72 @@ class LayerSearch extends React.Component<Props,State> {
     )
   }
   
+ 
+  // handle upload button in the shopping cart.
+  // upload users' layers and push them into optionList.
+  public uploadButton =()=>{
+    // read file by Base64
+    function getBase64 (file:File){
+      return  new Promise((resolve,reject) => {
+        const fr=new FileReader();
+        fr.readAsDataURL(file);
+        fr.onload = () => resolve(fr.result as string)
+        fr.onerror = error => reject(error);
+      });  
+    }
+
+    const input = document.getElementById("upload_file") as HTMLInputElement;  // get upload DOM
+    const self=this.state.optionList;
+
+    if(input!==null){
+      input.click();   
+      input.onchange=()=>{
+        const fileList=input.files  // get upload files
+        if (fileList!==null){
+          if(fileList.length!==0){
+            let uploadKey=1;
+            // tslint:disable-next-line
+           for(let i=0;i<fileList.length;i++){     // push every layers user uploaded into shopping cart
+            if(fileList[i].type!=='image/jpeg' && fileList[i].type!=='image/jpg' && fileList[i].type!=='image/png'){
+              message.error('Upload file '+fileList[i].name+ ' is not JPG, JPEG or PNG fomat',2);
+              uploadKey=0;
+            }
+            else{
+              getBase64(fileList[i]).then((resolve)=>{
+                const layer:ILayer={
+                  abstr: '',
+                  attribution: '',
+                  bbox: [],
+                  id: 0,
+                  keywords: '',
+                  name: "",
+                  photo:'',
+                  projection: '',
+                  service: {},
+                  title: '',
+                  topic: '',
+                  url: ''
+                };
+                const base64=resolve as string;
+                layer.id=-(this.state.uploadNum+1);                          // layers' id user uploaded start from -1 to -∞
+                layer.photo=base64.substring(base64.indexOf('base64')+7);;   // layers' photo user uploaded store Base64
+                layer.name=fileList[i].name;                                 // layers' name user uploaded store photo own name
+                self.push(layer);
+
+                if(i===fileList.length-1 && uploadKey===1){
+                  message.success('Upload Successfully',2);
+                }
+                this.setState({optionList: self,uploadNum: -layer.id});
+              })
+             }
+            }
+
+          }  
+        }
+      } 
+    }
+       
+  }
 
   // prepare two dimention array for Layerlist
   public prepareData = () =>{
@@ -343,12 +447,25 @@ class LayerSearch extends React.Component<Props,State> {
 }
 
   // handle Summit button in the shopping cart
-  public handleSummit = () =>{
+  public  handleSummitOk = () => {
     smoothscroll();
-    this.setState({
-      rSideCollapsed: false,
-    })
+     this.setState({
+      loading:true,
+      summitVisible: false,
+      pageInfo:{
+          pageNum: 1,
+          pageSize: 40,
+      },
+    },()=>{this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList)})
   }
+  // public handleSummit = () =>{
+  //   smoothscroll();
+  //   this.setState({
+  //     loading:true,
+  //     rSideCollapsed: false,
+  //   })
+  //   this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList);
+  // }
 
   // foreach List to find whether the layer is existed or not
   public forList = (layer:ILayer,arraylist:ILayer[]) =>{
@@ -371,13 +488,18 @@ class LayerSearch extends React.Component<Props,State> {
         pageInfo,
         loading: true,
     })
-    this.queryLayerList(this.state.pageInfo,this.props.queryPar);
+    if (this.state.queryType === 'byMetadata'){
+      this.queryLayerList(this.state.pageInfo,this.props.queryPar);
+    }
+    if (this.state.queryType === 'byTemplate'){
+      this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList);
+    }
 }
 
  // hide right sider
- public toggle =()=>{
-  this.setState({rSideCollapsed:!this.state.rSideCollapsed});
-}
+//  public toggle =()=>{
+//   this.setState({rSideCollapsed:!this.state.rSideCollapsed});
+// }
 
   // Function: send http request to get layer list data
   // When to transfer: init render LayerSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
@@ -385,7 +507,7 @@ class LayerSearch extends React.Component<Props,State> {
   public async queryLayerList(pagePar:object, queryPar:object) {
     const baseUrl:string = 'search/querylayerlist';
     const reqPar:object = Object.assign(pagePar,queryPar);
-    const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8080');
+    const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8081');
     let requestTime:number=0;  // record request time
     console.log(url)
     try {
@@ -399,6 +521,40 @@ class LayerSearch extends React.Component<Props,State> {
             listTotal: resBody.total,
             isUpdate: true,
             loading: false,
+            queryType: 'byMetadata',
+            time: requestTime*0.01,
+        })
+    } catch(e) {
+        alert(e.message)
+    }
+  }
+
+  public async queryLayerByTemplate(pagePar:object,optionList:ILayer[]) {
+    const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/querylayerbytemplate','8081');
+    let url:string=baseUrl+'&templateId=';
+    for(const each of optionList){
+      if(each.id<0){
+        continue;
+      } 
+      url+=each.id.toString()+','
+    }
+    url=url.substring(0,url.length-1)
+    // const url:string = 'http://132.232.98.213:8081/search/querylayerbytemplate?templateId=1,2&pageNum=1&pageSize=40'; 
+
+    let requestTime:number=0;  // record request time
+    console.log(url)
+    try {
+        const timer=setInterval(()=>{++requestTime},10)
+        const res: any = await $req(url, {})
+        clearInterval(timer);
+        const resBody:any  = JSON.parse(res)
+        this.setState({
+            currentSize: resBody.layerNum,
+            dataList: resBody.data,
+            listTotal: resBody.totalLayerNum,
+            isUpdate: true,
+            loading: false,
+            queryType: 'byTemplate',
             time: requestTime*0.01,
         })
     } catch(e) {

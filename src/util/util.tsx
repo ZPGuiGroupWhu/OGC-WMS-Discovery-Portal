@@ -41,7 +41,7 @@ export function stringFilter(article:string){
             baseUrl  [the base url before the params of request url]
 */
 export function reqUrl(params:object,baseUrl:string,domain:string){
-    let url = `http://localhost:${domain}/${baseUrl}?`; 
+    let url = `http://132.232.98.213:${domain}/${baseUrl}?`; 
     for ( const key of Object.keys(params)) {
         if ( params[key] !== null) {
             url += `${key}=${params[key]}&`;
