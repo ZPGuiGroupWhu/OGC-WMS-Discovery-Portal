@@ -31,14 +31,15 @@ interface State {
   queryType: string;
   recycleList: ILayer[];
   rSideCollapsed: boolean;
-  summitVisible: boolean;
+  submitVisible: boolean;
   time: number;
-  uploadNum: number;
+  uploadList: FormData;
 
 }
 
 class LayerSearch extends React.Component<Props,State> {
   public data: ILayer [][];
+  public submitOptionList: ILayer [];
   constructor (props:Props) {
     super(props);
     this.state = {
@@ -59,10 +60,10 @@ class LayerSearch extends React.Component<Props,State> {
       queryType: 'byMetadata',
       recycleList: [],
       rSideCollapsed: true,
-      summitVisible: false,
+      submitVisible: false,
       time: 0,
-      uploadNum: 0,
-      
+      uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
+
     };
   }
 
@@ -72,13 +73,17 @@ class LayerSearch extends React.Component<Props,State> {
   }
 
   public componentWillReceiveProps(nextProps:any){
-    this.setState({
-      loading: true,
-      pageInfo:{
-        pageNum: 1,
-        pageSize: 40,
-      },
-    },()=>{this.queryLayerList(this.state.pageInfo,nextProps.queryPar)})
+    // if updated queryPar type is service(defined as 0),then skip updating action in the layer search page.
+    // if updated queryPar type is layers(defined as 1), then search for new queryPar and update data.
+    if (nextProps.queryPar.type===1){
+      this.setState({
+        loading: true,
+        pageInfo:{
+          pageNum: 1,
+          pageSize: 40,
+        },
+      },()=>{this.queryLayerList(this.state.pageInfo,nextProps.queryPar)})
+    }
 }
   
   public render() {
@@ -142,7 +147,7 @@ class LayerSearch extends React.Component<Props,State> {
                      <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
               
                    <Button className="button" type="primary" disabled={this.state.bSideCollapsed?true:false} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
-                   <Button className="button" type="primary" disabled={this.state.optionList.length===0?true:false} onClick={()=>{this.setState({summitVisible: true})}}>Submit</Button>
+                   <Button className="button" type="primary" disabled={this.state.optionList.length===0?true:false} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
                 </div>
                </div>
                <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
@@ -152,14 +157,14 @@ class LayerSearch extends React.Component<Props,State> {
            </Content>
            <IntensionExp collapsed={this.state.rSideCollapsed}/>
 
-           <Modal className="main_container_modal" visible={this.state.summitVisible} onOk={()=>{this.handleSummitOk()}} onCancel={()=>{this.setState({summitVisible: false})}} closable={false}
+           <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={()=>{this.handleSubmitOk()}} onCancel={()=>{this.setState({submitVisible: false})}} closable={false}
                   title={
                   <div className="main_container_modal_title">
-                    <Icon className="icon" type="setting" /><span className="span">Summit Setting</span>
+                    <Icon className="icon" type="setting" /><span className="span">Submit Setting</span>
                   </div>} 
                 footer={[
-                  <Button key="back" onClick={()=>{this.setState({summitVisible: false})}}>Return</Button>,
-                  <Button key="submit" type="primary" onClick={()=>{this.handleSummitOk()}}>Submit</Button>,]}>
+                  <Button key="back" onClick={()=>{this.setState({submitVisible: false})}}>Return</Button>,
+                  <Button key="submit" type="primary" onClick={()=>{this.handleSubmitOk()}}>Submit</Button>,]}>
 
               <div className="main_container_modal_body">
                 <span className="sub_title">Retrieval Method:</span><br/>
@@ -277,7 +282,7 @@ class LayerSearch extends React.Component<Props,State> {
  
   // handle upload button in the shopping cart.
   // upload users' layers and push them into optionList.
-  public uploadButton =()=>{
+  public uploadButton () {
     // read file by Base64
     function getBase64 (file:File){
       return  new Promise((resolve,reject) => {
@@ -289,11 +294,17 @@ class LayerSearch extends React.Component<Props,State> {
     }
 
     const input = document.getElementById("upload_file") as HTMLInputElement;  // get upload DOM
-    const self=this.state.optionList;
+    const selfOption=this.state.optionList;
+    const selfUpload=this.state.uploadList;
+    // get uploadList length
+    let uploadListLength=0;
+    selfUpload.forEach(item=>{
+      uploadListLength=uploadListLength+1;
+    })
 
     if(input!==null){
       input.click();   
-      input.onchange=()=>{
+      input.onchange= async ()=>{
         const fileList=input.files  // get upload files
         if (fileList!==null){
           if(fileList.length!==0){
@@ -305,7 +316,8 @@ class LayerSearch extends React.Component<Props,State> {
               uploadKey=0;
             }
             else{
-              getBase64(fileList[i]).then((resolve)=>{
+              uploadListLength=uploadListLength+1;
+                const result=await getBase64(fileList[i])
                 const layer:ILayer={
                   abstr: '',
                   attribution: '',
@@ -320,17 +332,21 @@ class LayerSearch extends React.Component<Props,State> {
                   topic: '',
                   url: ''
                 };
-                const base64=resolve as string;
-                layer.id=-(this.state.uploadNum+1);                          // layers' id user uploaded start from -1 to -∞
+                const base64=result as string;
+                layer.id=-(uploadListLength);                                // layers' id user uploaded start from -1 to -∞
                 layer.photo=base64.substring(base64.indexOf('base64')+7);;   // layers' photo user uploaded store Base64
                 layer.name=fileList[i].name;                                 // layers' name user uploaded store photo own name
-                self.push(layer);
+                selfOption.push(layer);
+                selfUpload.set(layer.id.toString(),fileList[i]);
 
+                // console.log(selfFile.get(this.state.uploadNum.toString()));
                 if(i===fileList.length-1 && uploadKey===1){
                   message.success('Upload Successfully',2);
                 }
-                this.setState({optionList: self,uploadNum: -layer.id});
-              })
+                this.setState({
+                  optionList: selfOption,
+                  // uploadNum: -layer.id,
+                  uploadList: selfUpload}); 
              }
             }
 
@@ -338,6 +354,7 @@ class LayerSearch extends React.Component<Props,State> {
         }
       } 
     }
+    
        
   }
 
@@ -428,14 +445,31 @@ class LayerSearch extends React.Component<Props,State> {
     if(this.state.isEdit){
       const selfOption=this.state.optionList;
       const selfRecycle=this.state.recycleList;
+      const selfUpload=this.state.uploadList;
+
       const newOption=selfOption.filter(item=>{
-      const layer=selfRecycle.map(value=>value)
-      return !layer.includes(item)
+        const layer=selfRecycle.map(value=>value)
+        return !layer.includes(item)
     })
+    
+      // const newUpload=new FormData();
+      selfUpload.forEach((item)=>{
+        for(const layer of selfRecycle){
+           if(selfUpload.has(layer.id.toString())){
+             selfUpload.delete(layer.id.toString());
+           }
+        }
+      })
+
+      selfUpload.forEach((item)=>{
+           console.log(item)
+      })
+      
     this.setState({
       optionList: newOption,
       recycleList: [],
-      isEdit: !this.state.isEdit
+      isEdit: !this.state.isEdit,
+      uploadList: selfUpload,
     })
   }
   // if the button is in the edited state, then change button state into deleting
@@ -446,26 +480,20 @@ class LayerSearch extends React.Component<Props,State> {
     }
 }
 
-  // handle Summit button in the shopping cart
-  public  handleSummitOk = () => {
+  // handle Submit button in the shopping cart
+  public  handleSubmitOk = () => {
     smoothscroll();
      this.setState({
       loading:true,
-      summitVisible: false,
+      submitVisible: false,
       pageInfo:{
           pageNum: 1,
           pageSize: 40,
       },
+      queryType: 'submitByTemplate',
     },()=>{this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList)})
   }
-  // public handleSummit = () =>{
-  //   smoothscroll();
-  //   this.setState({
-  //     loading:true,
-  //     rSideCollapsed: false,
-  //   })
-  //   this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList);
-  // }
+
 
   // foreach List to find whether the layer is existed or not
   public forList = (layer:ILayer,arraylist:ILayer[]) =>{
@@ -487,13 +515,15 @@ class LayerSearch extends React.Component<Props,State> {
     this.setState({
         pageInfo,
         loading: true,
+        
     })
     if (this.state.queryType === 'byMetadata'){
       this.queryLayerList(this.state.pageInfo,this.props.queryPar);
     }
-    if (this.state.queryType === 'byTemplate'){
+    if (this.state.queryType === 'paginateByTemplate'){
       this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList);
     }
+
 }
 
  // hide right sider
@@ -532,7 +562,13 @@ class LayerSearch extends React.Component<Props,State> {
   public async queryLayerByTemplate(pagePar:object,optionList:ILayer[]) {
     const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/querylayerbytemplate','8081');
     let url:string=baseUrl+'&templateId=';
-    for(const each of optionList){
+    // if(this.state.queryType === 'paginateByTemplate'){
+    // }
+    if(this.state.queryType === 'submitByTemplate'){
+      // deep copy
+      this.submitOptionList=JSON.parse(JSON.stringify(this.state.optionList))
+    }
+    for(const each of this.submitOptionList){
       if(each.id<0){
         continue;
       } 
@@ -554,7 +590,7 @@ class LayerSearch extends React.Component<Props,State> {
             listTotal: resBody.totalLayerNum,
             isUpdate: true,
             loading: false,
-            queryType: 'byTemplate',
+            queryType: 'paginateByTemplate',
             time: requestTime*0.01,
         })
     } catch(e) {

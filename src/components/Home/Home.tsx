@@ -52,7 +52,8 @@ class Home extends React.Component<Props,State> {
           keywords: '',
           organization: '',
           organization_type: '', 
-          topic: ''
+          topic: '',
+          type: 0,
       },
       collapsed: false,
     };
@@ -178,6 +179,11 @@ class Home extends React.Component<Props,State> {
     const unsta = active === 0 ? imgSta : dataSta;
     sta.className = sta.className.replace('sr-only','');
     unsta.className = `${unsta.className} sr-only`;
+    // distinguish query type and store it in queryPar
+    const queryPar=this.state.queryPar;
+    queryPar.type=active;
+    this.setState({queryPar})
+    this.props.dispatch(conveyQueryPar(queryPar));
   }
 
   // click submenu to choose search parameters

@@ -64,6 +64,9 @@ export interface IQueryPar{
     organization: string;
     organization_type: string; 
     topic: string;
+    // In order to reduce time cost and request number, it's necessary to distinguish query type(service or layers). 
+    // Define 0: query service, 1: query layers.
+    type: number;  
 }
 
 // service list request par interface,also is the page info of the list and pagination

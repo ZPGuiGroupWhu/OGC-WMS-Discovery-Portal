@@ -36,7 +36,7 @@ class DataSearch extends React.Component<Props, State> {
             listTotal: 0,
             loading: true,
             pageInfo: {
-                pageNum: 0,
+                pageNum: 1,
                 pageSize: 10
             },
            // queryPar: this.props.queryPar,
@@ -49,13 +49,18 @@ class DataSearch extends React.Component<Props, State> {
     }
 
     public componentWillReceiveProps(nextProps:any){
-        this.setState({
-            loading: true,
-            pageInfo:{
-                pageNum: 1,
-                pageSize: 10
-            }
-          },()=>{this.queryWMSList(this.state.pageInfo,nextProps.queryPar)})
+        // if updated queryPar type is service(defined as 0),then search for new queryPar and update data.
+        // if updated queryPar type is layers(defined as 1), then skip updating action in the wms search page.
+        if(nextProps.queryPar.type===0)
+        {
+            this.setState({
+                loading: true,
+                pageInfo:{
+                    pageNum: 1,
+                    pageSize: 10
+                }
+              },()=>{this.queryWMSList(this.state.pageInfo,nextProps.queryPar)})
+        }
     }
 
     public render() {
@@ -112,7 +117,7 @@ class DataSearch extends React.Component<Props, State> {
     // paginate to request new data
     public handlePaginate = (cur:number) => {
         const pageInfo = this.state.pageInfo;
-        pageInfo.pageNum = cur-1;
+        pageInfo.pageNum = cur;
         this.setState({
             pageInfo,
             loading: true,
