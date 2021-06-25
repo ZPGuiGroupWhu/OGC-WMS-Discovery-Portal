@@ -19,15 +19,16 @@
     "start": "react-scripts-ts start",
     "build": "react-scripts-ts build",
     "test": "react-scripts-ts test --env=jsdom",
-    "eject": "react-scripts-ts eject"
+    "eject": "react-scripts-ts eject",
+    "postinstall":"patch-package"
   },
   "devDependencies": {
     "@types/echarts": "^4.1.9",
     "@types/jest": "^23.3.10",
     "@types/leaflet": "^1.4.3",
     "@types/leaflet-draw": "^0.4.13",
-    "@types/node": "^10.12.17",
     "@types/qs": "^6.5.1",
+    "@types/node": "^10.12.17",
     "@types/react": "^16.7.17",
     "@types/react-color": "^3.0.1",
     "@types/react-dom": "^16.0.11",
@@ -39,6 +40,7 @@
     "leaflet": "^1.4.0",
     "leaflet-draw": "^1.0.4",
     "node-sass": "^4.11.0",
+    "patch-package": "^6.4.7",
     "qs": "^6.6.0",
     "react-router-dom": "^4.3.1",
     "sass-loader": "^7.1.0",

@@ -1,0 +1,25 @@
+diff --git a/node_modules/react-scripts-ts/config/webpack.config.dev.js b/node_modules/react-scripts-ts/config/webpack.config.dev.js
+index 924e3e4..1443dc7 100644
+--- a/node_modules/react-scripts-ts/config/webpack.config.dev.js
++++ b/node_modules/react-scripts-ts/config/webpack.config.dev.js
+@@ -140,6 +140,11 @@ module.exports = {
+         enforce: 'pre',
+         include: paths.appSrc,
+       },
++      // add scss loader to load scss file for component style
++      {
++        test: /\.scss$/,
++        loader: ['style-loader','css-loader','sass-loader'],
++      },
+       {
+         // "oneOf" will traverse all following loaders until one will
+         // match the requirements. When no loader matches it will fall
+@@ -230,7 +235,7 @@ module.exports = {
+             // its runtime that would otherwise processed through "file" loader.
+             // Also exclude `html` and `json` extensions so they get processed
+             // by webpacks internal loaders.
+-            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/],
++            exclude: [/\.(js|jsx|mjs)$/, /\.html$/, /\.json$/, /\.scss$/],
+             loader: require.resolve('file-loader'),
+             options: {
+               name: 'static/media/[name].[hash:8].[ext]',
