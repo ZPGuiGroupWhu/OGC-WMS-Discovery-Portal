@@ -39,7 +39,7 @@
     "echarts": "^4.2.1",
     "leaflet": "^1.4.0",
     "leaflet-draw": "^1.0.4",
-    "node-sass": "^4.11.0",
+    "node-sass": "^4.13.1",
     "patch-package": "^6.4.7",
     "qs": "^6.6.0",
     "react-router-dom": "^4.3.1",
