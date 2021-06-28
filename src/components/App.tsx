@@ -14,6 +14,7 @@ import 'antd/dist/antd.css';
 import '../style/_app.scss';
 import { Layout} from 'antd';
 
+
 const { Content } = Layout;
 
 // the component supplying to Route return expect function, not object. 

@@ -1,0 +1,20 @@
+// style for Login.tsx
+@import '_common-style.scss';
+
+.login_logo{
+    display: flex;
+    flex-direction: column;
+    &_img {
+      animation: header-logo-spin infinite 20s linear;
+      height: 64px;
+    }
+}
+
+.login_form{
+    &_button{
+      width: 100%;
+    }
+    &_forgot{
+      float: right;
+    }
+  }

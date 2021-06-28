@@ -1,4 +1,4 @@
-import {CONVEY_LAYER_ID,CONVEY_SERVICE_ID, CONVEY_QUERYPAR} from '../redux/action'
+import {CONVEY_LAYER_ID, CONVEY_SERVICE_ID, CONVEY_QUERYPAR, CONVEY_LOGINVISIBLE} from '../redux/action'
 import {combineReducers} from 'redux'
 
 const initialStateID={
@@ -16,6 +16,10 @@ const initialStateQueryPar={
           organization_type: '', 
           topic: ''
     },
+}
+
+const initialVisible={
+    loginVisible: false
 }
 
 function conveyIDReducer (state=initialStateID,action:any) {
@@ -58,9 +62,21 @@ function conveyQueryParReducer (state=initialStateQueryPar,action:any) {
     }
 }
 
+function conveyVisibleReducer(state=initialVisible,action:any){
+    switch(action.type){
+        case CONVEY_LOGINVISIBLE:
+            return JSON.parse(JSON.stringify({
+                loginVisible: action.loginVisible
+            }))
+        default:
+            return state;
+    }
+}
+
 const rootReducer=combineReducers({
     conveyIDReducer,
-    conveyQueryParReducer
+    conveyQueryParReducer,
+    conveyVisibleReducer
 })
 
 export default rootReducer

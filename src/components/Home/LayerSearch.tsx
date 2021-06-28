@@ -13,7 +13,7 @@ const { Content} = Layout;
 
 interface Props { 
   queryPar: IQueryPar;
-  dispatch: (acion:any)=>void;
+  dispatch: (action:any)=>void;
 }
 
 interface State {

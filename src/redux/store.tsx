@@ -9,7 +9,8 @@ import storageSession from 'redux-persist/lib/storage/session'
 const storageConfig={
     key:'root',
     storage:storageSession,  // define store mechanism
-    blacklist:['conveyQueryParReducer'],  // conveyQueryParReducer can not write in the local store.
+    // conveyQueryParReducer and conveyVisibleReducer can not write in the local store.
+    blacklist:['conveyQueryParReducer','conveyVisibleReducer'],
 }
 // put rootReducer into persist
 const myPersistReducer=persistReducer(storageConfig,rootReducer);
