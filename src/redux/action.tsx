@@ -5,6 +5,7 @@ export const CONVEY_LAYER_ID='CONVEY_LAYER_ID'
 export const CONVEY_SERVICE_ID='CONVEY_SERVICE_ID'
 export const CONVEY_QUERYPAR='CONVEY_QUERYPAR'
 export const CONVEY_LOGINVISIBLE='CONVEY_LOGINVISIBLE'
+export const CONVEY_REGISTERVISIBLE='CONVEY_REGISTERVISIBLE'
 
 // action function
 export function conveyLayerID(layerID:number){
@@ -32,5 +33,12 @@ export function conveyLoginVisible(loginVisible:boolean){
     return{
         type: CONVEY_LOGINVISIBLE,
         loginVisible
+    }
+}
+
+export function conveyRegisterVisible(registerVisible: boolean){
+    return{
+        type: CONVEY_REGISTERVISIBLE,
+        registerVisible
     }
 }

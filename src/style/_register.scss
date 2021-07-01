@@ -1,0 +1,13 @@
+// style for Register.tsx
+@import '_common-style.scss';
+
+.register_form{
+    &_button{
+      width: 100%;
+    }
+
+    .ant-form-item{
+       margin-bottom: 6px;
+    }
+}
+

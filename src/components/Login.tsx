@@ -3,8 +3,9 @@ import {Button, Checkbox, Form, Icon, Input, Modal} from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'react-redux';
 import '../style/_login.scss'
-import {conveyLoginVisible} from "../redux/action";
+import {conveyLoginVisible, conveyRegisterVisible} from "../redux/action";
 import logo from "../assets/img/logo.svg";
+import Register from "./Register";
 
 interface Props extends FormComponentProps {
    dispatch: (action: any)=>void
@@ -23,13 +24,20 @@ class Login extends React.Component<Props, State>{
     }
 
     public componentWillReceiveProps(nextProps: any) {
-        // const tmpVisible=nextProps.loginVisible
         this.setState({
             loginVisible: nextProps.loginVisible
         })
     }
 
-    public handleLogin =()=>{
+    public handleLogin =(e:any)=>{
+        // prevent form submission
+        e.preventDefault();
+        this.props.form.validateFields((err,values)=>{
+            if(!err){
+                console.log('Received values of form: ', values)
+            }
+        })
+
         this.props.dispatch(conveyLoginVisible(false))
         this.setState({
             loginVisible: false})
@@ -39,6 +47,10 @@ class Login extends React.Component<Props, State>{
         this.props.dispatch(conveyLoginVisible(false))
         this.setState({
             loginVisible: false})
+    }
+
+    public handleRegister =()=>{
+        this.props.dispatch(conveyRegisterVisible(true))
     }
 
     public render() {
@@ -53,7 +65,7 @@ class Login extends React.Component<Props, State>{
                 <div className="login_logo">
                     <img src={logo} className="login_logo_img" alt="logo" />
                 </div>
-                <Form  className="login-form">
+                <Form  className="login_form" onSubmit={this.handleLogin}>
                     <Form.Item label="Username" labelAlign="left" >
                         {getFieldDecorator('username',{
                             rules: [{required: true, message: 'Please input your username!'}],
@@ -76,13 +88,14 @@ class Login extends React.Component<Props, State>{
                         {getFieldDecorator('remember',{
                             valuePropName: 'check', initialValue: true})
                         (<Checkbox>Remember me</Checkbox>)}
-                        <a className="login_form_forgot" href="">Forgot password</a>
-                        <Button type="primary" htmlType="submit" className="login_form_button" onClick={this.handleLogin}>
+                        <a className="login_form_forgot" >Forgot password</a>
+                        <Button type="primary" htmlType="submit" className="login_form_button" >
                             Log in
                         </Button>
-                        Or <a href="">register now!</a>
+                        Or <a onClick={this.handleRegister}>register now!</a>
                     </Form.Item>
                 </Form>
+                <Register />
             </Modal>
         )
     }
