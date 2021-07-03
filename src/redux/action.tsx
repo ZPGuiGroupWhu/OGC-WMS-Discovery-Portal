@@ -4,8 +4,10 @@ import {IQueryPar} from '../util/interface'
 export const CONVEY_LAYER_ID='CONVEY_LAYER_ID'
 export const CONVEY_SERVICE_ID='CONVEY_SERVICE_ID'
 export const CONVEY_QUERYPAR='CONVEY_QUERYPAR'
-export const CONVEY_LOGINVISIBLE='CONVEY_LOGINVISIBLE'
-export const CONVEY_REGISTERVISIBLE='CONVEY_REGISTERVISIBLE'
+export const CONVEY_LOGIN_VISIBLE='CONVEY_LOGIN_VISIBLE'
+export const CONVEY_REGISTER_VISIBLE='CONVEY_REGISTER_VISIBLE'
+export const CONVEY_FORGOT_PASSWORD_VISIBLE='CONVEY_FORGOT_PASSWORD_VISIBLE'
+export const CONVEY_IS_LOGIN='CONVEY_IS_LOGIN'
 
 // action function
 export function conveyLayerID(layerID:number){
@@ -31,14 +33,28 @@ export function conveyQueryPar(queryPar:IQueryPar){
 
 export function conveyLoginVisible(loginVisible:boolean){
     return{
-        type: CONVEY_LOGINVISIBLE,
+        type: CONVEY_LOGIN_VISIBLE,
         loginVisible
     }
 }
 
 export function conveyRegisterVisible(registerVisible: boolean){
     return{
-        type: CONVEY_REGISTERVISIBLE,
+        type: CONVEY_REGISTER_VISIBLE,
         registerVisible
+    }
+}
+
+export function conveyForgotPasswordVisible(forgotPasswordVisible: boolean){
+    return{
+        type: CONVEY_FORGOT_PASSWORD_VISIBLE,
+        forgotPasswordVisible
+    }
+}
+
+export function conveyIsLogin(isLogin: boolean){
+    return{
+        type: CONVEY_IS_LOGIN,
+        isLogin
     }
 }

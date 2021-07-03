@@ -2,8 +2,9 @@ import {
     CONVEY_LAYER_ID,
     CONVEY_SERVICE_ID,
     CONVEY_QUERYPAR,
-    CONVEY_LOGINVISIBLE,
-    CONVEY_REGISTERVISIBLE
+    CONVEY_LOGIN_VISIBLE,
+    CONVEY_REGISTER_VISIBLE,
+    CONVEY_IS_LOGIN, CONVEY_FORGOT_PASSWORD_VISIBLE,
 } from '../redux/action'
 import {combineReducers} from 'redux'
 
@@ -26,7 +27,9 @@ const initialStateQueryPar={
 
 const initialVisible={
     loginVisible: false,
-    registerVisible: false
+    registerVisible: false,
+    forgotPasswordVisible: false,
+    isLogin: false,
 }
 
 function conveyIDReducer (state=initialStateID,action:any) {
@@ -71,13 +74,21 @@ function conveyQueryParReducer (state=initialStateQueryPar,action:any) {
 
 function conveyVisibleReducer(state=initialVisible,action:any){
     switch(action.type){
-        case CONVEY_LOGINVISIBLE:
+        case CONVEY_LOGIN_VISIBLE:
             return JSON.parse(JSON.stringify({
                 loginVisible: action.loginVisible
             }))
-        case CONVEY_REGISTERVISIBLE:
+        case CONVEY_REGISTER_VISIBLE:
             return JSON.parse(JSON.stringify({
                 registerVisible: action.registerVisible
+            }))
+        case CONVEY_FORGOT_PASSWORD_VISIBLE:
+            return JSON.parse(JSON.stringify({
+                forgotPasswordVisible: action.forgotPasswordVisible
+            }))
+        case CONVEY_IS_LOGIN:
+            return JSON.parse(JSON.stringify({
+                isLogin: action.isLogin
             }))
         default:
             return state;

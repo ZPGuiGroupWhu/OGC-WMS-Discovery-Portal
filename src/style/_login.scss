@@ -17,5 +17,11 @@
     &_forgot{
       float: right;
     }
-  }
+}
+
+.forgot_password_form{
+    .ant-form-item{
+      margin-bottom: 12px;
+    }
+}
 

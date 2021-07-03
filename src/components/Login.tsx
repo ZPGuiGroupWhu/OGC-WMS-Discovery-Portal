@@ -1,11 +1,12 @@
 import * as React from 'react';
-import {Button, Checkbox, Form, Icon, Input, Modal} from 'antd';
+import { Button, Checkbox, Form, Icon, Input, Modal} from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'react-redux';
 import '../style/_login.scss'
-import {conveyLoginVisible, conveyRegisterVisible} from "../redux/action";
+import {conveyForgotPasswordVisible, conveyIsLogin, conveyLoginVisible, conveyRegisterVisible} from "../redux/action";
 import logo from "../assets/img/logo.svg";
 import Register from "./Register";
+import ForgotPassword from "./ForgotPassword";
 
 interface Props extends FormComponentProps {
    dispatch: (action: any)=>void
@@ -23,35 +24,36 @@ class Login extends React.Component<Props, State>{
         }
     }
 
+    // receive changed variable from redux
     public componentWillReceiveProps(nextProps: any) {
         this.setState({
             loginVisible: nextProps.loginVisible
         })
     }
 
+    // handle login button
     public handleLogin =(e:any)=>{
         // prevent form submission
         e.preventDefault();
-        this.props.form.validateFields((err,values)=>{
+        const {form,dispatch}=this.props
+        form.validateFields((err,values)=>{
             if(!err){
                 console.log('Received values of form: ', values)
+                dispatch(conveyLoginVisible(false))
+                dispatch(conveyIsLogin(true))
+                form.resetFields()
             }
         })
 
-        this.props.dispatch(conveyLoginVisible(false))
-        this.setState({
-            loginVisible: false})
     }
 
+    // handle cancel button
     public handleCancel =()=>{
         this.props.dispatch(conveyLoginVisible(false))
         this.setState({
             loginVisible: false})
     }
 
-    public handleRegister =()=>{
-        this.props.dispatch(conveyRegisterVisible(true))
-    }
 
     public render() {
         const {getFieldDecorator} =this.props.form;
@@ -61,6 +63,7 @@ class Login extends React.Component<Props, State>{
                 title="Welcome to OGC WMS Discovery Portal"
                 footer={null}
                 onCancel={this.handleCancel}
+                maskClosable={false}
             >
                 <div className="login_logo">
                     <img src={logo} className="login_logo_img" alt="logo" />
@@ -88,7 +91,8 @@ class Login extends React.Component<Props, State>{
                         {getFieldDecorator('remember',{
                             valuePropName: 'check', initialValue: true})
                         (<Checkbox>Remember me</Checkbox>)}
-                        <a className="login_form_forgot" >Forgot password</a>
+                        <a className="login_form_forgot" onClick={this.handleForgotPassword}>Forgot password</a>
+                        <ForgotPassword />
                         <Button type="primary" htmlType="submit" className="login_form_button" >
                             Log in
                         </Button>
@@ -99,6 +103,17 @@ class Login extends React.Component<Props, State>{
             </Modal>
         )
     }
+
+    // Dispatch registerVisible to render register modal.
+    public handleRegister =()=>{
+        this.props.dispatch(conveyRegisterVisible(true))
+    }
+
+    // Dispatch forgotPasswordVisible to render find password modal.
+    public handleForgotPassword =()=>{
+        this.props.dispatch(conveyForgotPasswordVisible(true))
+    }
+
 }
 
 const mapStateToProps =(state:any) =>{
