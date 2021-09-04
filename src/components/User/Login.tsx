@@ -2,9 +2,9 @@ import * as React from 'react';
 import { Button, Checkbox, Form, Icon, Input, Modal} from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'react-redux';
-import '../style/_login.scss'
-import {conveyForgotPasswordVisible, conveyIsLogin, conveyLoginVisible, conveyRegisterVisible} from "../redux/action";
-import logo from "../assets/img/logo.svg";
+import '../../style/_login.scss'
+import {conveyForgotPasswordVisible, conveyIsLogin, conveyLoginVisible, conveyRegisterVisible} from "../../redux/action";
+import logo from "../../assets/img/logo.svg";
 import Register from "./Register";
 import ForgotPassword from "./ForgotPassword";
 
@@ -44,6 +44,7 @@ class Login extends React.Component<Props, State>{
                 form.resetFields()
             }
         })
+        console.log(form)
 
     }
 

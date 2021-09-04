@@ -2,8 +2,8 @@ import * as React from 'react';
 import {AutoComplete, Button, Form, Input, Modal, Icon, Checkbox} from 'antd'
 import {FormComponentProps} from 'antd/es/form'
 import { connect } from 'react-redux';
-import '../style/_register.scss'
-import {conveyRegisterVisible} from "../redux/action";
+import '../../style/_register.scss'
+import {conveyRegisterVisible} from "../../redux/action";
 
 interface Props extends FormComponentProps{
     dispatch: (action:any) => void

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Button,  Form, Icon, Input, Modal} from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'react-redux';
-import {conveyForgotPasswordVisible} from "../redux/action";
-import '../style/_forgotPassword.scss'
+import {conveyForgotPasswordVisible} from "../../redux/action";
+import '../../style/_forgotPassword.scss'
 
 interface Props extends FormComponentProps {
     dispatch: (action: any)=>void

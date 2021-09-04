@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {NavLink as Link} from 'react-router-dom';
 import logo from '../assets/img/logo.svg';
-import Login from "./Login";
+import Login from "./User/Login";
 import {Avatar, Layout, Menu} from 'antd';
 import {conveyIsLogin, conveyLoginVisible} from "../redux/action";
 import { connect } from 'react-redux';
@@ -43,7 +43,6 @@ class PortalHeader extends React.Component<Props,State>{
       }
     }
 
-
     public render() {
       return (
           <Header className="header">
@@ -69,12 +68,11 @@ class PortalHeader extends React.Component<Props,State>{
                 <Menu.Item key="4"><Link className="header_menu_nav" to="/about" >About</Link></Menu.Item>
                 {this.state.isLogin?
                     <Menu.SubMenu key="5" className="header_menu_dropdown"
-                                  title={<Avatar size={"large"} icon="user"
-                                                 src="travor.jpg"/>}>
-                        <Menu.Item key="10">Settings</Menu.Item>
+                                  title={<Avatar size={"large"} src="User.jpg"/>}>
+                        <Menu.Item key="10"><Link to="/settings">Settings</Link></Menu.Item>
                         <Menu.Item key="11">Sign Out</Menu.Item>
                     </Menu.SubMenu> :
-                    <Menu.Item key="6">Login</Menu.Item>}
+                    <Menu.Item key="6" className="header_menu_nav">Login</Menu.Item>}
             </Menu>
            <Login />
           </Header>

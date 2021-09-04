@@ -41,7 +41,7 @@ export function stringFilter(article:string){
             baseUrl  [the base url before the params of request url]
 */
 export function reqUrl(params:object,baseUrl:string,domain:string){
-    let url = `http://81.70.240.123:${domain}/${baseUrl}?`;
+    let url = `http://119.91.111.143:${domain}/${baseUrl}?`;
     for ( const key of Object.keys(params)) {
         if ( params[key] !== null) {
             // Keyword 'type' of queryPar is to distinguish query type for the web, it's unnecessary to

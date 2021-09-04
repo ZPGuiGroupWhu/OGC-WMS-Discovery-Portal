@@ -9,6 +9,7 @@ import LayerStatis from './ThemeMap/LayerStatis';
 import ServiceQuality from './ThemeMap/ServiceQuality';
 import DataAnalysis from './DataAnalysis/DataAnalysis';
 import About from './About';
+import Settings from './User/Settings';
 import {BrowserRouter, Route, Switch, withRouter} from 'react-router-dom';
 import 'antd/dist/antd.css';
 import '../style/_app.scss';
@@ -34,6 +35,7 @@ class App extends React.Component {
                     <Route path="/about" component={()=><About/>} />
                     <Route path="/serviceInfo" component={(props:any)=><ServiceInfo {...props}/>}/>
                     <Route path="/layerInfo" component={()=><LayerInfo/>}/>
+                    <Route path="/settings" component={()=><Settings />}/>
                 </Switch>
                 </Content>
                 <Footer />
