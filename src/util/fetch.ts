@@ -18,7 +18,8 @@ const $req = async (url: string, config: IReqConfig) => {
     promise = await fetch(reqUrl, {
       body: JSON.stringify(config.body),
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': config["Content-Type"] as string,
+        // 'Content-Type': 'application/json'
       },
       method: HttpMethod.post,
       mode: 'cors'

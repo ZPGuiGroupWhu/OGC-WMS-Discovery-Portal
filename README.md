@@ -7,8 +7,9 @@ Geographic Service Catalogue (以下简称为GSC)项目旨在搭建一个基于W
 
 https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
 
-#项目部署
 
+#项目部署
+如果想深入了解代码结构与细节，可以参照以下步骤部署前端的开发模式
 1.	安装前端软件环境：
 	* Node环境：安装Node，安装最新版即可
 

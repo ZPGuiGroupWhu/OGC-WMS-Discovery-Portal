@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { Button,  Form, Icon, Input, Modal} from 'antd';
+import {Button, Form, Icon, Input, message, Modal, Select} from 'antd';
 import { FormComponentProps } from 'antd/es/form';
 import { connect } from 'react-redux';
 import {conveyForgotPasswordVisible} from "../../redux/action";
 import '../../style/_forgotPassword.scss'
+import {reqUrl} from "../../util/util";
+import $req from "../../util/fetch";
 
 interface Props extends FormComponentProps {
     dispatch: (action: any)=>void
@@ -11,6 +13,8 @@ interface Props extends FormComponentProps {
 
 interface State{
     forgotPasswordVisible: boolean,
+    identifier: string,
+    password: string,
 }
 
 class ForgotPassword extends React.Component<Props, State>{
@@ -18,27 +22,51 @@ class ForgotPassword extends React.Component<Props, State>{
         super(props);
         this.state = {
             forgotPasswordVisible: false,
+            identifier: "email",
+            password: '',
         }
     }
 
     // receive changed variable from redux
     public componentWillReceiveProps(nextProps: any) {
-        console.log(nextProps.forgotPasswordVisible)
-        this.setState({
-            forgotPasswordVisible: nextProps.forgotPasswordVisible
-        })
+        if(this.state.forgotPasswordVisible !== nextProps.forgotPasswordVisible){
+            this.setState({
+                forgotPasswordVisible: nextProps.forgotPasswordVisible
+            })
+        }
     }
 
     // handle find my password button
     public handleFindPassword =(e:any)=>{
-        // prevent form submission
+        // prevent refresh page after form submission
         e.preventDefault();
-        const {form,dispatch}=this.props
-        form.validateFields((err,values)=>{
+        const {form}=this.props
+        form.validateFields(async (err,values)=>{
             if(!err){
-                console.log('Received values of form: ', values)
-                dispatch(conveyForgotPasswordVisible(false))
-                form.resetFields()
+                // console.log('Received values of form: ', values)
+                // query password by reFindType and identity
+                try {
+                    const url = reqUrl({reFindType: values.ReFType , identifier: values.identity},'identify/reFindPas','8081')
+                    console.log(url)
+
+                    const res: any = await $req(url, {method:"GET"})
+                    const resBody: any=JSON.parse(res)
+                    if (resBody.errCode===0) {
+                        message.success("Request successfully.")
+                        form.setFieldsValue({password: resBody.resBody})
+                    }
+                    else if (resBody.errCode === 1001){
+                        message.error("Can not find this identifier in the database.Please input correct account.")
+                        form.resetFields()
+                    }
+                    else if (resBody.errCode === 1002){
+                        message.error("Service request failed. Please try again later!")
+                        form.resetFields()
+                    }
+                } catch (e) {
+                    alert(e.message)
+                    form.resetFields()
+                }
             }
         })
 
@@ -46,11 +74,19 @@ class ForgotPassword extends React.Component<Props, State>{
 
     // handle cancel button
     public handleCancel =()=>{
-        this.props.dispatch(conveyForgotPasswordVisible(false))
+        const {form,dispatch}=this.props
+        dispatch(conveyForgotPasswordVisible(false))
+        form.resetFields()
     }
 
     public render (){
         const {getFieldDecorator}=this.props.form
+        const prefixSelector=getFieldDecorator('ReFType',{initialValue: 'email'})(
+            <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
+                    onChange={()=>{this.props.form.resetFields()}}>
+                <Select.Option key='email'><Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/></Select.Option>
+                <Select.Option key='username'><Icon type="user" style={{color: "rgba(0,0,0,.5)"}}/></Select.Option>
+            </Select>);
         return(
             <Modal
                 visible={this.state.forgotPasswordVisible}
@@ -59,22 +95,25 @@ class ForgotPassword extends React.Component<Props, State>{
                 maskClosable={false}
                 onCancel={this.handleCancel}
             >
-                <p>Forgot your Password?</p>
-                <p>Don't worry. Let's help you to refine your password by your registered E-mail   </p>
+                <p>Forgot your Password?   Ծ‸Ծ </p>
+                <p>Don't worry. Let's help you to retrieve your password by your registered Email or Username   </p>
                 <Form className="forgot_password_form">
-                    <Form.Item label="E-mail" labelAlign="right">
-                        {getFieldDecorator("email",{
+                    <Form.Item label={this.state.identifier === 'email'? "Email" : "Username" } labelAlign="left">
+                        {getFieldDecorator("identity",{
                             validateTrigger: 'onBlur',
-                            rules: [{required: true, message: "Please input your E-mail!"},
-                                {type: "email", message: "The input is not valid E-mail!"}],
+                            rules: [{required: true, message: "Please input your " + this.state.identifier + "!"},
+                                    this.state.identifier ==='email'?
+                                        {type: "email", message: "The input is not valid Email!"}: {} ],
                         })(
-                            <Input prefix={<Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/>}
-                                   placeholder="E-mail"/>
+                            <Input  addonBefore={prefixSelector}
+                                    placeholder={this.state.identifier=== 'email'? 'Email':'Username'}/>
                         )}
                     </Form.Item>
-                    <Form.Item label="Your Lost Password" labelAlign="right">
-                        <Input prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.5)"}}/>}
-                               placeholder="password" disabled={true}/>
+                    <Form.Item label="Your Lost Password" labelAlign="left">
+                        {getFieldDecorator("password")(
+                            <Input prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.5)"}}/>}
+                                   disabled={true}  />
+                        )}
                     </Form.Item>
                     <Form.Item wrapperCol={{offset: 8}}>
                         <Button type="primary" className="forgot_password_button"

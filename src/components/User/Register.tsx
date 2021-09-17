@@ -1,9 +1,11 @@
 import * as React from 'react';
-import {AutoComplete, Button, Form, Input, Modal, Icon, Checkbox} from 'antd'
+import {AutoComplete, Button, Form, Input, Modal, Icon, Checkbox, Select, message} from 'antd'
+import $req from '../../util/fetch';
 import {FormComponentProps} from 'antd/es/form'
 import { connect } from 'react-redux';
 import '../../style/_register.scss'
 import {conveyRegisterVisible} from "../../redux/action";
+import {reqUrl} from "../../util/util";
 
 interface Props extends FormComponentProps{
     dispatch: (action:any) => void
@@ -27,9 +29,11 @@ class Register extends React.Component<Props, State>{
 
     // receive changed variable from redux
     public componentWillReceiveProps(nextProps: any) {
-        this.setState({
-            registerVisible: nextProps.registerVisible
-        })
+        if (this.state.registerVisible !== nextProps.registerVisible){
+            this.setState({
+                registerVisible: nextProps.registerVisible
+            })
+        }
     }
 
     // control register modal visible
@@ -40,14 +44,35 @@ class Register extends React.Component<Props, State>{
     }
 
     // handle register button
-    public handleRegister =()=>{
+    public handleRegister =(e:any)=>{
+        // prevent refresh page after form submission
+        e.preventDefault();
         const {form,dispatch} = this.props
 
-        form.validateFields((err,values)=>{
-            if(!err){
-                console.log('Received values of form: ', values)
-                dispatch(conveyRegisterVisible(false))
-                form.resetFields()
+        form.validateFields(async (err, values) => {
+            if (!err) {
+                // console.log('Received values of form: ', values)
+                // post registration information to back-end
+                try {
+                    const url = reqUrl({},'identify/register','8081')
+                    console.log(url)
+
+                    const config = {body: values, method: "POST", 'Content-Type': 'application/json'}
+                    const res: any = await $req(url, config)
+                    const resBody: any=JSON.parse(res)
+                    if (resBody.errCode===0) {
+                        message.success("Register successfully.")
+                        dispatch(conveyRegisterVisible(false))
+                        form.resetFields()
+                    }
+                    else if (resBody.errCode === 1002){
+                        message.error("Service request failed. Please try again later!")
+                        form.resetFields(['password','confirm password'])
+                    }
+                } catch (e) {
+                    alert(e.message)
+                    form.resetFields(['password','confirm password'])
+                }
             }
         })
     }
@@ -89,8 +114,31 @@ class Register extends React.Component<Props, State>{
         this.setState({autoEmailComplete: autoEmailResult})
     }
 
+    // validate key property in the database is repeating or not when register
+    public async validateValueIsRepeat(rule: any, val: any, callback: any){
+        const url = reqUrl({property: rule.field, value: val},'identify/valueIsRepeat','8081')
+        // console.log(url)
+        try{
+            const res: any = await $req(url,{method: "GET"})
+            const resBody: any=JSON.parse(res)
+            // console.log(resBody)
+            if (resBody.errCode === 0 && resBody.resBody){
+               callback("The " + rule.field + " is already registered. " + "Please try another one!")
+                // return Promise.reject("The " + rule.field + " is already registered. " + "Please try another one!")
+            }
+            else if (resBody.errCode === 0 && !resBody){
+                callback() // callback nothing mean validate successfully. Otherwise, there is something wrong
+                // return Promise.resolve()
+            }
+        }catch (e) {
+            alert(e.message)
+            callback("Service request failed. Please try again later!")
+        }
+    }
+
     public render(){
         const {getFieldDecorator}=this.props.form
+        const topic =["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"];
         const emailOptions=this.state.autoEmailComplete.map(email =>(
             <AutoComplete.Option key={email}>{email}</AutoComplete.Option>
         ))
@@ -115,14 +163,17 @@ class Register extends React.Component<Props, State>{
             >
                 <p>Hello, visitor! Welcome to the OGC WMS Discovery Portal. In order to receive better service,
                     you need to offer necessary information to create a new account.
-                    Now,let's begin to explore the new world.
+                    Now,let's begin to explore the new world. &nbsp; &nbsp; &nbsp; &nbsp; ｯ!(๑•̀ㅂ•́)و✧
                 </p>
                 <Form className="register_form" {...formItemLayout}>
-                    <Form.Item label={"E-mail"} labelAlign="right">
+                    <Form.Item label={"E-mail"} labelAlign="right" hasFeedback={true} >
                         {getFieldDecorator("email",{
+                            validateFirst: true,
                             validateTrigger: 'onBlur',
                             rules: [{required: true, message: "Please input your E-mail!"},
-                                    {type: "email", message: "The input is not valid E-mail!"}],
+                                    {type: "email", message: "The input is not valid E-mail!"},
+                                    {validator:this.validateValueIsRepeat}
+                            ],
                         })(
                             <AutoComplete dataSource={emailOptions} onChange={this.handleEmailChange} >
                                 <Input prefix={<Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/>}
@@ -135,12 +186,12 @@ class Register extends React.Component<Props, State>{
                             validateTrigger: "onBlur",
                             rules: [{required: true, message: "Please input your password!"},
                                     {pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/,
-                                     message: 'Invalid password! Password must contain numbers and letters between 6 and 18 in length'},
+                                     message: 'Invalid password! Password must only contain numbers and letters between 6 and 18 in length'},
                                     {validator: this.validateToNextPassword}]
                         })(<Input.Password prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.5)"}}/>}
                                            placeholder="Password"/>)}
                     </Form.Item>
-                    <Form.Item label="Confirm Password" labelAlign="right" hasFeedback={true}>
+                    <Form.Item label="Confirm Password" labelAlign="right" hasFeedback={true} >
                         {getFieldDecorator("confirm password",{
                             validateTrigger: "onBlur",
                             rules:[{required: true, message: "Please input your password again!"},
@@ -150,9 +201,11 @@ class Register extends React.Component<Props, State>{
                     </Form.Item>
                     <Form.Item label="Username" labelAlign="right" hasFeedback={true}>
                         {getFieldDecorator('username',{
+                            validateFirst: true,
                             validateTrigger: "onBlur",
                             rules: [{required: true, message: "Please entitle for your account!"},
-                                    {whitespace: true, message: "Whitespace isn't allowed in username!"}]
+                                    {whitespace: true, message: "Whitespace isn't allowed in username!"},
+                                    {validator: this.validateValueIsRepeat}]
                         })(<Input prefix={<Icon type="user" style={{color: "rgba(0,0,0,.5)"}}/>}
                                   placeholder="Username"/>)}
                     </Form.Item>
@@ -162,11 +215,19 @@ class Register extends React.Component<Props, State>{
                     </Form.Item>
                     <Form.Item labelAlign="right" label="Research Field">
                         {getFieldDecorator('field')
-                        (<Input prefix={<Icon type="file-search" style={{color: "rgba(0,0,0,.5)"}}/>} placeholder="Research Field" />)}
+                        (<Select mode="tags"  placeholder="Research Field" tokenSeparators={[',','.']} showArrow={true}>
+                            {topic.map((item:string)=>{
+                                return(
+                                    <Select.Option key={item} >{item}</Select.Option>
+                                )
+                            })}
+                        </Select>)
+                       }
                     </Form.Item>
                     <Form.Item wrapperCol={{offset: 6}}>
                         {getFieldDecorator('agreement',{
                             valuePropName: 'checked',
+                            rules: [{required: true, message: "The agreement is required!"},]
                         })(<Checkbox>
                             I have read the <a>agreement</a>
                            </Checkbox>)}
