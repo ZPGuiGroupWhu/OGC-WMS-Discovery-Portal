@@ -18,6 +18,18 @@ interface State{
 }
 
 class ForgotPassword extends React.Component<Props, State>{
+    // Instead of unsafe and not recommended componentWillReceiveProps,
+    // use static getDerivedStateFromProps to get new state from props
+    public static getDerivedStateFromProps(nextProps: any, prevState: any){
+        if (nextProps.forgotPasswordVisible !== prevState.forgotPasswordVisible){
+            return {
+                forgotPasswordVisible: nextProps.forgotPasswordVisible
+            }
+        }
+        // return null means do nothing on state
+        return null
+    }
+
     constructor(props:Props) {
         super(props);
         this.state = {
@@ -28,13 +40,13 @@ class ForgotPassword extends React.Component<Props, State>{
     }
 
     // receive changed variable from redux
-    public componentWillReceiveProps(nextProps: any) {
-        if(this.state.forgotPasswordVisible !== nextProps.forgotPasswordVisible){
-            this.setState({
-                forgotPasswordVisible: nextProps.forgotPasswordVisible
-            })
-        }
-    }
+    // public componentWillReceiveProps(nextProps: any) {
+    //     if(this.state.forgotPasswordVisible !== nextProps.forgotPasswordVisible){
+    //         this.setState({
+    //             forgotPasswordVisible: nextProps.forgotPasswordVisible
+    //         })
+    //     }
+    // }
 
     // handle find my password button
     public handleFindPassword =(e:any)=>{

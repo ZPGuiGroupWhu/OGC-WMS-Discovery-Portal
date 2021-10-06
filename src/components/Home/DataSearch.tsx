@@ -11,6 +11,7 @@ import {conveyServiceID} from '../../redux/action'
 
 const { Content } = Layout;
 
+
 interface Props {
     queryPar: IQueryPar;
     dispatch: (action:any)=>void
@@ -18,15 +19,30 @@ interface Props {
 
 interface State {
     dataList: object[];
-    // queryPar: IQueryPar;
     listFootShow: string;
     listTotal: number;
     loading: boolean;
     pageInfo: IPageInfo;
+    queryPar: IQueryPar;
     time: number;
 }
 
 class DataSearch extends React.Component<Props, State> {
+    // Instead of unsafe and not recommended componentWillReceiveProps,
+    // use static getDerivedStateFromProps to get new state from props
+    // fetching new data is accomplished in componentDidUpdate
+    public static getDerivedStateFromProps(nextProps: any, prevState: any){
+        if (nextProps.queryPar.type === 0 && nextProps.queryPar !== prevState.queryPar){
+            return {
+                queryPar: nextProps.queryPar,
+                loading: true,
+                pageInfo:{ pageNum: 1,
+                    pageSize: 10
+                }
+            }
+        }
+        return null
+    }
 
     constructor (props:Props) {
         super(props);
@@ -39,29 +55,37 @@ class DataSearch extends React.Component<Props, State> {
                 pageNum: 1,
                 pageSize: 10
             },
-           // queryPar: this.props.queryPar,
+           queryPar: this.props.queryPar,
            time: 0,
         };
     }
+
 
     public componentDidMount(){
         this.initData();
     }
 
-    public componentWillReceiveProps(nextProps:any){
-        // if updated queryPar type is service(defined as 0),then search for new queryPar and update data.
-        // if updated queryPar type is layers(defined as 1), then skip updating action in the wms search page.
-        if(nextProps.queryPar.type===0)
-        {
-            this.setState({
-                loading: true,
-                pageInfo:{
-                    pageNum: 1,
-                    pageSize: 10
-                }
-              },()=>{this.queryWMSList(this.state.pageInfo,nextProps.queryPar)})
+    public componentDidUpdate(prevProps: any, prevState: any){
+        if (this.state.queryPar.type === 0 && this.state.queryPar !== prevState.queryPar) {
+            this.queryWMSList(this.state.pageInfo, this.state.queryPar)
         }
     }
+
+    // Unsafe, recommend getDerivedStateFromProps instead of componentWillReceiveProps
+    // public componentWillReceiveProps(nextProps:any){
+    //     // if updated queryPar type is service(defined as 0),then search for new queryPar and update data.
+    //     // if updated queryPar type is layers(defined as 1), then skip updating action in the wms search page.
+    //     if(nextProps.queryPar.type===0)
+    //     {
+    //         this.setState({
+    //             loading: true,
+    //             pageInfo:{
+    //                 pageNum: 1,
+    //                 pageSize: 10
+    //             }
+    //           },()=>{this.queryWMSList(this.state.pageInfo,nextProps.queryPar)})
+    //     }
+    // }
 
     public render() {
         return (

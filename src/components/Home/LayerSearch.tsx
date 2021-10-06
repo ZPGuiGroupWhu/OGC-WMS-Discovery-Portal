@@ -27,7 +27,7 @@ interface State {
   loading: boolean;
   optionList: ILayer[];
   pageInfo: IPageInfo;
-   // queryPar: IQueryPar;
+  queryPar: IQueryPar;
   queryType: string;
   recycleList: ILayer[];
   rSideCollapsed: boolean;
@@ -38,6 +38,22 @@ interface State {
 }
 
 class LayerSearch extends React.Component<Props,State> {
+    // Instead of unsafe and not recommended componentWillReceiveProps,
+    // use static getDerivedStateFromProps to get new state from props
+    // fetching new data is accomplished in componentDidUpdate
+    public static getDerivedStateFromProps(nextProps: any, prevState: any){
+        if (nextProps.queryPar.type === 1 && nextProps.queryPar !== prevState.queryPar){
+            return {
+                queryPar: nextProps.queryPar,
+                loading: true,
+                pageInfo:{ pageNum: 1,
+                    pageSize: 40
+                }
+            }
+        }
+        return null
+    }
+
   public data: ILayer [][];
   public submitOptionList: ILayer [];
   constructor (props:Props) {
@@ -56,7 +72,7 @@ class LayerSearch extends React.Component<Props,State> {
           pageNum: 1,
           pageSize: 40// should be multiple of 8
       },
-      // queryPar: this.props.queryPar,
+      queryPar: this.props.queryPar,
       queryType: 'byMetadata',
       recycleList: [],
       rSideCollapsed: true,
@@ -72,19 +88,26 @@ class LayerSearch extends React.Component<Props,State> {
     
   }
 
-  public componentWillReceiveProps(nextProps:any){
-    // if updated queryPar type is service(defined as 0),then skip updating action in the layer search page.
-    // if updated queryPar type is layers(defined as 1), then search for new queryPar and update data.
-    if (nextProps.queryPar.type===1){
-      this.setState({
-        loading: true,
-        pageInfo:{
-          pageNum: 1,
-          pageSize: 40,
-        },
-      },()=>{this.queryLayerList(this.state.pageInfo,nextProps.queryPar)})
+    public componentDidUpdate(prevProps: any, prevState: any){
+        if (this.state.queryPar.type === 1 && this.state.queryPar !== prevState.queryPar) {
+            this.queryLayerList(this.state.pageInfo, this.state.queryPar)
+        }
     }
-}
+
+    // Unsafe, recommend getDerivedStateFromProps instead of componentWillReceiveProps
+    //   public componentWillReceiveProps(nextProps:any){
+    //     // if updated queryPar type is service(defined as 0),then skip updating action in the layer search page.
+    //     // if updated queryPar type is layers(defined as 1), then search for new queryPar and update data.
+    //     if (nextProps.queryPar.type===1){
+    //       this.setState({
+    //         loading: true,
+    //         pageInfo:{
+    //           pageNum: 1,
+    //           pageSize: 40,
+    //         },
+    //       },()=>{this.queryLayerList(this.state.pageInfo,nextProps.queryPar)})
+    //     }
+    // }
   
   public render() {
     

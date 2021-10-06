@@ -52,11 +52,11 @@ const MyIcon=Icon.createFromIconfontCN({
       };
     }
 
-  public componentWillReceiveProps =()=>{
-    // this.setState({
-    //   collapsed: false,
-    // })
-  }
+  // public componentWillReceiveProps =()=>{
+  //   this.setState({
+  //     collapsed: false,
+  //   })
+  // }
 
   public render(){
     return(

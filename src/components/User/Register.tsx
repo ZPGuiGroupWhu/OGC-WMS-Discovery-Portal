@@ -18,6 +18,18 @@ interface State {
 }
 
 class Register extends React.Component<Props, State>{
+    // Instead of unsafe and not recommended componentWillReceiveProps,
+    // use static getDerivedStateFromProps to get new state from props
+    public static getDerivedStateFromProps(nextProps: any, prevState: any){
+        if (nextProps.registerVisible !== prevState.registerVisible){
+            return {
+                registerVisible: nextProps.registerVisible
+            }
+        }
+        // return null means do nothing on state
+        return null
+    }
+
     constructor(props:Props) {
         super(props);
         this.state = {
@@ -28,19 +40,17 @@ class Register extends React.Component<Props, State>{
     }
 
     // receive changed variable from redux
-    public componentWillReceiveProps(nextProps: any) {
-        if (this.state.registerVisible !== nextProps.registerVisible){
-            this.setState({
-                registerVisible: nextProps.registerVisible
-            })
-        }
-    }
+    // public componentWillReceiveProps(nextProps: any) {
+    //     if (this.state.registerVisible !== nextProps.registerVisible){
+    //         this.setState({
+    //             registerVisible: nextProps.registerVisible
+    //         })
+    //     }
+    // }
 
     // control register modal visible
     public handleCancel =()=>{
-        this.setState({
-            registerVisible: false
-        })
+        this.props.dispatch(conveyRegisterVisible(false))
     }
 
     // handle register button

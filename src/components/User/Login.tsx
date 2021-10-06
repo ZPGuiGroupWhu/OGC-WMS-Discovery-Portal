@@ -20,6 +20,18 @@ interface State{
 }
 
 class Login extends React.Component<Props, State>{
+    // Instead of unsafe and not recommended componentWillReceiveProps,
+    // use static getDerivedStateFromProps to get new state from props
+    public static getDerivedStateFromProps(nextProps: any, prevState: any){
+        if (nextProps.loginVisible !== prevState.loginVisible){
+            return {
+                loginVisible: nextProps.loginVisible
+            }
+        }
+        // return null means do nothing on state
+        return null
+    }
+
     constructor(props:Props) {
         super(props);
         this.state = {
@@ -29,14 +41,14 @@ class Login extends React.Component<Props, State>{
     }
 
     // receive changed variable from redux
-    public componentWillReceiveProps(nextProps: any) {
-        if (nextProps.loginVisible !== this.state.loginVisible)
-        {
-            this.setState({
-                loginVisible: nextProps.loginVisible
-            })
-        }
-    }
+    // public componentWillReceiveProps(nextProps: any) {
+    //     if (nextProps.loginVisible !== this.state.loginVisible)
+    //     {
+    //         this.setState({
+    //             loginVisible: nextProps.loginVisible
+    //         })
+    //     }
+    // }
 
     // handle login button
     public handleLogin = (e:any) => {
@@ -91,8 +103,6 @@ class Login extends React.Component<Props, State>{
     // handle cancel button
     public handleCancel =()=>{
         this.props.dispatch(conveyLoginVisible(false))
-        this.setState({
-            loginVisible: false})
     }
 
 
