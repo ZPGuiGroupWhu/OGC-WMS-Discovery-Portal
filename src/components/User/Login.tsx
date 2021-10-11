@@ -108,7 +108,7 @@ class Login extends React.Component<Props, State>{
 
     public render() {
         const {getFieldDecorator} =this.props.form;
-        const prefixSelector=getFieldDecorator('loginType',{initialValue: 'email'})(
+        const prefixSelector=getFieldDecorator('loginType',{initialValue: this.state.identifier})(
             <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
                     onChange={()=>{this.props.form.resetFields()}}>
                 <Select.Option key='email'><Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/></Select.Option>
@@ -178,6 +178,7 @@ const mapStateToProps =(state:any) =>{
         loginVisible: state.conveyVisibleReducer.loginVisible
     }
 }
+
 
 const wrappedLogin=Form.create<Props>({name:'login'})(Login)
 export default connect(mapStateToProps)(wrappedLogin);

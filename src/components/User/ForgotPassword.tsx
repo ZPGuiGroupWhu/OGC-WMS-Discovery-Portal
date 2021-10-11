@@ -93,7 +93,7 @@ class ForgotPassword extends React.Component<Props, State>{
 
     public render (){
         const {getFieldDecorator}=this.props.form
-        const prefixSelector=getFieldDecorator('ReFType',{initialValue: 'email'})(
+        const prefixSelector=getFieldDecorator('ReFType',{initialValue: this.state.identifier})(
             <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
                     onChange={()=>{this.props.form.resetFields()}}>
                 <Select.Option key='email'><Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/></Select.Option>

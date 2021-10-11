@@ -8,6 +8,8 @@ import IntensionExp from './IntentionExp'
 import {connect} from 'react-redux';
 import {conveyLayerID} from '../../redux/action'
 
+// @ts-ignore
+import hm from 'heatmap.js'
 
 const { Content} = Layout;
 
@@ -35,6 +37,7 @@ interface State {
   time: number;
   uploadList: FormData;
 
+  isDrawHeatmap: boolean;
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -56,6 +59,17 @@ class LayerSearch extends React.Component<Props,State> {
 
   public data: ILayer [][];
   public submitOptionList: ILayer [];
+
+  // define variable to collect mouse track date and draw heatmap
+  public heatmapInstance: any;
+  public trackData: boolean;
+  public lastX:number;
+  public lastY:number;
+  public traceDataInterval: NodeJS.Timeout;
+  public idleInterval: NodeJS.Timeout;
+  public idleTimeout: NodeJS.Timeout;
+  public heatMapData: any;
+
   constructor (props:Props) {
     super(props);
     this.state = {
@@ -80,12 +94,15 @@ class LayerSearch extends React.Component<Props,State> {
       time: 0,
       uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
 
+      isDrawHeatmap: false,
     };
   }
 
   public componentDidMount(){
     this.initData();
-    
+
+    // set a timer to record traceData
+    this.traceDataInterval=setInterval(()=>{this.trackData=true},50)
   }
 
     public componentDidUpdate(prevProps: any, prevState: any){
@@ -108,55 +125,144 @@ class LayerSearch extends React.Component<Props,State> {
     //       },()=>{this.queryLayerList(this.state.pageInfo,nextProps.queryPar)})
     //     }
     // }
-  
+
+  // collect position when the mouse is on the heatmap canvas
+  public collectMousePos =(e:any)=>{
+      if (this.idleTimeout) {clearTimeout(this.idleTimeout)}
+      if (this.idleInterval) {clearInterval(this.idleInterval)}
+
+      if(this.state.isDrawHeatmap){
+          if(this.trackData){
+              // offsetX and offsetY is attribution in e.nativeEvent, not e.
+              this.lastX=e.nativeEvent.offsetX
+              this.lastY=e.nativeEvent.offsetY
+              this.heatmapInstance.addData({
+                  x: this.lastX,
+                  y: this.lastY,
+              })
+              this.trackData=false
+          }
+          this.idleTimeout=setTimeout(()=>{this.idle(this)},500)
+      }
+  }
+
+    // handle mouse idle in "heatmap_wrapper" element
+    // self means Class LayerSearch
+  public idle(self: any){
+      let idleCount=0
+      self.idleInterval=setInterval(()=>{
+          self.heatmapInstance.addData({
+              x: this.lastX,
+              y: this.lastY,
+          })
+          idleCount++
+          if(idleCount>10) {clearInterval(self.idleInterval)}
+      },500)
+  }
+
+  // handle heatmap button to imshow the heatmap canvas or not
+  public handleHeatmapBtn=()=>{
+      // console.log(this.heatmapInstance.getDataURL())
+      this.setState({isDrawHeatmap: !this.state.isDrawHeatmap}
+      ,()=>{
+              if(this.state.isDrawHeatmap){
+                  this.heatmapInstance=hm.create({
+                      container: document.getElementById("heatmap_wrapper"),
+                      width: 2300,
+                      height: 800,
+                      radius: 20,
+                      maxOpacity: 0.6,
+                      minOpacity:0.05,
+                      blur: 0.5,
+                      gradient:{
+                          '0.1': 'blue',
+                          '0.3': 'green',
+                          '0.6': 'yellow',
+                          '0.9': 'red',
+                      }
+                  })
+                  if(this.heatMapData){
+                      this.heatmapInstance.setData(this.heatMapData)
+                  }
+              }else{
+                  // setData removes all previously existing points from the heatmap instance and
+                  // re-initializes the datastore
+                  // this.heatmapInstance.setData({
+                  //     max: 20,
+                  //     min: 0,
+                  //     data: []
+                  // })
+                  this.heatMapData=this.heatmapInstance.getData()
+                  document.getElementsByClassName("heatmap-canvas")[0].remove()
+                  // this.heatmapInstance.configure({
+                  //     container: null,
+                  //     width: 0,
+                  //     height: 0,
+                  //     maxOpacity: 0,
+                  // })
+              }
+          })
+  }
+
+  public componentWillUnmonut(){
+      // clear timer
+      clearInterval(this.traceDataInterval)
+      clearInterval(this.idleInterval)
+      clearTimeout(this.idleTimeout)
+  }
+
   public render() {
     
     this.prepareData();
     return (
       <Layout className="main_container_content_imglist sr-only">
-        <Content className="main_container_content">
+        <Content className="main_container_content" id="main_container_content"  style={{width: '1500px', height: '1200px'}}>
           <div className="main_container_content_imglist_statis">
              <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
              <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
+              <Button type={this.state.isDrawHeatmap?"primary":"default"}icon="heat-map" size="small" onClick={this.handleHeatmapBtn}/>
           </div>
-          <List
-             className="main_container_content_imglist"
-             itemLayout="vertical"
-             size="small"
-             pagination={{
-             current: this.state.pageInfo.pageNum,
-             hideOnSinglePage: true,
-             onChange: this.handlePaginate,
-             pageSize: this.state.pageInfo.pageSize,
-             showQuickJumper: true,
-             total: this.state.listTotal
-             }}
-             dataSource={this.data}
-             loading={this.state.loading}
-             footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
-             renderItem={(item:ILayer[])=>(
-                <List.Item>
-                    <List
-                    className="main_container_content_childimglist"
-                    itemLayout="horizontal"
-                    size="small"
-                    grid={{gutter:15,column:8}}
-                    dataSource={item}
-                    renderItem={(childItem:ILayer) => (
-                        <List.Item key={childItem.id} className="main_container_content_imglist_item">
-                          <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
-                             <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
-                                   style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
-                                   bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
-                                     {childItem.name}
-                             </Card>
-                          </Popover>
-                        </List.Item>
-                       )}
-                    />
-                </List.Item>
-                 )}
-          />
+          <div id="heatmap_wrapper" onMouseMove={this.collectMousePos}>
+              <List
+                 id="main_container_content_imglist"
+                 className="main_container_content_imglist"
+                 itemLayout="vertical"
+                 size="small"
+                 pagination={{
+                 current: this.state.pageInfo.pageNum,
+                 hideOnSinglePage: true,
+                 onChange: this.handlePaginate,
+                 pageSize: this.state.pageInfo.pageSize,
+                 showQuickJumper: true,
+                 total: this.state.listTotal
+                 }}
+                 dataSource={this.data}
+                 loading={this.state.loading}
+                 footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
+                 renderItem={(item:ILayer[])=>(
+                    <List.Item>
+                        <List
+                        className="main_container_content_childimglist"
+                        itemLayout="horizontal"
+                        size="small"
+                        grid={{gutter:15,column:8}}
+                        dataSource={item}
+                        renderItem={(childItem:ILayer) => (
+                            <List.Item key={childItem.id} className="main_container_content_imglist_item">
+                              <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
+                                 <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
+                                       style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
+                                       bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
+                                         {childItem.name}
+                                 </Card>
+                              </Popover>
+                            </List.Item>
+                           )}
+                        />
+                    </List.Item>
+                     )}
+              />
+          </div>
           <Divider />
            <div className="main_container_content_shoppingCart">
                <div className="main_container_content_shoppingCart_head">
