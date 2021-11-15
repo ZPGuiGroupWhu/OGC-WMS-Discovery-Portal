@@ -19,6 +19,7 @@ import com.gsv.querywmslist.querywmslist.dao.Layer;
 import com.gsv.querywmslist.querywmslist.dao.WMS;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithWMS;
+import com.gsv.querywmslist.querywmslist.dto.SearchLayerByTempleteResult;
 import com.gsv.querywmslist.querywmslist.repository.ContactInfoMapper;
 import com.gsv.querywmslist.querywmslist.repository.HashCodeMapper;
 import com.gsv.querywmslist.querywmslist.repository.LayerMapper;
@@ -57,7 +58,7 @@ public class LayerService {
     /*
      * 根据样例图片查询
      */
-    public List<LayerWithFloatBBox> getLayerListByTemplateId(Integer[] templateId, Integer pageNum, Integer pageSize) {
+    public SearchLayerByTempleteResult getLayerListByTemplateId(Integer[] templateId, Integer pageNum, Integer pageSize) {
     	
     	
     	if(this.hashcodes == null) {
@@ -101,7 +102,11 @@ public class LayerService {
     	List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer -> 
     			TransformUtil.layerToLayerWithFloatBBox(layer)).collect(Collectors.toList());
     	
-    	return layersWithFloatBBox;
+    	Integer totalLayerNum = similarities.size();
+    	SearchLayerByTempleteResult result = new SearchLayerByTempleteResult();
+    	result.setLayers(layersWithFloatBBox);
+    	result.setTotalLayerNum(totalLayerNum);
+    	return result;
     }
     
     
@@ -139,6 +144,33 @@ public class LayerService {
     }
     
     
+    public Integer getLayerListNum(String keywords, float[] bound, String topic){
+        
+        // 参数预处理
+        keywords = (keywords == null) ? keywords : keywords.toLowerCase();
+        String polygon = new String();
+        if(bound != null) {
+            float maxLat, maxLon, minLat, minLon;
+            minLon = bound[0];
+            maxLon = bound[1];
+            minLat = bound[2];
+            maxLat = bound[3];
+            polygon = "Polygon((" + 
+            		maxLat + " " + minLon + "," + 
+                    maxLat + " " + maxLon + "," + 
+                    minLat + " " + maxLon + "," +
+                    minLat + " " + minLon + "," +
+                    maxLat + " " + minLon + "))";
+            //从左上角开始顺时针写矩形，矩形第一个点和最后一个点必须一致
+        } else {
+            polygon = "";
+        }
+        String[] topicArray = (topic == null) ? null : topic.toLowerCase().split(",");
+        
+        Integer result = layerMapper.getLayersNum(keywords, polygon, topicArray);
+        return result;
+    }
+
     public LayerWithWMS getLayerInfo(Integer layerId) {
     	Integer[] layerIdArray = {layerId};
     	List<Layer> layers = layerMapper.getLayersByIdArray(layerIdArray);

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithWMS;
+import com.gsv.querywmslist.querywmslist.dto.SearchLayerByTempleteResult;
 import com.gsv.querywmslist.querywmslist.service.LayerService;
 import com.gsv.querywmslist.querywmslist.vo.LayerWithWMSResponse;
 import com.gsv.querywmslist.querywmslist.vo.MultiLayersResponse;
@@ -20,7 +21,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
-@Api(value = "LayerController",tags = "批量layer接口")
+@Api(value = "LayerController",tags = "layer接口")
 public class LayerController {
 
 	@Autowired
@@ -28,7 +29,7 @@ public class LayerController {
 	
 	
 	@CrossOrigin
-	@GetMapping("/search/querylayerlist")
+	@GetMapping("/search/queryLayerList")
 	@ApiOperation(value = "根据关键词及主题进行查询")
 	@ApiImplicitParams({
         @ApiImplicitParam(name = "keywords",value = "输入与Name，Title，Abstract，Attribution，Keywords匹配的关键词",required = false),
@@ -46,8 +47,10 @@ public class LayerController {
 		try {
 			// 查询
 			List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerList(keywords, bound, topic, pageNum, pageSize);
+			Integer totalLayerNum = layerService.getLayerListNum(keywords, bound, topic);
 			response.setErrCode(0);
-			response.setTotalLayerNum(layersWithFloatBBox.size());
+			response.setTotalLayerNum(totalLayerNum);
+			response.setCurrentLayerNum(layersWithFloatBBox.size());
 			response.setData(layersWithFloatBBox);
 		} catch(Exception e) {
 			response.setErrCode(1002);
@@ -59,7 +62,7 @@ public class LayerController {
 	
 	
     @CrossOrigin
-    @GetMapping(value = "/search/querylayerbytemplate")
+    @GetMapping(value = "/search/queryLayerByTemplate")
     @ResponseBody
     @ApiOperation(value = "根据数据库中已有样例图片查询")
     @ApiImplicitParams({
@@ -71,10 +74,11 @@ public class LayerController {
     	MultiLayersResponse response = new MultiLayersResponse();
     	
     	try {
-    		List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerListByTemplateId(templateId, pageNum, pageSize);
-			response.setErrCode(0);
-			response.setTotalLayerNum(layersWithFloatBBox.size());
-			response.setLayerNum(pageNum);
+    		SearchLayerByTempleteResult searchResult = layerService.getLayerListByTemplateId(templateId, pageNum, pageSize);
+    		List<LayerWithFloatBBox> layersWithFloatBBox = searchResult.getLayers();
+    		response.setErrCode(0);
+			response.setTotalLayerNum(searchResult.getTotalLayerNum());
+			response.setCurrentLayerNum(layersWithFloatBBox.size());
 			response.setData(layersWithFloatBBox);
     	} catch(Exception e) {
 			response.setErrCode(1002);

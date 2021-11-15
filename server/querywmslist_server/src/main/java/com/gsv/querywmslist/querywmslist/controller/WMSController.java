@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@Api(value = "wmsController",tags = "批量WMS接口")
+@Api(value = "wmsController",tags = "WMS接口")
 public class WMSController {
 	
     @Autowired
@@ -46,9 +46,12 @@ public class WMSController {
     	try {
     		List<WMSWithContactInfo> wmsList = wmsService.getWMSList(keywords, bound, continent, topic, 
     				organization, organization_type, pageNum, pageSize);
+    		Integer totalWMSNum = wmsService.getWMSListNum(keywords, bound, continent, topic, organization, organization_type);
     		response.setData(wmsList);
     		response.setErrCode(0);
-    		response.setTotal(wmsList.size());
+    		response.setCurrentWMSNum(wmsList.size());
+    		response.setTotalWMSNum(totalWMSNum);
+    		
     	} catch(Exception e) {
     		response.setErrCode(1002);
     	}

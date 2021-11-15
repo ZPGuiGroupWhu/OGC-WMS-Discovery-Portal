@@ -103,6 +103,45 @@ public interface WMSMapper {
     List<WMS> getWMSList(@Param("keywords") String keywords, @Param("bound") float[] bound, @Param("continentNew") String continentNew,@Param("topicArray")String [] topicArray, @Param("organizationArray")String [] organizationArray, @Param("organizationTypeArray")String [] organizationTypeArray, @Param("fromRowNum") Integer fromRowNum, @Param("pageSize") Integer pageSize);
     // TODO SQL语句查询中的Organization和OrganizationType都是用Organization来匹配的。
     
+    
+    // 查询符合条件的WMS服务总数
+    @Select("<script>" +
+            "select count(x.id) from(select m.* from (SELECT ID as id, Topic as topic, URL as url, Abstract as abstr, Keywords as keywords, Title as title, Country as country, " + 
+    		"StateOrProvince as stateorprovince, City as city, Latitude as latitude, Longitude as longitude from wms where 1=1 " +
+            "<if test='keywords!=null and  keywords!=\"\" ' >" +
+            " and MATCH (Title,Abstract,url,Keywords) AGAINST (#{keywords}) " +
+            "</if>  " +
+            "<if test='bound!=null ' > " +
+            " and ( Latitude BETWEEN #{bound[2]} AND #{bound[3]} " +
+            "AND Longitude BETWEEN #{bound[0]} AND #{bound[1]} )" +
+            "</if>  " +
+            "<if test='continentNew !=null and  continentNew!=\"\" '>  " +
+            " and LOWER(Continent)=#{continentNew} " +
+            "</if>  " +
+            "<if test='topicArray!=null and topicArray[0]!=null '>  " +
+            "and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
+            "LOWER(Topic) like CONCAT('%',#{item},'%')" +
+            "</foreach> )" +
+            "</if>)m  " +
+            " right join"+
+            " (SELECT  ServiceID  from contactinformation WHERE 1=1"+
+            "<if test='organizationArray!=null and organizationArray[0]!=null '>  " +
+            " and (<foreach collection='organizationArray' item='item' index='index' separator='and'> " +
+            "  MATCH (Organization) AGAINST (#{item})" +
+            "</foreach> )" +
+            "</if>  " +
+            "<if test='organizationTypeArray!=null and organizationTypeArray[0]!=null '>  " +
+            " and (<foreach collection='organizationTypeArray' item='item' index='index' separator='and'> " +
+            " MATCH (Organization) AGAINST (#{item})" +
+            "</foreach> )" +
+            "</if> )n " +
+            " on m.id=n.ServiceID "+
+            " )x where x.id is not null " + 
+            "</script>")
+    Integer getWMSListNum(@Param("keywords") String keywords, @Param("bound") float[] bound, @Param("continentNew") String continentNew,@Param("topicArray")String [] topicArray, @Param("organizationArray")String [] organizationArray, @Param("organizationTypeArray")String [] organizationTypeArray);
+    // TODO SQL语句查询中的Organization和OrganizationType都是用Organization来匹配的。
+    
+    
     @Select("SELECT ID as id, URL as url, IP as ip, abstract as abstr, Version as version, Title as title," +
             "Keywords as keywords, Country as country, StateOrProvince as stateorprovince, City as city," +
             "Latitude as latitude, Longitude as longitude, Topic as topic from wms WHERE id=#{id}")

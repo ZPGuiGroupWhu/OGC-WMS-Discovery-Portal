@@ -41,11 +41,25 @@ public class WMSService {
         	WMSWithContactInfo wmsWithContactInfo =  TransformUtil.mergeWMSAndContactInfo(wms, null);
         	wmsWithContactInfo.setIp(null);
         	wmsWithContactInfo.setVersion(null);
-        	wmsWithContactInfo.setGeoLocation(null);
         	return wmsWithContactInfo;
         	}).collect(Collectors.toList());
         
         return result;
+    }
+    
+    
+    public Integer getWMSListNum(String keywords, float[] bound, String continent, String topic, 
+    		String organization, String organizationType){
+    	
+    	// 参数预处理
+        keywords = (keywords == null) ? null : keywords.toLowerCase();
+        continent = (continent == null) ? null : continent.toLowerCase();
+        String[] topicArray = (topic == null) ? null : topic.toLowerCase().split(",");
+        String[] organizationArray = (organization == null) ? null : organization.toLowerCase().split(",");
+        String[] organizationTypeArray = (organizationType == null) ? null : organizationType.toLowerCase().split(",");
+
+        Integer wmsListNum = wmsMapper.getWMSListNum(keywords, bound, continent, topicArray, organizationArray, organizationTypeArray);
+        return wmsListNum;
     }
     
     

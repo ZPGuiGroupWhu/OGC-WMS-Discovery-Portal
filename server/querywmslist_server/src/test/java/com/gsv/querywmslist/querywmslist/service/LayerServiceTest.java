@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
+import com.gsv.querywmslist.querywmslist.dto.SearchLayerByTempleteResult;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -27,8 +28,8 @@ public class LayerServiceTest {
 		Integer[] templeteIdArray = {1};
 		Integer pageNum = 1;
 		Integer pageSize = 5;
-		List<LayerWithFloatBBox> result = layerService.getLayerListByTemplateId(templeteIdArray, pageNum, pageSize);
-		for(LayerWithFloatBBox layer : result) {
+		SearchLayerByTempleteResult result = layerService.getLayerListByTemplateId(templeteIdArray, pageNum, pageSize);
+		for(LayerWithFloatBBox layer : result.getLayers()) {
 			System.out.println(layer.getId() + ", " + layer.getName() + ", " + layer.getPhoto() == null);
 		}
 	}

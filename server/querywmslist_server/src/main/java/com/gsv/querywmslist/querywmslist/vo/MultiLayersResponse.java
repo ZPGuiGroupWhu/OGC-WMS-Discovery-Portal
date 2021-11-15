@@ -13,6 +13,6 @@ import lombok.EqualsAndHashCode;
 public class MultiLayersResponse extends Response{
 
 	private Integer totalLayerNum;
-    private Integer layerNum;
+    private Integer currentLayerNum;
     private List<LayerWithFloatBBox> data;
 }

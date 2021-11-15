@@ -11,6 +11,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper=false)
 public class MultiWMSResponse extends Response{
 	
-    private Integer total;
+    private Integer totalWMSNum;
+    private Integer currentWMSNum;
     private List<WMSWithContactInfo> data;
 }
