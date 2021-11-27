@@ -1,5 +1,6 @@
 package com.gsv.querywmslist.querywmslist.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.gsv.querywmslist.querywmslist.dto.WMSWithContactInfo;
 import com.gsv.querywmslist.querywmslist.dto.WMSWithLayer;
 import com.gsv.querywmslist.querywmslist.service.WMSService;
@@ -39,9 +40,10 @@ public class WMSController {
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
             @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
-    public Response getWMSList(String keywords, float[] bound, String continent, String topic, 
+    public String getWMSList(String keywords, float[] bound, String continent, String topic,
     		String organization, String organization_type, Integer pageNum, Integer pageSize){
-    	
+
+        // MultiWMSResponse
     	MultiWMSResponse response = new MultiWMSResponse();
     	try {
     		List<WMSWithContactInfo> wmsList = wmsService.getWMSList(keywords, bound, continent, topic, 
@@ -55,8 +57,9 @@ public class WMSController {
     	} catch(Exception e) {
     		response.setErrCode(1002);
     	}
-    	
-    	return response;
+
+        String result=JSON.toJSONString(response);
+    	return result;
 //        PageHelper.startPage(pageNum,pageSize);
 //        List<WMSList> data=wmsService.getWMSList(keywords,bound,continent,topic,organization,organization_type,pageNum,pageSize);
 //        PageInfo<WMSList> wmsResultPageInfo=new PageInfo<>(data);
@@ -94,9 +97,10 @@ public class WMSController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "输入id",required = true),
     })
-    public WMSWithLayerResponse getWMSInfo(Integer id) {
-    	
-    	WMSWithLayerResponse response = new WMSWithLayerResponse();
+    public String getWMSInfo(Integer id) {
+    	// WMSWithLayerResponse
+
+        WMSWithLayerResponse response = new WMSWithLayerResponse();
     	try {
             WMSWithLayer result = wmsService.getWMSInfo(id);
             response.setErrCode(0);
@@ -104,7 +108,8 @@ public class WMSController {
         }catch (Exception e){
             response.setErrCode(1002);
         }
-        
-    	return response;
+
+        String result= JSON.toJSONString(response);
+    	return result;
     }
 }

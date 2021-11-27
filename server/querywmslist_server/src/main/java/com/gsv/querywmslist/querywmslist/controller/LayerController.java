@@ -2,6 +2,7 @@ package com.gsv.querywmslist.querywmslist.controller;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,8 +39,8 @@ public class LayerController {
         @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
         @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
 	})
-	public MultiLayersResponse getLayerList(String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize) {
-		
+	public String getLayerList(String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize) {
+		// MultiLayersResponse
 		
 		MultiLayersResponse response = new MultiLayersResponse();
 		
@@ -56,8 +57,9 @@ public class LayerController {
 			response.setErrCode(1002);
 			response.setReqMsg("出现错误");
 		}
-			
-		return response;
+
+		String result= JSON.toJSONString(response);
+		return result;
 	}
 	
 	
@@ -70,7 +72,8 @@ public class LayerController {
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
             @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
-    public MultiLayersResponse getLayerList(Integer[] templateId, Integer pageNum, Integer pageSize){
+    public String getLayerList(Integer[] templateId, Integer pageNum, Integer pageSize){
+		// MultiLayersResponse
     	MultiLayersResponse response = new MultiLayersResponse();
     	
     	try {
@@ -84,7 +87,9 @@ public class LayerController {
 			response.setErrCode(1002);
 			response.setReqMsg("出现错误");
 		}
-    	return response;
+
+		String result=JSON.toJSONString(response);
+    	return result;
     }
 	
     @CrossOrigin
@@ -93,9 +98,10 @@ public class LayerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "输入id", required = true),
     })
-    public LayerWithWMSResponse queryLayerInfo(Integer id){
-    	
-    	LayerWithWMSResponse response = new LayerWithWMSResponse();
+    public String queryLayerInfo(Integer id){
+		// LayerWithWMSResponse
+
+		LayerWithWMSResponse response = new LayerWithWMSResponse();
     	try {
     		LayerWithWMS data = layerService.getLayerInfo(id);
     		response.setData(data);
@@ -104,6 +110,8 @@ public class LayerController {
 			response.setErrCode(1002);
 			response.setReqMsg("出现错误");
 		}
-    	return response;
+
+		String result=JSON.toJSONString(response);
+    	return result;
     }
 }

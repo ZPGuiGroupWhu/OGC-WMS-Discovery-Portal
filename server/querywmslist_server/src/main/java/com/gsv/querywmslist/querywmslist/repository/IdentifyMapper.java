@@ -46,6 +46,6 @@ public interface IdentifyMapper {
     RecUser login(String loginType,  String identifier,  String password);
 
     // 找回密码
-    @Select("SELECT Credential as password FROM userauth WHERE IdentityType = #{RFType} AND Identify = #{identifier}")
-    String reFindPas(String RFType, String identifier);
+    @Select("SELECT Credential as password FROM userauth WHERE IdentityType = #{FType} AND Identify = #{identifier}")
+    String findPwd(String FType, String identifier);
 }
