@@ -18,7 +18,7 @@ interface Props{
 }
 
 interface State{
-    layerData: ILayer[];
+    // layerData: ILayer[];  // abandon
     servInfoData: IServInfo;
 }
 
@@ -27,7 +27,7 @@ class ServiceInfo extends React.Component<Props,State>{
     constructor(props: Props){
         super(props)
         this.state = {
-            layerData:[],
+            // layerData:[],
             servInfoData: {
                 abstr: '',
                 administrative_unit: '',
@@ -48,7 +48,7 @@ class ServiceInfo extends React.Component<Props,State>{
                 id: 1,
                 ip: '',
                 keywords: '',
-                layer: [],
+                layers: [],
                 title: '',
                 topic: '',
                 url: '',
@@ -84,7 +84,7 @@ class ServiceInfo extends React.Component<Props,State>{
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_content">
                             <span><Icon className="icon" type="compass"/><b>Location：</b>{this.state.servInfoData.administrative_unit}</span>
-                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>{this.state.servInfoData.geoLocation[0]},{this.state.servInfoData.geoLocation[1]}</span><br/>
+                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>({this.state.servInfoData.geoLocation[0]}, {this.state.servInfoData.geoLocation[1]})</span><br/>
                             <p>{this.state.servInfoData.abstr ? this.state.servInfoData.abstr : 'There is no abstract in the service capability document.'}</p><br/>
                         </Content>
                     </Content>
@@ -119,7 +119,7 @@ class ServiceInfo extends React.Component<Props,State>{
                     <Content className="_info_container">
                         <b className="_info_container_header">Layer Info</b><br/>
                         <Content className="_info_container_section_content">
-                            {this.layerInfo(this.state.servInfoData.layer)}
+                            {this.layerInfo(this.state.servInfoData.layers)}
                         </Content> 
                     </Content>
                 </Content>  

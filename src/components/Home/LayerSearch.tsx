@@ -664,7 +664,7 @@ class LayerSearch extends React.Component<Props,State> {
   // When to transfer: init render LayerSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
   // @param  params:object = {keyword?:string, bound?:number[], pageNum:number, pageSize:number, topic?:string, organization?:string, organization_type?:string, continent?:string}
   public async queryLayerList(pagePar:object, queryPar:object) {
-    const baseUrl:string = 'search/querylayerlist';
+    const baseUrl:string = 'search/queryLayerList';
     const reqPar:object = Object.assign(pagePar,queryPar);
     const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8081');
     let requestTime:number=0;  // record request time
@@ -675,9 +675,9 @@ class LayerSearch extends React.Component<Props,State> {
         clearInterval(timer);
         const resBody:any  = JSON.parse(res)
         this.setState({
-            currentSize: resBody.currentPageSize,
+            currentSize: resBody.currentLayerNum,
             dataList: resBody.data,
-            listTotal: resBody.total,
+            listTotal: resBody.totalLayerNum,
             isUpdate: true,
             loading: false,
             queryType: 'byMetadata',
@@ -689,7 +689,7 @@ class LayerSearch extends React.Component<Props,State> {
   }
 
   public async queryLayerByTemplate(pagePar:object,optionList:ILayer[]) {
-    const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/querylayerbytemplate','8081');
+    const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
     let url:string=baseUrl+'&templateId=';
     // if(this.state.queryType === 'paginateByTemplate'){
     // }
@@ -714,7 +714,7 @@ class LayerSearch extends React.Component<Props,State> {
         clearInterval(timer);
         const resBody:any  = JSON.parse(res)
         this.setState({
-            currentSize: resBody.layerNum,
+            currentSize: resBody.currentLayerNum,
             dataList: resBody.data,
             listTotal: resBody.totalLayerNum,
             isUpdate: true,

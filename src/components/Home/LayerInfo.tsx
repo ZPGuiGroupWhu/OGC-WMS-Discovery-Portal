@@ -28,7 +28,7 @@ class LayerInfo extends React.Component<Props,State>{
             layerInfoData:{
                 abstr: '',
                 attribution: '',
-                bbox: [],
+                bbox: [[],[]],
                 id: 1,
                 keywords: '',
                 name: '',
@@ -84,7 +84,7 @@ class LayerInfo extends React.Component<Props,State>{
         {
             ServiceKeyword=this.state.layerInfoData.service["keywords"];
         }
-        
+
         return (
             <Layout className="_info">
                 <header><Icon type="home"/><Link to="/">Home</Link> / {this.state.layerInfoData.name}</header>
@@ -101,10 +101,11 @@ class LayerInfo extends React.Component<Props,State>{
                     <Content className="_info_container_section" >
                     <span><b className="_info_container_section_header">Details of the layer:</b></span><br/>
                         <Content className="_info_container_section_content">
-                        <span className='span'><Icon className="icon" type="tag" /><b>Name: </b>{this.state.layerInfoData.name}.</span><br/>
+                        <span className='span'><Icon className="icon" type="tag" /><b>Name: </b>{this.state.layerInfoData.name}</span><br/>
                         <span className='span'><Icon className="icon" type="container"/><b>Abstract: </b>{this.state.layerInfoData.abstr}</span><br/>
-                        <span className='span'><Icon className="icon" type="pushpin"/><b>Attribution: </b>{attribution}.</span><br/>
-                        <span className='span'><Icon className="icon" type="environment"/><b>BoundingBox(using {this.state.layerInfoData.projection}): </b>({this.state.layerInfoData.bbox[0]});({this.state.layerInfoData.bbox[1]}).</span><br/>
+                        <span className='span'><Icon className="icon" type="pushpin"/><b>Attribution: </b>{attribution}</span><br/>
+                        <span className='span'><Icon className="icon" type="environment"/><b>BoundingBox(using {this.state.layerInfoData.projection}): </b>
+                            ({this.state.layerInfoData.bbox[0][0]}, {this.state.layerInfoData.bbox[0][1]}); ({this.state.layerInfoData.bbox[1][0]}, {this.state.layerInfoData.bbox[1][1]})</span><br/>
                         <span className='span'><Icon className="icon" type="link" /><b>Layer link：</b><a id="layerInfoUrl" href={this.state.layerInfoData.url}>{this.state.layerInfoData.url}</a></span><br/>
                         </Content>
                     </Content>
@@ -120,7 +121,7 @@ class LayerInfo extends React.Component<Props,State>{
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_content">
                             <span className='span'><Icon className="icon" type="compass"/><b>Location：</b>{this.state.layerInfoData.service["administrative_unit"]}</span>
-                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>{this.state.layerInfoData.service["geoLocation"][0]},{this.state.layerInfoData.service["geoLocation"][1]}</span><br/>
+                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>({this.state.layerInfoData.service["geoLocation"][0]}, {this.state.layerInfoData.service["geoLocation"][1]})</span><br/>
                             <p>{this.state.layerInfoData.service["abstr"] ? this.state.layerInfoData.service["abstr"] : ''}</p>
                         </Content>
                     </Content>
@@ -136,8 +137,9 @@ class LayerInfo extends React.Component<Props,State>{
                             <span className='span'><Icon className="icon" type="profile"/><b>Post_code: </b>{this.state.layerInfoData.service["contact_info"].post_code}</span><br/>
                             <span className='span'><Icon className="icon" type="environment"/><b>Address: </b>{this.state.layerInfoData.service["contact_info"].address}</span><br/>
                             <span className='span'><Icon className="icon" type="shop"/><b>City: </b>{this.state.layerInfoData.service["contact_info"].city}</span><br/>
-                            <span className='span'><Icon className="icon" type="compass"/><b>Position: </b>{this.state.layerInfoData.service["contact_info"].position}</span><br/>                                <span className='span'><Icon className="icon" type="phone"/><b>Fascimile_tel: </b>{this.state.layerInfoData.service["contact_info"].fascimile_tel}</span><br/>
-                            <span className='span'><Icon className="icon" type="message"/><b>Voice_tel: </b>{this.state.layerInfoData.service["contact_info"].voice_tel}</span><br/>
+                            <span className='span'><Icon className="icon" type="compass"/><b>Position: </b>{this.state.layerInfoData.service["contact_info"].position}</span><br/>
+                            <span className='span'><Icon className="icon" type="phone"/><b>Fascimile_tel: </b>{this.state.layerInfoData.service["contact_info"].fascimile_tel}</span><br/>
+                            <span className='span'><Icon className="icon" type="message"/><b>Voice_tel: </b>{this.state.layerInfoData.service["contact_info"].voice_tel} </span><br/>
                         </Content>
                     </Content>
                     <Content className="_info_container_section">
@@ -174,7 +176,7 @@ class LayerInfo extends React.Component<Props,State>{
         const url:string = reqUrl({id:this.props.layerID},baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
-            console.log(res)
+            // console.log(res)
             this.setState({
                 layerInfoData: JSON.parse(res).data
             })

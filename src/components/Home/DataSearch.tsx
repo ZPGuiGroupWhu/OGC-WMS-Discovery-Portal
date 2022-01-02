@@ -114,7 +114,7 @@ class DataSearch extends React.Component<Props, State> {
                             <Link to="/serviceInfo" className="title" onClick={()=>{this.props.dispatch(conveyServiceID(item.id))}}>{item.title ? item.title : 'null'}</Link>
                             <Rate disabled={true} allowHalf={true} value={4.5} className="rank"/><br/>
                             <span><Icon className="icon" type="compass"/>Location: {item.administrative_unit}</span>
-                            <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: {item.geoLocation[0]},{item.geoLocation[1]}</span><br/>
+                            <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: ({item.geoLocation[0]}, {item.geoLocation[1]})</span><br/>
                             Service was public at the website: <a href={item.url}>{item.url}</a><br/>
                             {item.abstr ? stringFilter(item.abstr) : 'There is no abstract in the service capability document.'}<br/>
                             <b>Keywords: </b><span>{item.keywords ? stringFilter(item.keywords): 'no keywords'}</span>
@@ -166,7 +166,7 @@ class DataSearch extends React.Component<Props, State> {
             // console.log(res)
             this.setState({
                 dataList: resBody.data,
-                listTotal: resBody.total,
+                listTotal: resBody.totalWMSNum,
                 loading: false,
                 time: requestTime*0.01,
             })

@@ -37,7 +37,7 @@ https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
 ```
 
 **类型修改**
-进入node_modules/_@types_node@10.14.10@@types/node/globals.d.ts
+进入node_modules/_@types_node@10.17.60@@types/node/globals.d.ts
 
 在213行 将'declare var require: NodeRequire;'改为
   ```

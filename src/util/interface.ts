@@ -32,7 +32,7 @@ export interface IServInfo{
     id: number;
     ip: string;
     keywords: string;
-    layer: ILayer[];
+    layers: ILayer[];
     title: string;
     topic: string;
     url: string;

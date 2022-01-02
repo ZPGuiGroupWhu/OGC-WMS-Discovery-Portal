@@ -56,9 +56,9 @@ class ForgotPassword extends React.Component<Props, State>{
         form.validateFields(async (err,values)=>{
             if(!err){
                 // console.log('Received values of form: ', values)
-                // query password by reFindType and identity
+                // query password by findType and identity
                 try {
-                    const url = reqUrl({reFindType: values.ReFType , identifier: values.identity},'identify/reFindPas','8081')
+                    const url = reqUrl({findType: values.FType , identifier: values.identity},'identify/findPwd','8081')
                     console.log(url)
 
                     const res: any = await $req(url, {method:"GET"})
@@ -93,7 +93,7 @@ class ForgotPassword extends React.Component<Props, State>{
 
     public render (){
         const {getFieldDecorator}=this.props.form
-        const prefixSelector=getFieldDecorator('ReFType',{initialValue: this.state.identifier})(
+        const prefixSelector=getFieldDecorator('FType',{initialValue: this.state.identifier})(
             <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
                     onChange={()=>{this.props.form.resetFields()}}>
                 <Select.Option key='email'><Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/></Select.Option>
