@@ -3,7 +3,7 @@ import * as L from 'leaflet';
 import 'leaflet-draw';   
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';
-import DataSearch from './DataSearch';
+import DataSearch from './ServiceSearch';
 import LayerSearch from './LayerSearch';
 import {mapDrawConfig} from '../../util/config'; 
 import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
@@ -53,7 +53,6 @@ class Home extends React.Component<Props,State> {
           organization: '',
           organization_type: '', 
           topic: '',
-          type: 0,
       },
       collapsed: false,
     };
@@ -181,7 +180,6 @@ class Home extends React.Component<Props,State> {
     unsta.className = `${unsta.className} sr-only`;
     // distinguish query type and store it in queryPar
     const queryPar=this.state.queryPar;
-    queryPar.type=active;
     this.setState({queryPar})
     this.props.dispatch(conveyQueryPar(queryPar));
   }

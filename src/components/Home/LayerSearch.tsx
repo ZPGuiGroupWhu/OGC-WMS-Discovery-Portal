@@ -1,12 +1,14 @@
 import * as React from 'react';
 import '../../style/_home.scss'; 
-import { Layout, Statistic,List,Card,Icon,Popover,Button,Carousel,Divider,message,Modal} from 'antd';
+import { Layout, Statistic,List,Card,Icon,Popover, Button, Carousel, Divider,
+    message, Modal, Input, Select, Radio, Tooltip} from 'antd';
 import $req from '../../util/fetch';    
 import { IQueryPar, IPageInfo,ILayer } from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
-import IntensionExp from './IntentionExp'
+import LeftSider from './LeftSider';
+import IntensionExp from './IntentionExp';
 import {connect} from 'react-redux';
-import {conveyLayerID} from '../../redux/action'
+import {conveyLayerID,conveyQueryPar} from '../../redux/action';
 
 // @ts-ignore
 import hm from 'heatmap.js'
@@ -45,7 +47,7 @@ class LayerSearch extends React.Component<Props,State> {
     // use static getDerivedStateFromProps to get new state from props
     // fetching new data is accomplished in componentDidUpdate
     public static getDerivedStateFromProps(nextProps: any, prevState: any){
-        if (nextProps.queryPar.type === 1 && nextProps.queryPar !== prevState.queryPar){
+        if (nextProps.queryPar !== prevState.queryPar){
             return {
                 queryPar: nextProps.queryPar,
                 loading: true,
@@ -86,7 +88,14 @@ class LayerSearch extends React.Component<Props,State> {
           pageNum: 1,
           pageSize: 40// should be multiple of 8
       },
-      queryPar: this.props.queryPar,
+      queryPar: {
+          bound: [],
+          continent: '',
+          keywords: '',
+          organization: '',
+          organization_type: '',
+          topic: '',
+      },
       queryType: 'byMetadata',
       recycleList: [],
       rSideCollapsed: true,
@@ -101,13 +110,19 @@ class LayerSearch extends React.Component<Props,State> {
   public componentDidMount(){
     this.initData();
 
+
     // set a timer to record traceData
     this.traceDataInterval=setInterval(()=>{this.trackData=true},50)
   }
 
     public componentDidUpdate(prevProps: any, prevState: any){
-        if (this.state.queryPar.type === 1 && this.state.queryPar !== prevState.queryPar) {
-            this.queryLayerList(this.state.pageInfo, this.state.queryPar)
+        if (this.state.queryPar !== prevState.queryPar) {
+            this.queryLayerList(this.state.pageInfo, this.state.queryPar).then(()=>{
+                this.setState({
+                    listFootShow: 'block',
+                    loading: false
+                })
+            })
         }
     }
 
@@ -215,96 +230,113 @@ class LayerSearch extends React.Component<Props,State> {
     
     this.prepareData();
     return (
-      <Layout className="main_container_content_imglist sr-only">
-        <Content className="main_container_content" id="main_container_content"  style={{width: '1500px', height: '1200px'}}>
-          <div className="main_container_content_imglist_statis">
-             <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
-             <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
-              <Button type={this.state.isDrawHeatmap?"primary":"default"}icon="heat-map" size="small" onClick={this.handleHeatmapBtn}/>
-          </div>
-          <div id="heatmap_wrapper" onMouseMove={this.collectMousePos}>
-              <List
-                 id="main_container_content_imglist"
-                 className="main_container_content_imglist"
-                 itemLayout="vertical"
-                 size="small"
-                 pagination={{
-                 current: this.state.pageInfo.pageNum,
-                 hideOnSinglePage: true,
-                 onChange: this.handlePaginate,
-                 pageSize: this.state.pageInfo.pageSize,
-                 showQuickJumper: true,
-                 total: this.state.listTotal
-                 }}
-                 dataSource={this.data}
-                 loading={this.state.loading}
-                 footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
-                 renderItem={(item:ILayer[])=>(
-                    <List.Item>
-                        <List
-                        className="main_container_content_childimglist"
-                        itemLayout="horizontal"
-                        size="small"
-                        grid={{gutter:15,column:8}}
-                        dataSource={item}
-                        renderItem={(childItem:ILayer) => (
-                            <List.Item key={childItem.id} className="main_container_content_imglist_item">
-                              <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
-                                 <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
-                                       style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
-                                       bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
-                                         {childItem.name}
-                                 </Card>
-                              </Popover>
+        <Content className="content">
+            <div className="content_tool">
+                {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
+                <Input  className="content_tool_search" allowClear={true}  placeholder="Input something to search services" onPressEnter={this.handleSearch}  addonAfter={
+                    <Radio.Group className="content_tool_radio" buttonStyle="solid" >
+                        <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><Icon type="search"/></Radio.Button></Tooltip>
+                        <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><Icon type="file-search"/></Radio.Button></Tooltip>
+                    </Radio.Group>} />
+                <Button className="content_tool_btn" type="primary">Return to Last Result</Button>
+                <Select defaultValue="firstLetter" className="content_tool_select">
+                    <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
+                    <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
+                    <Select.Option value="ResTime">Order By Response Time</Select.Option>
+                    <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
+                </Select>
+            </div>
+            <Layout className="main_container">
+                <LeftSider />
+                <Content className="main_container_content" id="main_container_content" >
+                  <div className="main_container_content_imglist_statis">
+                     <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
+                     <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
+                      <Button type={this.state.isDrawHeatmap?"primary":"default"}icon="heat-map" size="small" onClick={this.handleHeatmapBtn}/>
+                  </div>
+                  <div id="heatmap_wrapper" onMouseMove={this.collectMousePos}>
+                      <List
+                         id="main_container_content_imglist"
+                         className="main_container_content_imglist"
+                         itemLayout="vertical"
+                         size="small"
+                         pagination={{
+                         current: this.state.pageInfo.pageNum,
+                         hideOnSinglePage: true,
+                         onChange: this.handlePaginate,
+                         pageSize: this.state.pageInfo.pageSize,
+                         showQuickJumper: true,
+                         total: this.state.listTotal
+                         }}
+                         dataSource={this.data}
+                         loading={this.state.loading}
+                         footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
+                         renderItem={(item:ILayer[])=>(
+                            <List.Item>
+                                <List
+                                className="main_container_content_childimglist"
+                                itemLayout="horizontal"
+                                size="small"
+                                grid={{gutter:15,column:8}}
+                                dataSource={item}
+                                renderItem={(childItem:ILayer) => (
+                                    <List.Item key={childItem.id} className="main_container_content_imglist_item" >
+                                      <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
+                                         <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
+                                               style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
+                                               bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
+                                                 {childItem.name}
+                                         </Card>
+                                      </Popover>
+                                    </List.Item>
+                                   )}
+                                />
                             </List.Item>
-                           )}
-                        />
-                    </List.Item>
-                     )}
-              />
-          </div>
-          <Divider />
-           <div className="main_container_content_shoppingCart">
-               <div className="main_container_content_shoppingCart_head">
-                 <Icon className="icon" type="shopping-cart" />
-                 <span className="title">Shopping Cart</span>
-                 <Icon className="icon_small" type={this.state.bSideCollapsed?"down-square":"up-square"} onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/><br/>
-                 <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>         
-                 <div className="buttons">
-                
-                     <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
-                     <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
-              
-                   <Button className="button" type="primary" disabled={this.state.bSideCollapsed?true:false} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
-                   <Button className="button" type="primary" disabled={this.state.optionList.length===0?true:false} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
-                </div>
-               </div>
-               <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
-                 {this.shoppingcart()}
-               </div>
-           </div>
-           </Content>
-           <IntensionExp collapsed={this.state.rSideCollapsed}/>
+                             )}
+                      />
+                  </div>
+                  <Divider />
+                   <div className="main_container_content_shoppingCart">
+                       <div className="main_container_content_shoppingCart_head">
+                         <Icon className="icon" type="shopping-cart" />
+                         <span className="title">Shopping Cart</span>
+                         <Icon className="icon_small" type={this.state.bSideCollapsed?"down-square":"up-square"} onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/><br/>
+                         <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
+                         <div className="buttons">
 
-           <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={()=>{this.handleSubmitOk()}} onCancel={()=>{this.setState({submitVisible: false})}} closable={false}
-                  title={
-                  <div className="main_container_modal_title">
-                    <Icon className="icon" type="setting" /><span className="span">Submit Setting</span>
-                  </div>} 
-                footer={[
-                  <Button key="back" onClick={()=>{this.setState({submitVisible: false})}}>Return</Button>,
-                  <Button key="submit" type="primary" onClick={()=>{this.handleSubmitOk()}}>Submit</Button>,]}>
+                             <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
+                             <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
 
-              <div className="main_container_modal_body">
-                <span className="sub_title">Retrieval Method:</span><br/>
-                <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
-                <span className="sub_title">Description:</span><br/>
-                <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and map content. Firstly, the map is roughly classified according to cartography methods. Then explore the best feature fusion modes corresponding to the maps with same cartography methods, and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer retrieval.</p>
-              </div>
+                           <Button className="button" type="primary" disabled={!!this.state.bSideCollapsed} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
+                           <Button className="button" type="primary" disabled={this.state.optionList.length===0} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
+                        </div>
+                       </div>
+                       <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
+                         {this.shoppingcart()}
+                       </div>
+                   </div>
+                   </Content>
+               <IntensionExp collapsed={this.state.rSideCollapsed}/>
 
-           </Modal>
-        </Layout>
-       
+               <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={()=>{this.handleSubmitOk()}} onCancel={()=>{this.setState({submitVisible: false})}} closable={false}
+                      title={
+                      <div className="main_container_modal_title">
+                        <Icon className="icon" type="setting" /><span className="span">Submit Setting</span>
+                      </div>}
+                    footer={[
+                      <Button key="back" onClick={()=>{this.setState({submitVisible: false})}}>Return</Button>,
+                      <Button key="submit" type="primary" onClick={()=>{this.handleSubmitOk()}}>Submit</Button>,]}>
+
+                  <div className="main_container_modal_body">
+                    <span className="sub_title">Retrieval Method:</span><br/>
+                    <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
+                    <span className="sub_title">Description:</span><br/>
+                    <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and map content. Firstly, the map is roughly classified according to cartography methods. Then explore the best feature fusion modes corresponding to the maps with same cartography methods, and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer retrieval.</p>
+                  </div>
+               </Modal>
+
+            </Layout>
+        </Content>
     );
   }
 
@@ -407,8 +439,24 @@ class LayerSearch extends React.Component<Props,State> {
    />
     )
   }
-  
- 
+
+    // handle input search in the database
+    public handleSearch=()=>{
+        const inputValue=document.getElementsByClassName('ant-input')[0].getAttribute('value');
+        const queryPar = this.state.queryPar;
+        if(inputValue!==null){queryPar.keywords=inputValue}
+        this.setState({queryPar});
+        this.props.dispatch(conveyQueryPar(queryPar))
+        // this.queryLayerList(this.state.pageInfo, this.state.queryPar)
+    }
+
+    // handle input search in the last result
+    public handleRefine=()=>{
+        const inputValue=document.getElementsByClassName("ant-input")[0].getAttribute("value");
+        console.log(inputValue);
+        // complete refine interface...
+    }
+
   // handle upload button in the shopping cart.
   // upload users' layers and push them into optionList.
   public uploadButton () {
@@ -515,13 +563,23 @@ class LayerSearch extends React.Component<Props,State> {
   // init layer list by sending http request 
   public initData = () => {
     const self=this;
-    this.queryLayerList(this.state.pageInfo,this.props.queryPar).then(setLoading);
-    function setLoading(){
-      self.setState({
-          listFootShow: 'block',
-          loading: false
-      })
+    // initialization needs clear the queryPar
+    const queryPar={
+        bound: [],
+        continent: '',
+        keywords: '',
+        organization: '',
+        organization_type: '',
+        topic: '',
     }
+    self.props.dispatch(conveyQueryPar(queryPar))
+    // this.queryLayerList(this.state.pageInfo,queryPar).then(setLoading);
+    // function setLoading(){
+    //   self.setState({
+    //       listFootShow: 'block',
+    //       loading: false
+    //   })
+    // }
   }
 
   // handleStar button

@@ -58,19 +58,23 @@ class PortalHeader extends React.Component<Props,State>{
                 selectedKeys={[this.state.current]}
                 onClick= {this.handleClick}
             >
-                <Menu.Item  key="1"><Link   className="header_menu_nav" exact={true}  to="/" >Home</Link></Menu.Item>
+                {/*<Menu.Item  key="1"><Link   className="header_menu_nav" exact={true}  to="/" >Home</Link></Menu.Item>*/}
+                <Menu.SubMenu key="1" className="header_menu_dropdown" title={<span>Home</span>}>
+                    <Menu.Item key="7"><Link to="/">Service Search</Link></Menu.Item>
+                    <Menu.Item key="8"><Link to="/layerSearch">Layer Search</Link></Menu.Item>
+                </Menu.SubMenu>
                 <Menu.SubMenu key="2" className="header_menu_dropdown" title={<span>Theme Map</span>}>
-                    <Menu.Item key="7"><Link to="/distribution">Service Distribution</Link></Menu.Item>
-                    <Menu.Item key="8"><Link to="/serviceQuality">Service Quality</Link></Menu.Item>
-                    <Menu.Item key="9"><Link to="/layerStatis">Layer Statistic</Link></Menu.Item>
+                    <Menu.Item key="9"><Link to="/distribution">Service Distribution</Link></Menu.Item>
+                    <Menu.Item key="10"><Link to="/serviceQuality">Service Quality</Link></Menu.Item>
+                    <Menu.Item key="11"><Link to="/layerStatis">Layer Statistic</Link></Menu.Item>
                 </Menu.SubMenu>
                 <Menu.Item key="3"><Link className="header_menu_nav" to="/dataAnalysis" >Data Analysis</Link></Menu.Item>
                 <Menu.Item key="4"><Link className="header_menu_nav" to="/about" >About</Link></Menu.Item>
                 {this.state.isLogin?
                     <Menu.SubMenu key="5" className="header_menu_dropdown"
                                   title={<Avatar size={"large"} src="User.jpg"/>}>
-                        <Menu.Item key="10"><Link to="/settings">Settings</Link></Menu.Item>
-                        <Menu.Item key="11">Sign Out</Menu.Item>
+                        <Menu.Item key="12"><Link to="/settings">Settings</Link></Menu.Item>
+                        <Menu.Item key="13">Sign Out</Menu.Item>
                     </Menu.SubMenu> :
                     <Menu.Item key="6" className="header_menu_nav">Login</Menu.Item>}
             </Menu>
