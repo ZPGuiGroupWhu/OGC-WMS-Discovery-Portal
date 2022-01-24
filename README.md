@@ -16,7 +16,7 @@ https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
 2.  接口服务与数据库部署在云服务器上，不用部署在本地
 	  
 3.	运行项目：
-* 下载项目文件：在你喜欢的文件路径（如E:）下打开git Bash，在其中输入命令：
+* 下载项目文件：在你喜欢的文件路径（如E:）下，点击右键打开git Bash，在其中输入命令：
 ```
     git clone https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal.git
 ```
@@ -26,12 +26,12 @@ https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
     git clone https://github.com.cnpmjs.org/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal.git
 ```
 
-* 下载淘宝镜像的包管理工具cnpm，安装前端依赖，即在命令行中输入：
+* 在cmd命令行中输入以下命令，下载淘宝镜像的包管理工具cnpm，安装前端依赖：
 ```
   npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
 
-  在项目文件夹的根目录下，输入命令：
+  在cmd命令窗口中转到项目的根目录路径下，输入命令：
 ```
     cnpm install 
 ```
@@ -44,7 +44,7 @@ https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
   declare var require: any;
   ```
 
-* 运行以下代码，启动项目，系统会自动打开浏览器，展示前端页面
+* 在cmd命令窗口中转到项目的根目录路径下，运行以下代码，启动项目，系统会自动打开浏览器，展示前端页面
 ```
     npm start
 ```
