@@ -39,7 +39,6 @@ interface State {
   time: number;
   uploadList: FormData;
 
-  isDrawHeatmap: boolean;
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -61,16 +60,6 @@ class LayerSearch extends React.Component<Props,State> {
 
   public data: ILayer [][];
   public submitOptionList: ILayer [];
-
-  // define variable to collect mouse track date and draw heatmap
-  public heatmapInstance: any;
-  public trackData: boolean;
-  public lastX:number;
-  public lastY:number;
-  public traceDataInterval: NodeJS.Timeout;
-  public idleInterval: NodeJS.Timeout;
-  public idleTimeout: NodeJS.Timeout;
-  public heatMapData: any;
 
   constructor (props:Props) {
     super(props);
@@ -103,16 +92,11 @@ class LayerSearch extends React.Component<Props,State> {
       time: 0,
       uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
 
-      isDrawHeatmap: false,
     };
   }
 
   public componentDidMount(){
     this.initData();
-
-
-    // set a timer to record traceData
-    this.traceDataInterval=setInterval(()=>{this.trackData=true},50)
   }
 
     public componentDidUpdate(prevProps: any, prevState: any){
@@ -141,90 +125,6 @@ class LayerSearch extends React.Component<Props,State> {
     //     }
     // }
 
-  // collect position when the mouse is on the heatmap canvas
-  public collectMousePos =(e:any)=>{
-      if (this.idleTimeout) {clearTimeout(this.idleTimeout)}
-      if (this.idleInterval) {clearInterval(this.idleInterval)}
-
-      if(this.state.isDrawHeatmap){
-          if(this.trackData){
-              // offsetX and offsetY is attribution in e.nativeEvent, not e.
-              this.lastX=e.nativeEvent.offsetX
-              this.lastY=e.nativeEvent.offsetY
-              this.heatmapInstance.addData({
-                  x: this.lastX,
-                  y: this.lastY,
-              })
-              this.trackData=false
-          }
-          this.idleTimeout=setTimeout(()=>{this.idle(this)},500)
-      }
-  }
-
-    // handle mouse idle in "heatmap_wrapper" element
-    // self means Class LayerSearch
-  public idle(self: any){
-      let idleCount=0
-      self.idleInterval=setInterval(()=>{
-          self.heatmapInstance.addData({
-              x: this.lastX,
-              y: this.lastY,
-          })
-          idleCount++
-          if(idleCount>10) {clearInterval(self.idleInterval)}
-      },500)
-  }
-
-  // handle heatmap button to imshow the heatmap canvas or not
-  public handleHeatmapBtn=()=>{
-      // console.log(this.heatmapInstance.getDataURL())
-      this.setState({isDrawHeatmap: !this.state.isDrawHeatmap}
-      ,()=>{
-              if(this.state.isDrawHeatmap){
-                  this.heatmapInstance=hm.create({
-                      container: document.getElementById("heatmap_wrapper"),
-                      width: 2300,
-                      height: 800,
-                      radius: 20,
-                      maxOpacity: 0.6,
-                      minOpacity:0.05,
-                      blur: 0.5,
-                      gradient:{
-                          '0.1': 'blue',
-                          '0.3': 'green',
-                          '0.6': 'yellow',
-                          '0.9': 'red',
-                      }
-                  })
-                  if(this.heatMapData){
-                      this.heatmapInstance.setData(this.heatMapData)
-                  }
-              }else{
-                  // setData removes all previously existing points from the heatmap instance and
-                  // re-initializes the datastore
-                  // this.heatmapInstance.setData({
-                  //     max: 20,
-                  //     min: 0,
-                  //     data: []
-                  // })
-                  this.heatMapData=this.heatmapInstance.getData()
-                  document.getElementsByClassName("heatmap-canvas")[0].remove()
-                  // this.heatmapInstance.configure({
-                  //     container: null,
-                  //     width: 0,
-                  //     height: 0,
-                  //     maxOpacity: 0,
-                  // })
-              }
-          })
-  }
-
-  public componentWillUnmonut(){
-      // clear timer
-      clearInterval(this.traceDataInterval)
-      clearInterval(this.idleInterval)
-      clearTimeout(this.idleTimeout)
-  }
 
   public render() {
     
@@ -247,14 +147,13 @@ class LayerSearch extends React.Component<Props,State> {
                 </Select>
             </div>
             <Layout className="main_container">
-                <LeftSider />
+                <LeftSider queryType={"layer"}/>
                 <Content className="main_container_content" id="main_container_content" >
                   <div className="main_container_content_imglist_statis">
                      <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
                      <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
-                      <Button type={this.state.isDrawHeatmap?"primary":"default"}icon="heat-map" size="small" onClick={this.handleHeatmapBtn}/>
                   </div>
-                  <div id="heatmap_wrapper" onMouseMove={this.collectMousePos}>
+                  <div id="heatmap_wrapper" >
                       <List
                          id="main_container_content_imglist"
                          className="main_container_content_imglist"

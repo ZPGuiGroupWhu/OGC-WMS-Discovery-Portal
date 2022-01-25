@@ -30,16 +30,16 @@ class App extends React.Component {
                 <Content className="app_container">
                 <Switch>
                     {/*<Route exact={true} path="/" component={(props:any)=><Home {...props}/>} />*/}
-                    <Route exact={true} path="/" component={ServiceSearch} />
-                    <Route path="/layerSearch" component={LayerSearch}/>
-                    <Route path="/distribution" component={Distribution}/>
-                    <Route path="/layerStatis" component={LayerStatis}/>
-                    <Route path="/serviceQuality" component={ServiceQuality}/>
-                    <Route path="/dataAnalysis" component={DataAnalysis}/>
-                    <Route path="/about" component={About} />
+                    <Route exact={true} path="/" component={()=><ServiceSearch/>} />
+                    <Route path="/layerSearch" component={()=><LayerSearch/>} />
+                    <Route path="/distribution" component={()=><Distribution/>} />
+                    <Route path="/layerStatis" component={()=><LayerStatis/>} />
+                    <Route path="/serviceQuality" component={()=><ServiceQuality/>} />
+                    <Route path="/dataAnalysis" component={()=><DataAnalysis/>} />
+                    <Route path="/about" component={()=><About/>} />
                     <Route path="/serviceInfo" component={(props:any)=><ServiceInfo {...props}/>}/>
-                    <Route path="/layerInfo" component={LayerInfo}/>
-                    <Route path="/settings" component={Settings}/>
+                    <Route path="/layerInfo" component={()=><LayerInfo/>} />
+                    <Route path="/settings" component={()=><Settings/>} />
                 </Switch>
                 </Content>
                 <Footer />

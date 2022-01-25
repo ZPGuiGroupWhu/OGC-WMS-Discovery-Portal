@@ -23,6 +23,7 @@ const MyIcon=Icon.createFromIconfontCN({
 
 interface Props {
     // history: any;
+    queryType: string,
     queryPar: IQueryPar;
     dispatch: (acion:any)=>void;
 }
@@ -80,9 +81,8 @@ class LeftSider extends React.Component<Props,State> {
         continent.length=0;
     }
 
-
-
     public render() {
+        this.menuList=this.props.queryType==="service" ? this.menuList: this.menuList.filter((val:any)=>val.name==="Topic")
         return (
                 <Sider
                     collapsible={true} collapsed={this.state.collapsed}  collapsedWidth={20} trigger={null}

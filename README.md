@@ -31,7 +31,7 @@ https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
   npm install -g cnpm --registry=https://registry.npm.taobao.org
 ```
 
-  在cmd命令窗口中转到项目的根目录路径下，输入命令：
+*  在cmd命令窗口中转到项目的根目录路径下，输入命令：
 ```
     cnpm install 
 ```

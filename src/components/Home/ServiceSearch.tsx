@@ -120,7 +120,7 @@ class ServiceSearch extends React.Component<Props, State> {
                     </Select>
                 </div>
                 <Layout className="main_container">
-                    <LeftSider />
+                    <LeftSider queryType={"service"}/>
                     <Content className="main_container_content">
                         <div className="main_container_content_statis">
                             <Statistic className="main_container_content_statis_value" value={this.state.listTotal}  suffix="services have been found."/>
