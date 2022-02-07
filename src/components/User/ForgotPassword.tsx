@@ -1,6 +1,9 @@
 import * as React from 'react';
-import {Button, Form, Icon, Input, message, Modal, Select} from 'antd';
-import { FormComponentProps } from 'antd/es/form';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Input, message, Modal, Select } from 'antd';
+import { FormComponentProps } from '@ant-design/compatible/es/form';
 import { connect } from 'react-redux';
 import {conveyForgotPasswordVisible} from "../../redux/action";
 import '../../style/_forgotPassword.scss'
@@ -96,10 +99,10 @@ class ForgotPassword extends React.Component<Props, State>{
         const prefixSelector=getFieldDecorator('FType',{initialValue: this.state.identifier})(
             <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
                     onChange={()=>{this.props.form.resetFields()}}>
-                <Select.Option key='email'><Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/></Select.Option>
-                <Select.Option key='username'><Icon type="user" style={{color: "rgba(0,0,0,.5)"}}/></Select.Option>
+                <Select.Option key='email'><MailOutlined style={{color: 'rgba(0,0,0,.5)'}} /></Select.Option>
+                <Select.Option key='username'><UserOutlined style={{color: "rgba(0,0,0,.5)"}} /></Select.Option>
             </Select>);
-        return(
+        return (
             <Modal
                 visible={this.state.forgotPasswordVisible}
                 title={"Find Password"}
@@ -123,7 +126,7 @@ class ForgotPassword extends React.Component<Props, State>{
                     </Form.Item>
                     <Form.Item label="Your Lost Password" labelAlign="left">
                         {getFieldDecorator("password")(
-                            <Input prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.5)"}}/>}
+                            <Input prefix={<LockOutlined style={{color: "rgba(0,0,0,.5)"}} />}
                                    disabled={true}  />
                         )}
                     </Form.Item>
@@ -134,7 +137,8 @@ class ForgotPassword extends React.Component<Props, State>{
                         </Button>
                     </Form.Item>
                 </Form>
-            </Modal>)
+            </Modal>
+        );
     }
 }
 

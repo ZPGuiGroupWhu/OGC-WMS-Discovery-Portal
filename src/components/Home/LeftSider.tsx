@@ -7,7 +7,9 @@ import {mapDrawConfig} from '../../util/config';
 import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
 import { pushKeyValueToArr } from "../../util/util";
 import * as menuListData from '../../assets/data/filterCondition.json';
-import { Layout, Input,  Icon, Menu} from 'antd';
+import { createFromIconfontCN, GlobalOutlined } from '@ant-design/icons';
+import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { Layout, Input, Menu } from 'antd';
 import {connect} from 'react-redux'
 import {conveyQueryPar} from '../../redux/action'
 
@@ -17,7 +19,7 @@ const topic:any = [];
 const organization:any = [];
 const organizationType:any = [];
 const continent:any = [];
-const MyIcon=Icon.createFromIconfontCN({
+const MyIcon=createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1728748_zijylit9brj.js', // use some icon from iconfont
 });
 
@@ -84,24 +86,24 @@ class LeftSider extends React.Component<Props,State> {
     public render() {
         this.menuList=this.props.queryType==="service" ? this.menuList: this.menuList.filter((val:any)=>val.name==="Topic")
         return (
-                <Sider
-                    collapsible={true} collapsed={this.state.collapsed}  collapsedWidth={20} trigger={null}
-                    width={'300'} className="main_container_leftsider"
-                >
-                    <div style={{display:this.state.collapsed?'none':'inline'}}>
-                        <div className="main_container_leftsider_icon"><Icon type="global"/><span className="title">Filter By Location</span></div>
-                        <div className="main_container_leftsider_title"><Input disabled={true} value={this.state.geoBoxStr}/></div>
-                        <div className="main_container_leftsider_map" id="location_map" />
-                        <Menu className="main_container_leftsider_menu" defaultOpenKeys={['Topic']} mode="inline" multiple={true} >
-                            {this.menuList.map((menu:IMenu)=>{
-                                return this.addMenuItem(menu)
-                            })}
-                        </Menu>
-                    </div>
-                    <div className="main_container_leftsider_trigger" onClick={this.toggle}>
-                        <Icon  type={this.state.collapsed?"double-right":"double-left"} />
-                    </div>
-                </Sider>
+            <Sider
+                collapsible={true} collapsed={this.state.collapsed}  collapsedWidth={20} trigger={null}
+                width={'300'} className="main_container_leftsider"
+            >
+                <div style={{display:this.state.collapsed?'none':'inline'}}>
+                    <div className="main_container_leftsider_icon"><GlobalOutlined /><span className="title">Filter By Location</span></div>
+                    <div className="main_container_leftsider_title"><Input disabled={true} value={this.state.geoBoxStr}/></div>
+                    <div className="main_container_leftsider_map" id="location_map" />
+                    <Menu className="main_container_leftsider_menu" defaultOpenKeys={['Topic']} mode="inline" multiple={true} >
+                        {this.menuList.map((menu:IMenu)=>{
+                            return this.addMenuItem(menu)
+                        })}
+                    </Menu>
+                </div>
+                <div className="main_container_leftsider_trigger" onClick={this.toggle}>
+                    <LegacyIcon  type={this.state.collapsed?"double-right":"double-left"} />
+                </div>
+            </Sider>
         );
     }
 
@@ -222,7 +224,7 @@ class LeftSider extends React.Component<Props,State> {
         return (
             <SubMenu
                 className="main_container_leftsider_menu_item" key={menu.name}
-                title={<span><Icon className="icon" type={menu.icon} />Filter By {menu.name}</span>}
+                title={<span><LegacyIcon className="icon" type={menu.icon} />Filter By {menu.name}</span>}
             >
                 {menu.children.map((item:ISubMenu)=>{
                     return this.addSubMenuItem(item);

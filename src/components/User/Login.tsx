@@ -1,6 +1,9 @@
 import * as React from 'react';
-import {Button, Checkbox, Form, Icon, message,Input,  Modal, Select} from 'antd';
-import { FormComponentProps } from 'antd/es/form';
+import { LockOutlined, MailOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Button, Checkbox, message, Input, Modal, Select } from 'antd';
+import { FormComponentProps } from '@ant-design/compatible/es/form';
 import { connect } from 'react-redux';
 import '../../style/_login.scss'
 import {conveyForgotPasswordVisible, conveyIsLogin, conveyLoginVisible, conveyRegisterVisible} from "../../redux/action";
@@ -111,10 +114,10 @@ class Login extends React.Component<Props, State>{
         const prefixSelector=getFieldDecorator('loginType',{initialValue: this.state.identifier})(
             <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
                     onChange={()=>{this.props.form.resetFields()}}>
-                <Select.Option key='email'><Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/></Select.Option>
-                <Select.Option key='username'><Icon type="user" style={{color: "rgba(0,0,0,.5)"}}/></Select.Option>
+                <Select.Option key='email'><MailOutlined style={{color: 'rgba(0,0,0,.5)'}} /></Select.Option>
+                <Select.Option key='username'><UserOutlined style={{color: "rgba(0,0,0,.5)"}} /></Select.Option>
             </Select>);
-        return(
+        return (
             <Modal
                 visible={this.state.loginVisible}
                 title="Welcome to OGC WMS Discovery Portal"
@@ -139,7 +142,7 @@ class Login extends React.Component<Props, State>{
                         {getFieldDecorator('password',{
                             rules:[{required: true, message: 'Please input your password!'}],
                         })(
-                            <Input.Password prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.5)"}}/>}
+                            <Input.Password prefix={<LockOutlined style={{color: "rgba(0,0,0,.5)"}} />}
                                    placeholder="Password"
                             />
                         )}
@@ -158,7 +161,7 @@ class Login extends React.Component<Props, State>{
                 </Form>
                 <Register />
             </Modal>
-        )
+        );
     }
 
     // Dispatch registerVisible to render register modal.

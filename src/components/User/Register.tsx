@@ -1,7 +1,10 @@
 import * as React from 'react';
-import {AutoComplete, Button, Form, Input, Modal, Icon, Checkbox, Select, message} from 'antd'
+import { LockOutlined, MailOutlined, SafetyOutlined, TagOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { AutoComplete, Button, Input, Modal, Checkbox, Select, message } from 'antd';
 import $req from '../../util/fetch';
-import {FormComponentProps} from 'antd/es/form'
+import { FormComponentProps } from '@ant-design/compatible/es/form';
 import { connect } from 'react-redux';
 import '../../style/_register.scss'
 import {conveyRegisterVisible} from "../../redux/action";
@@ -163,7 +166,7 @@ class Register extends React.Component<Props, State>{
             },
         };
 
-        return(
+        return (
             <Modal
                 visible={this.state.registerVisible}
                 title="Sign Up"
@@ -186,7 +189,7 @@ class Register extends React.Component<Props, State>{
                             ],
                         })(
                             <AutoComplete dataSource={emailOptions} onChange={this.handleEmailChange} >
-                                <Input prefix={<Icon type="mail" style={{color: 'rgba(0,0,0,.5)'}}/>}
+                                <Input prefix={<MailOutlined style={{color: 'rgba(0,0,0,.5)'}} />}
                                        placeholder="E-mail"/>
                             </AutoComplete>
                         )}
@@ -198,7 +201,7 @@ class Register extends React.Component<Props, State>{
                                     {pattern: /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,18}$/,
                                      message: 'Invalid password! Password must only contain numbers and letters between 6 and 18 in length'},
                                     {validator: this.validateToNextPassword}]
-                        })(<Input.Password prefix={<Icon type="lock" style={{color: "rgba(0,0,0,.5)"}}/>}
+                        })(<Input.Password prefix={<LockOutlined style={{color: "rgba(0,0,0,.5)"}} />}
                                            placeholder="Password"/>)}
                     </Form.Item>
                     <Form.Item label="Confirm Password" labelAlign="right" hasFeedback={true} >
@@ -206,7 +209,7 @@ class Register extends React.Component<Props, State>{
                             validateTrigger: "onBlur",
                             rules:[{required: true, message: "Please input your password again!"},
                                    {validator:this.compareToFirstPassword}]
-                        })(<Input.Password prefix={<Icon type="safety" style={{color: "rgba(0,0,0,.5)"}}/>}
+                        })(<Input.Password prefix={<SafetyOutlined style={{color: "rgba(0,0,0,.5)"}} />}
                                            placeholder="Confirm Password" onBlur={this.handleConfirmBlur}/>)}
                     </Form.Item>
                     <Form.Item label="Username" labelAlign="right" hasFeedback={true}>
@@ -216,12 +219,12 @@ class Register extends React.Component<Props, State>{
                             rules: [{required: true, message: "Please entitle for your account!"},
                                     {whitespace: true, message: "Whitespace isn't allowed in username!"},
                                     {validator: this.validateValueIsRepeat}]
-                        })(<Input prefix={<Icon type="user" style={{color: "rgba(0,0,0,.5)"}}/>}
+                        })(<Input prefix={<UserOutlined style={{color: "rgba(0,0,0,.5)"}} />}
                                   placeholder="Username"/>)}
                     </Form.Item>
                     <Form.Item labelAlign="right" label="Career">
                         {getFieldDecorator('career')
-                        (<Input prefix={<Icon type="tag" style={{color: "rgba(0,0,0,.5)"}}/>} placeholder="Career"/>)}
+                        (<Input prefix={<TagOutlined style={{color: "rgba(0,0,0,.5)"}} />} placeholder="Career"/>)}
                     </Form.Item>
                     <Form.Item labelAlign="right" label="Research Field">
                         {getFieldDecorator('field')
@@ -249,8 +252,7 @@ class Register extends React.Component<Props, State>{
                     </Form.Item>
                 </Form>
             </Modal>
-
-        )
+        );
     }
 }
 
