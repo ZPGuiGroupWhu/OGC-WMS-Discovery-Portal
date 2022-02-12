@@ -112,7 +112,7 @@ class ForgotPassword extends React.Component<Props, State>{
             >
                 <p>Forgot your Password?   Ծ‸Ծ </p>
                 <p>Don't worry. Let's help you to retrieve your password by your registered Email or Username   </p>
-                <Form className="forgot_password_form">
+                <Form className="forgot_password_form" layout={"vertical"}>
                     <Form.Item label={this.state.identifier === 'email'? "Email" : "Username" } labelAlign="left">
                         {getFieldDecorator("identity",{
                             validateTrigger: 'onBlur',

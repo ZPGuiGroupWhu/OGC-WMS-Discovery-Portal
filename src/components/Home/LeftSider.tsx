@@ -7,8 +7,7 @@ import {mapDrawConfig} from '../../util/config';
 import { IMenu, ISubMenu, IQueryPar } from "../../util/interface";
 import { pushKeyValueToArr } from "../../util/util";
 import * as menuListData from '../../assets/data/filterCondition.json';
-import { createFromIconfontCN, GlobalOutlined } from '@ant-design/icons';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
+import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined, GlobalOutlined} from '@ant-design/icons';
 import { Layout, Input, Menu } from 'antd';
 import {connect} from 'react-redux'
 import {conveyQueryPar} from '../../redux/action'
@@ -20,7 +19,7 @@ const organization:any = [];
 const organizationType:any = [];
 const continent:any = [];
 const MyIcon=createFromIconfontCN({
-    scriptUrl: '//at.alicdn.com/t/font_1728748_zijylit9brj.js', // use some icon from iconfont
+    scriptUrl: '//at.alicdn.com/t/font_1728748_h9k22gml30j.js', // use some icon from iconfont
 });
 
 interface Props {
@@ -101,7 +100,7 @@ class LeftSider extends React.Component<Props,State> {
                     </Menu>
                 </div>
                 <div className="main_container_leftsider_trigger" onClick={this.toggle}>
-                    <LegacyIcon  type={this.state.collapsed?"double-right":"double-left"} />
+                    {this.state.collapsed?<DoubleRightOutlined />:<DoubleLeftOutlined />}
                 </div>
             </Sider>
         );
@@ -224,7 +223,11 @@ class LeftSider extends React.Component<Props,State> {
         return (
             <SubMenu
                 className="main_container_leftsider_menu_item" key={menu.name}
-                title={<span><LegacyIcon className="icon" type={menu.icon} />Filter By {menu.name}</span>}
+                title={
+                    <span>
+                        <MyIcon className="icon" type={"icon-"+menu.icon}/>
+                        Filter By {menu.name}
+                    </span>}
             >
                 {menu.children.map((item:ISubMenu)=>{
                     return this.addSubMenuItem(item);

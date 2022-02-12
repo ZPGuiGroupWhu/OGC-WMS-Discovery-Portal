@@ -119,7 +119,7 @@ class Register extends React.Component<Props, State>{
     // autocomplete email postfix
     public handleEmailChange =(value:any)=>{
         let autoEmailResult:string[];
-        if(!value){
+        if(!value||value.indexOf('@')>=0){
             autoEmailResult=[]
         } else {
             autoEmailResult=['@qq.com','@whu.edu.cn'].map(domain=>`${value}${domain}`)
@@ -153,7 +153,7 @@ class Register extends React.Component<Props, State>{
         const {getFieldDecorator}=this.props.form
         const topic =["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"];
         const emailOptions=this.state.autoEmailComplete.map(email =>(
-            <AutoComplete.Option key={email}>{email}</AutoComplete.Option>
+            {value: email}
         ))
         const formItemLayout = {
             labelCol: {
@@ -188,7 +188,7 @@ class Register extends React.Component<Props, State>{
                                     {validator:this.validateValueIsRepeat}
                             ],
                         })(
-                            <AutoComplete dataSource={emailOptions} onChange={this.handleEmailChange} >
+                            <AutoComplete onSearch={this.handleEmailChange} options={emailOptions}>
                                 <Input prefix={<MailOutlined style={{color: 'rgba(0,0,0,.5)'}} />}
                                        placeholder="E-mail"/>
                             </AutoComplete>

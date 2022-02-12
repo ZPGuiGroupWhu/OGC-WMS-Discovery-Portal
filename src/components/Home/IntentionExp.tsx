@@ -1,8 +1,7 @@
 import * as React from 'react';
 import '../../style/_home.scss';
 import {SketchPicker} from 'react-color';
-import { BarChartOutlined, createFromIconfontCN, PlusOutlined } from '@ant-design/icons';
-import { Icon as LegacyIcon } from '@ant-design/compatible';
+import { BarChartOutlined, createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined, PlusOutlined } from '@ant-design/icons';
 
 import {
   Layout,
@@ -28,7 +27,7 @@ const Style=["Chart","Line","Point","Satellite","Scope","Text"];
 const generationImg=Generation.map((item:string)=>require("../../assets/img/generation/"+item+".jpg"));
 const styleImg=Style.map((item:string)=>require("../../assets/img/style/"+item+".jpg"));
 const MyIcon=createFromIconfontCN({
-  scriptUrl: '//at.alicdn.com/t/font_1728748_zijylit9brj.js', // use some icon from iconfont
+  scriptUrl: '//at.alicdn.com/t/font_1728748_h9k22gml30j.js', // use some icon from iconfont
 });
 
 
@@ -85,7 +84,7 @@ public render(){
         {this.rightsiderBody()}
       </div>
       <div className="main_container_rightsider_trigger" onClick={()=>{this.setState({collapsed: !this.state.collapsed})}}>
-          <LegacyIcon  type={this.state.collapsed?"double-left":"double-right"} />
+          {this.state.collapsed?<DoubleLeftOutlined />:<DoubleRightOutlined />}
       </div>
     </Sider>
   );

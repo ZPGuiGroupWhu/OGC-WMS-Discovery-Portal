@@ -3,6 +3,8 @@ import '../../style/_home.scss';
 
 import {
   BulbOutlined,
+  DownSquareOutlined,
+  UpSquareOutlined,
   FileSearchOutlined,
   MoreOutlined,
   ProjectOutlined,
@@ -15,7 +17,6 @@ import {
   ThunderboltOutlined,
 } from '@ant-design/icons';
 
-import { Icon as LegacyIcon } from '@ant-design/compatible';
 import {
   Layout,
   Statistic,
@@ -159,7 +160,7 @@ class LayerSearch extends React.Component<Props,State> {
   public render() {
     
     this.prepareData();
-    return (
+      return (
       <Content className="content">
           <div className="content_tool">
               {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
@@ -229,7 +230,9 @@ class LayerSearch extends React.Component<Props,State> {
                      <div className="main_container_content_shoppingCart_head">
                        <ShoppingCartOutlined className="icon" />
                        <span className="title">Shopping Cart</span>
-                       <LegacyIcon className="icon_small" type={this.state.bSideCollapsed?"down-square":"up-square"} onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/><br/>
+                         {this.state.bSideCollapsed?
+                             <DownSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>:
+                             <UpSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>}
                        <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
                        <div className="buttons">
 
