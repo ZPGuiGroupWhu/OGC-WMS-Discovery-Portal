@@ -74,3 +74,10 @@ export interface IPageInfo{
     pageNum: number;
     pageSize: number;
 }
+
+// Record the trigger count and hover time in the layer list
+export interface IHover{
+    layerID: number;
+    count: number;
+    time: number;
+}
