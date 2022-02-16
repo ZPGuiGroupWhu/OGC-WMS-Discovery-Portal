@@ -13,6 +13,7 @@ public class Layer {
     private String  boundingbox;
     private Integer id;
     private byte[] photo;
+    private String imagePath;
     private String  topic;
     private Integer  serviceId;
 }

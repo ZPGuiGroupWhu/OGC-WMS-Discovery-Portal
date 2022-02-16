@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.dto.WMSWithContactInfo;
 import com.gsv.querywmslist.querywmslist.dto.WMSWithLayer;
 
@@ -35,7 +36,8 @@ public class WMSServiceTest {
 	@Test
 	public void testGetWMSInfo() {
 		Integer serviceId = 1;
-		WMSWithLayer result = wmsService.getWMSInfo(serviceId);
+		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
+		WMSWithLayer result = wmsService.getWMSInfo(serviceId, photoTransportType);
 		System.out.println(result.getLayers());
 	}
 }
