@@ -15,4 +15,5 @@ public class MultiLayersResponse extends Response{
 	private Integer totalLayerNum;
     private Integer currentLayerNum;
     private List<LayerWithFloatBBox> data;
+    private String sessionID;
 }

@@ -1,27 +1,7 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
 import '../../style/_home.scss';
-
-import {
-    BulbOutlined,
-    CheckCircleOutlined,
-    CompassOutlined,
-    EnvironmentOutlined,
-    HomeOutlined,
-    LinkOutlined,
-    MailOutlined,
-    MessageOutlined,
-    PaperClipOutlined,
-    PhoneOutlined,
-    PushpinOutlined,
-    SolutionOutlined,
-    SwitcherOutlined,
-    UploadOutlined,
-    UsergroupAddOutlined,
-    UserOutlined,
-} from '@ant-design/icons';
-
-import { Layout, Card, List } from 'antd';
+import { Layout, Icon, Card,List } from 'antd';
 import $req from '../../util/fetch';
 import {reqUrl} from '../../util/util';
 import {NavLink as Link} from 'react-router-dom';
@@ -98,42 +78,42 @@ class ServiceInfo extends React.Component<Props,State>{
     public render() {
         return (
             <Layout className="_info">
-                <header><HomeOutlined /><Link to="/">Home</Link> / {this.state.servInfoData.title}</header>
+                <header><Icon type="home"/><Link to="/">Home</Link> / {this.state.servInfoData.title}</header>
                 <Content className="_info_container">
                     <b className="_info_container_header">{this.state.servInfoData.title}</b><br/>
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_content">
-                            <span><CompassOutlined className="icon" /><b>Location：</b>{this.state.servInfoData.administrative_unit}</span>
-                            <span className="span"><PushpinOutlined className="icon" /><b>GeoGraphic Location：</b>({this.state.servInfoData.geoLocation[0]}, {this.state.servInfoData.geoLocation[1]})</span><br/>
+                            <span><Icon className="icon" type="compass"/><b>Location：</b>{this.state.servInfoData.administrative_unit}</span>
+                            <span className="span"><Icon className="icon" type="pushpin"/><b>GeoGraphic Location：</b>({this.state.servInfoData.geoLocation[0]}, {this.state.servInfoData.geoLocation[1]})</span><br/>
                             <p>{this.state.servInfoData.abstr ? this.state.servInfoData.abstr : 'There is no abstract in the service capability document.'}</p><br/>
                         </Content>
                     </Content>
                     <Content className="_info_container_section">
                         <b className="_info_container_section_header">Access & Use Information</b><br/>
                         <Content className="_info_container_section_content">
-                            <LinkOutlined className="icon" /><b>Access link：</b><a href={this.state.servInfoData.url}>{this.state.servInfoData.url}</a><br/> 
-                            <UserOutlined className="icon" /><b>Contact Person：</b><span>{ this.state.servInfoData.contact_info.person }</span><br/>                        
-                            <span><EnvironmentOutlined className="icon" /><b>Address：</b><span className="double">{ this.state.servInfoData.contact_info.address }</span></span>
-                            <span className="span"><MailOutlined className="icon" /><b>Post Code：</b>{ this.state.servInfoData.contact_info.post_code }</span><br/>
-                            <span><MessageOutlined className="icon" /><b>Email Address：</b>{ this.state.servInfoData.contact_info.email }</span><br/>
-                            <span><UploadOutlined className="icon" /><b>Fascimile Tel：</b><span className="double">{ this.state.servInfoData.contact_info.fascimile_tel }</span></span>
-                            <span className="span"><PhoneOutlined className="icon" /><b>Voice Tel：</b>{ this.state.servInfoData.contact_info.voice_tel }</span><br/>
-                            <span><UsergroupAddOutlined className="icon" /><b>Organization：</b><span className="double">{ this.state.servInfoData.contact_info.organization }</span></span>
-                            <span className="span"><SolutionOutlined className="icon" /><b>Position：</b>{ this.state.servInfoData.contact_info.position }</span><br/><br/>
+                            <Icon className="icon" type="link" /><b>Access link：</b><a href={this.state.servInfoData.url}>{this.state.servInfoData.url}</a><br/> 
+                            <Icon className="icon" type="user" /><b>Contact Person：</b><span>{ this.state.servInfoData.contact_info.person }</span><br/>                        
+                            <span><Icon className="icon" type="environment" /><b>Address：</b><span className="double">{ this.state.servInfoData.contact_info.address }</span></span>
+                            <span className="span"><Icon className="icon" type="mail" /><b>Post Code：</b>{ this.state.servInfoData.contact_info.post_code }</span><br/>
+                            <span><Icon className="icon" type="message" /><b>Email Address：</b>{ this.state.servInfoData.contact_info.email }</span><br/>
+                            <span><Icon className="icon" type="upload" /><b>Fascimile Tel：</b><span className="double">{ this.state.servInfoData.contact_info.fascimile_tel }</span></span>
+                            <span className="span"><Icon className="icon" type="phone" /><b>Voice Tel：</b>{ this.state.servInfoData.contact_info.voice_tel }</span><br/>
+                            <span><Icon className="icon" type="usergroup-add" /><b>Organization：</b><span className="double">{ this.state.servInfoData.contact_info.organization }</span></span>
+                            <span className="span"><Icon className="icon" type="solution" /><b>Position：</b>{ this.state.servInfoData.contact_info.position }</span><br/><br/>
                         </Content>  
                     </Content>
                     <Content className="_info_container_section">
                         <b className="_info_container_section_header">Keywords & Topic</b><br/>
                         <Content className="_info_container_section_content">
-                            <span><BulbOutlined className="icon" /><b>Keywords：</b>{ this.judgenull(this.state.servInfoData.keywords) }</span><br/>
-                            <span><CheckCircleOutlined className="icon" /><b>Topic：</b>{ this.judgenull(this.state.servInfoData.topic) }</span><br/><br/>
+                            <span><Icon className="icon" type="bulb" /><b>Keywords：</b>{ this.judgenull(this.state.servInfoData.keywords) }</span><br/>
+                            <span><Icon className="icon" type="check-circle" /><b>Topic：</b>{ this.judgenull(this.state.servInfoData.topic) }</span><br/><br/>
                         </Content> 
                     </Content>
                     <Content className="_info_container_section">
                         <b className="_info_container_section_header">Other Details</b><br/>
                         <Content className="_info_container_section_content">
-                            <span><SwitcherOutlined className="icon" /><b>Version：</b>{ this.state.servInfoData.version }</span><br/>
-                            <span><PaperClipOutlined className="icon" /><b>IP：</b>{ this.state.servInfoData.ip }</span><br/><br/>
+                            <span><Icon className="icon" type="switcher" /><b>Version：</b>{ this.state.servInfoData.version }</span><br/>
+                            <span><Icon className="icon" type="paper-clip" /><b>IP：</b>{ this.state.servInfoData.ip }</span><br/><br/>
                         </Content> 
                     </Content>
                     <Content className="_info_container">

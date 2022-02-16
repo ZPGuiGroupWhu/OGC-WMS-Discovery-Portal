@@ -1,16 +1,6 @@
 import * as React from 'react';
 import '../style/_about.scss'
-
-import {
-  BulbOutlined,
-  EnvironmentOutlined,
-  MailOutlined,
-  ScheduleOutlined,
-  TagOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-
-import { Layout, Avatar, Divider } from 'antd';
+import { Layout,Avatar,Icon,Divider } from 'antd';
 
 class About extends React.Component {
   public render() {
@@ -24,75 +14,75 @@ class About extends React.Component {
           <div className='about_body_title'>Meet Our Group</div>
           <div className='about_body_container_parent'>
             <div className='about_body_container'>
-                  <Avatar className='avatar' size={150} shape='square' icon={<UserOutlined />} src="travor.jpg" />
+                  <Avatar className='avatar' size={150} shape='square' icon='user' src="travor.jpg" />
                   <div className='about_body_container_description'>
                   <b style={{fontSize:30+'px'}}>Travor</b><br/>
-                         <span><TagOutlined className="icon" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
-                         <span><ScheduleOutlined className="icon" /><b>  Duty:  </b>Front-end Development</span><br/>
-                         <span><BulbOutlined className="icon" /><b>  Position:  </b>Undergraduate</span><br/>
-                         <span><EnvironmentOutlined className="icon" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
-                         <span><MailOutlined className="icon" /><b>  Email:  </b>932924803@qq.com</span><br/>
+                         <span><Icon className="icon" type="tag" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
+                         <span><Icon className="icon" type="schedule" /><b>  Duty:  </b>Front-end Development</span><br/>
+                         <span><Icon className="icon" type="bulb" /><b>  Position:  </b>Undergraduate</span><br/>
+                         <span><Icon className="icon" type="environment" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
+                         <span><Icon className="icon" type="mail" /><b>  Email:  </b>932924803@qq.com</span><br/>
                   </div>
             </div>
             <div className='about_body_container'>
-                  <Avatar className='avatar' size={150} shape='square' icon={<UserOutlined />} src="travor.jpg" />
+                  <Avatar className='avatar' size={150} shape='square' icon='user' src="travor.jpg" />
                   <div className='about_body_container_description'>
                   <b style={{fontSize:30+'px'}}>Travor</b><br/>
-                         <span><TagOutlined className="icon" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
-                         <span><ScheduleOutlined className="icon" /><b>  Duty:  </b>Front-end Development</span><br/>
-                         <span><BulbOutlined className="icon" /><b>  Position:  </b>Undergraduate</span><br/>
-                         <span><EnvironmentOutlined className="icon" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
-                         <span><MailOutlined className="icon" /><b>  Email:  </b>932924803@qq.com</span><br/>
+                         <span><Icon className="icon" type="tag" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
+                         <span><Icon className="icon" type="schedule" /><b>  Duty:  </b>Front-end Development</span><br/>
+                         <span><Icon className="icon" type="bulb" /><b>  Position:  </b>Undergraduate</span><br/>
+                         <span><Icon className="icon" type="environment" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
+                         <span><Icon className="icon" type="mail" /><b>  Email:  </b>932924803@qq.com</span><br/>
             </div>
             </div>
           </div>
           <Divider type='horizontal'/>
           <div className='about_body_container_parent'>
             <div className='about_body_container'>
-                  <Avatar className='avatar' size={150} shape='square' icon={<UserOutlined />} src="travor.jpg" />
+                  <Avatar className='avatar' size={150} shape='square' icon='user' src="travor.jpg" />
                   <div className='about_body_container_description'>
                   <b style={{fontSize:30+'px'}}>Travor</b><br/>
-                         <span><TagOutlined className="icon" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
-                         <span><ScheduleOutlined className="icon" /><b>  Duty:  </b>Front-end Development</span><br/>
-                         <span><BulbOutlined className="icon" /><b>  Position:  </b>Undergraduate</span><br/>
-                         <span><EnvironmentOutlined className="icon" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
-                         <span><MailOutlined className="icon" /><b>  Email:  </b>932924803@qq.com</span><br/>
+                         <span><Icon className="icon" type="tag" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
+                         <span><Icon className="icon" type="schedule" /><b>  Duty:  </b>Front-end Development</span><br/>
+                         <span><Icon className="icon" type="bulb" /><b>  Position:  </b>Undergraduate</span><br/>
+                         <span><Icon className="icon" type="environment" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
+                         <span><Icon className="icon" type="mail" /><b>  Email:  </b>932924803@qq.com</span><br/>
                   </div>
             </div>
             <div className='about_body_container'>
-                  <Avatar className='avatar' size={150} shape='square' icon={<UserOutlined />} src="travor.jpg" />
+                  <Avatar className='avatar' size={150} shape='square' icon='user' src="travor.jpg" />
                   <div className='about_body_container_description'>
                   <b style={{fontSize:30+'px'}}>Travor</b><br/>
-                         <span><TagOutlined className="icon" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
-                         <span><ScheduleOutlined className="icon" /><b>  Duty:  </b>Front-end Development</span><br/>
-                         <span><BulbOutlined className="icon" /><b>  Position:  </b>Undergraduate</span><br/>
-                         <span><EnvironmentOutlined className="icon" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
-                         <span><MailOutlined className="icon" /><b>  Email:  </b>932924803@qq.com</span><br/>
+                         <span><Icon className="icon" type="tag" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
+                         <span><Icon className="icon" type="schedule" /><b>  Duty:  </b>Front-end Development</span><br/>
+                         <span><Icon className="icon" type="bulb" /><b>  Position:  </b>Undergraduate</span><br/>
+                         <span><Icon className="icon" type="environment" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
+                         <span><Icon className="icon" type="mail" /><b>  Email:  </b>932924803@qq.com</span><br/>
             </div>
             </div>
           </div>
           <Divider type='horizontal'/>
           <div className='about_body_container_parent'>
             <div className='about_body_container'>
-                  <Avatar className='avatar' size={150} shape='square' icon={<UserOutlined />} src="travor.jpg" />
+                  <Avatar className='avatar' size={150} shape='square' icon='user' src="travor.jpg" />
                   <div className='about_body_container_description'>
                   <b style={{fontSize:30+'px'}}>Travor</b><br/>
-                         <span><TagOutlined className="icon" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
-                         <span><ScheduleOutlined className="icon" /><b>  Duty:  </b>Front-end Development</span><br/>
-                         <span><BulbOutlined className="icon" /><b>  Position:  </b>Undergraduate</span><br/>
-                         <span><EnvironmentOutlined className="icon" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
-                         <span><MailOutlined className="icon" /><b>  Email:  </b>932924803@qq.com</span><br/>
+                         <span><Icon className="icon" type="tag" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
+                         <span><Icon className="icon" type="schedule" /><b>  Duty:  </b>Front-end Development</span><br/>
+                         <span><Icon className="icon" type="bulb" /><b>  Position:  </b>Undergraduate</span><br/>
+                         <span><Icon className="icon" type="environment" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
+                         <span><Icon className="icon" type="mail" /><b>  Email:  </b>932924803@qq.com</span><br/>
                   </div>
             </div>
             <div className='about_body_container'>
-                  <Avatar className='avatar' size={150} shape='square' icon={<UserOutlined />} src="travor.jpg" />
+                  <Avatar className='avatar' size={150} shape='square' icon='user' src="travor.jpg" />
                   <div className='about_body_container_description'>
                   <b style={{fontSize:30+'px'}}>Travor</b><br/>
-                         <span><TagOutlined className="icon" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
-                         <span><ScheduleOutlined className="icon" /><b>  Duty:  </b>Front-end Development</span><br/>
-                         <span><BulbOutlined className="icon" /><b>  Position:  </b>Undergraduate</span><br/>
-                         <span><EnvironmentOutlined className="icon" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
-                         <span><MailOutlined className="icon" /><b>  Email:  </b>932924803@qq.com</span><br/>
+                         <span><Icon className="icon" type="tag" /><b>  Tag:  </b>Diligent  Postive  Sociable</span><br/>
+                         <span><Icon className="icon" type="schedule" /><b>  Duty:  </b>Front-end Development</span><br/>
+                         <span><Icon className="icon" type="bulb" /><b>  Position:  </b>Undergraduate</span><br/>
+                         <span><Icon className="icon" type="environment" /><b>  Location:  </b>Wuhan Univercity, Hubei</span><br/>
+                         <span><Icon className="icon" type="mail" /><b>  Email:  </b>932924803@qq.com</span><br/>
             </div>
             </div>
           </div>

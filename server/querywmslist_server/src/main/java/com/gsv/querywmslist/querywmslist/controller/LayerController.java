@@ -1,11 +1,15 @@
 package com.gsv.querywmslist.querywmslist.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -92,6 +96,53 @@ public class LayerController {
     	return result;
     }
 	
+    @CrossOrigin
+    @RequestMapping(value = "/search/queryLayerByUploadedTemplate", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "根据用户上传的样例图片查询")
+    @ApiImplicitParams({
+    		@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
+            @ApiImplicitParam(name = "images",value = "使用Base64编码的多张样例图片",required = true),
+            @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
+            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
+    })
+    public String getLayerList(@RequestBody Map<String, Object> data){
+    	
+		// MultiLayersResponse
+    	MultiLayersResponse response = new MultiLayersResponse();
+    	
+    	try {
+    		// get parameters
+        	String imageBase64Strs = String.valueOf(data.get("images"));
+        	String sessionID = String.valueOf(data.get("sessionID"));
+        	Integer pageNum = Integer.parseInt(String.valueOf(data.get("pageNum")));
+        	Integer pageSize = Integer.parseInt(String.valueOf(data.get("pageSize")));
+        	
+//        	System.out.println("imageBase64Strs: " + imageBase64Strs);
+//        	System.out.println("sessionID: " + sessionID);
+//        	System.out.println("pageNum: " + pageNum);
+//        	System.out.println("pageSize: " + pageSize);
+    		SearchLayerByTempleteResult searchResult = layerService.getLayerListByTemplateUploaded(sessionID, imageBase64Strs, pageNum, pageSize);
+    		if(searchResult == null) {
+    			response.setErrCode(1002);
+    			response.setReqMsg("hashcode generation failure");
+    		} else {
+    			List<LayerWithFloatBBox> layersWithFloatBBox = searchResult.getLayers();
+        		response.setErrCode(0);
+    			response.setTotalLayerNum(searchResult.getTotalLayerNum());
+    			response.setCurrentLayerNum(layersWithFloatBBox.size());
+    			response.setData(layersWithFloatBBox);
+    			response.setSessionID(searchResult.getSessionID());
+    		}
+    	} catch(Exception e) {
+    		e.printStackTrace();
+			response.setErrCode(1002);
+			response.setReqMsg("出现错误");
+		}
+		String result=JSON.toJSONString(response);
+    	return result;
+    }
+    
     @CrossOrigin
     @GetMapping("/search/queryLayerInfo")
     @ApiOperation(value = "根据id进行查询")

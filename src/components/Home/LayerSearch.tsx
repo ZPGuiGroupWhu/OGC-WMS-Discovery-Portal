@@ -1,39 +1,8 @@
 import * as React from 'react';
-import '../../style/_home.scss';
-
-import {
-  BulbOutlined,
-  DownSquareOutlined,
-  UpSquareOutlined,
-  FileSearchOutlined,
-  MoreOutlined,
-  ProjectOutlined,
-  PushpinOutlined,
-  SearchOutlined,
-  SettingOutlined,
-  ShoppingCartOutlined,
-  StarFilled,
-  TagOutlined,
-  ThunderboltOutlined,
-} from '@ant-design/icons';
-
-import {
-  Layout,
-  Statistic,
-  List,
-  Card,
-  Popover,
-  Button,
-  Carousel,
-  Divider,
-  message,
-  Modal,
-  Input,
-  Select,
-  Radio,
-  Tooltip,
-} from 'antd';
-import $req from '../../util/fetch';
+import '../../style/_home.scss'; 
+import { Layout, Statistic,List,Card,Icon,Popover, Button, Carousel, Divider,
+    message, Modal, Input, Select, Radio, Tooltip} from 'antd';
+import $req from '../../util/fetch';    
 import { IQueryPar, IPageInfo,ILayer } from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
 import LeftSider from './LeftSider';
@@ -160,137 +129,135 @@ class LayerSearch extends React.Component<Props,State> {
   public render() {
     
     this.prepareData();
-      return (
-      <Content className="content">
-          <div className="content_tool">
-              {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
-              <Input  className="content_tool_search" allowClear={true}  placeholder="Input something to search services" onPressEnter={this.handleSearch}  addonAfter={
-                  <Radio.Group className="content_tool_radio" buttonStyle="solid" >
-                      <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><SearchOutlined /></Radio.Button></Tooltip>
-                      <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><FileSearchOutlined /></Radio.Button></Tooltip>
-                  </Radio.Group>} />
-              <Button className="content_tool_btn" type="primary">Return to Last Result</Button>
-              <Select defaultValue="firstLetter" className="content_tool_select">
-                  <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
-                  <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
-                  <Select.Option value="ResTime">Order By Response Time</Select.Option>
-                  <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
-              </Select>
-          </div>
-          <Layout className="main_container">
-              <LeftSider queryType={"layer"}/>
-              <Content className="main_container_content" id="main_container_content" >
-                <div className="main_container_content_imglist_statis">
-                   <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
-                   <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
-                </div>
-                <div id="heatmap_wrapper" >
-                    <List
-                       id="main_container_content_imglist"
-                       className="main_container_content_imglist"
-                       itemLayout="vertical"
-                       size="small"
-                       pagination={{
-                       current: this.state.pageInfo.pageNum,
-                       hideOnSinglePage: true,
-                       onChange: this.handlePaginate,
-                       pageSize: this.state.pageInfo.pageSize,
-                       showQuickJumper: true,
-                       total: this.state.listTotal
-                       }}
-                       dataSource={this.data}
-                       loading={this.state.loading}
-                       footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
-                       renderItem={(item:ILayer[])=>(
-                          <List.Item>
-                              <List
-                              className="main_container_content_childimglist"
-                              itemLayout="horizontal"
-                              size="small"
-                              grid={{gutter:15,column:8}}
-                              dataSource={item}
-                              renderItem={(childItem:ILayer) => (
-                                  <List.Item key={childItem.id} className="main_container_content_imglist_item" >
-                                    <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
-                                       <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
-                                             style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
-                                             bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
-                                               {childItem.name}
-                                       </Card>
-                                    </Popover>
-                                  </List.Item>
-                                 )}
-                              />
-                          </List.Item>
-                           )}
-                    />
-                </div>
-                <Divider />
-                 <div className="main_container_content_shoppingCart">
-                     <div className="main_container_content_shoppingCart_head">
-                       <ShoppingCartOutlined className="icon" />
-                       <span className="title">Shopping Cart</span>
-                         {this.state.bSideCollapsed?
-                             <DownSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>:
-                             <UpSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>}
-                       <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
-                       <div className="buttons">
+    return (
+        <Content className="content">
+            <div className="content_tool">
+                {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
+                <Input  className="content_tool_search" allowClear={true}  placeholder="Input something to search services" onPressEnter={this.handleSearch}  addonAfter={
+                    <Radio.Group className="content_tool_radio" buttonStyle="solid" >
+                        <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><Icon type="search"/></Radio.Button></Tooltip>
+                        <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><Icon type="file-search"/></Radio.Button></Tooltip>
+                    </Radio.Group>} />
+                <Button className="content_tool_btn" type="primary">Return to Last Result</Button>
+                <Select defaultValue="firstLetter" className="content_tool_select">
+                    <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
+                    <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
+                    <Select.Option value="ResTime">Order By Response Time</Select.Option>
+                    <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
+                </Select>
+            </div>
+            <Layout className="main_container">
+                <LeftSider queryType={"layer"}/>
+                <Content className="main_container_content" id="main_container_content" >
+                  <div className="main_container_content_imglist_statis">
+                     <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
+                     <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
+                  </div>
+                  <div id="heatmap_wrapper" >
+                      <List
+                         id="main_container_content_imglist"
+                         className="main_container_content_imglist"
+                         itemLayout="vertical"
+                         size="small"
+                         pagination={{
+                         current: this.state.pageInfo.pageNum,
+                         hideOnSinglePage: true,
+                         onChange: this.handlePaginate,
+                         pageSize: this.state.pageInfo.pageSize,
+                         showQuickJumper: true,
+                         total: this.state.listTotal
+                         }}
+                         dataSource={this.data}
+                         loading={this.state.loading}
+                         footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
+                         renderItem={(item:ILayer[])=>(
+                            <List.Item>
+                                <List
+                                className="main_container_content_childimglist"
+                                itemLayout="horizontal"
+                                size="small"
+                                grid={{gutter:15,column:8}}
+                                dataSource={item}
+                                renderItem={(childItem:ILayer) => (
+                                    <List.Item key={childItem.id} className="main_container_content_imglist_item" >
+                                      <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
+                                         <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
+                                               style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
+                                               bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
+                                                 {childItem.name}
+                                         </Card>
+                                      </Popover>
+                                    </List.Item>
+                                   )}
+                                />
+                            </List.Item>
+                             )}
+                      />
+                  </div>
+                  <Divider />
+                   <div className="main_container_content_shoppingCart">
+                       <div className="main_container_content_shoppingCart_head">
+                         <Icon className="icon" type="shopping-cart" />
+                         <span className="title">Shopping Cart</span>
+                         <Icon className="icon_small" type={this.state.bSideCollapsed?"down-square":"up-square"} onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/><br/>
+                         <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
+                         <div className="buttons">
 
-                           <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
-                           <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
+                             <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
+                             <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
 
-                         <Button className="button" type="primary" disabled={!!this.state.bSideCollapsed} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
-                         <Button className="button" type="primary" disabled={this.state.optionList.length===0} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
-                      </div>
-                     </div>
-                     <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
-                       {this.shoppingcart()}
-                     </div>
-                 </div>
-                 </Content>
-             <IntensionExp collapsed={this.state.rSideCollapsed}/>
+                           <Button className="button" type="primary" disabled={!!this.state.bSideCollapsed} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
+                           <Button className="button" type="primary" disabled={this.state.optionList.length===0} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
+                        </div>
+                       </div>
+                       <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
+                         {this.shoppingcart()}
+                       </div>
+                   </div>
+                   </Content>
+               <IntensionExp collapsed={this.state.rSideCollapsed}/>
 
-             <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={()=>{this.handleSubmitOk()}} onCancel={()=>{this.setState({submitVisible: false})}} closable={false}
-                    title={
-                    <div className="main_container_modal_title">
-                      <SettingOutlined className="icon" /><span className="span">Submit Setting</span>
-                    </div>}
-                  footer={[
-                    <Button key="back" onClick={()=>{this.setState({submitVisible: false})}}>Return</Button>,
-                    <Button key="submit" type="primary" onClick={()=>{this.handleSubmitOk()}}>Submit</Button>,]}>
+               <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={()=>{this.handleSubmitOk()}} onCancel={()=>{this.setState({submitVisible: false})}} closable={false}
+                      title={
+                      <div className="main_container_modal_title">
+                        <Icon className="icon" type="setting" /><span className="span">Submit Setting</span>
+                      </div>}
+                    footer={[
+                      <Button key="back" onClick={()=>{this.setState({submitVisible: false})}}>Return</Button>,
+                      <Button key="submit" type="primary" onClick={()=>{this.handleSubmitOk()}}>Submit</Button>,]}>
 
-                <div className="main_container_modal_body">
-                  <span className="sub_title">Retrieval Method:</span><br/>
-                  <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
-                  <span className="sub_title">Description:</span><br/>
-                  <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and map content. Firstly, the map is roughly classified according to cartography methods. Then explore the best feature fusion modes corresponding to the maps with same cartography methods, and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer retrieval.</p>
-                </div>
-             </Modal>
+                  <div className="main_container_modal_body">
+                    <span className="sub_title">Retrieval Method:</span><br/>
+                    <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
+                    <span className="sub_title">Description:</span><br/>
+                    <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and map content. Firstly, the map is roughly classified according to cartography methods. Then explore the best feature fusion modes corresponding to the maps with same cartography methods, and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer retrieval.</p>
+                  </div>
+               </Modal>
 
-          </Layout>
-      </Content>
+            </Layout>
+        </Content>
     );
   }
 
   // show card component when the mouse hovers the layers.
   public popoverContent = (layer:ILayer) =>{
     return (
-      <Card  cover={<img src={'data:image/png;base64,'+layer.photo} />} bodyStyle={{padding: "10px"}}>
-          <div className="main_container_content_imglist_item_popover_description">
-              <span><TagOutlined className="icon" /><b>Name:</b>{layer.name}</span><br/>
-              <span><ProjectOutlined className="icon" /><b>Title:</b>{layer.title}</span><br/>
-              <span><PushpinOutlined className="icon" /><b>Attribution: </b>{layer.attribution===""?"No attribution":layer.attribution}</span><br/>
-              <span><BulbOutlined className="icon" /><b>Topic: </b>{layer.topic}</span><br/>
-              <span><ThunderboltOutlined className="icon" /><b>Keywords: </b>{layer.keywords===""?"No keywords":layer.keywords}</span>
-          </div>
-          <div className="main_container_content_imglist_item_popover_button">
-              {this.popoverContentStar(layer)}
-              <Popover trigger="hover" content={<span>Learn more </span>} placement="top">
-                <Button className="button"  icon={<MoreOutlined />} onClick={()=>{this.props.dispatch(conveyLayerID(layer.id))}} href='layerInfo'/>
-              </Popover>
+       <Card  cover={<img src={'data:image/png;base64,'+layer.photo} />} bodyStyle={{padding: "10px"}}>
+           <div className="main_container_content_imglist_item_popover_description">
+               <span><Icon className="icon" type="tag" /><b>Name:</b>{layer.name}</span><br/>
+               <span><Icon className="icon" type="project" /><b>Title:</b>{layer.title}</span><br/>
+               <span><Icon className="icon" type="pushpin"/><b>Attribution: </b>{layer.attribution===""?"No attribution":layer.attribution}</span><br/>
+               <span><Icon className="icon" type="bulb"/><b>Topic: </b>{layer.topic}</span><br/>
+               <span><Icon className="icon" type="thunderbolt"/><b>Keywords: </b>{layer.keywords===""?"No keywords":layer.keywords}</span>
            </div>
-       </Card>
-    );
+           <div className="main_container_content_imglist_item_popover_button">
+               {this.popoverContentStar(layer)}
+               <Popover trigger="hover" content={<span>Learn more </span>} placement="top">
+                 <Button className="button"  icon="more" onClick={()=>{this.props.dispatch(conveyLayerID(layer.id))}} href='layerInfo'/>
+               </Popover>
+            </div>
+        </Card>
+         )
  }
 
  // show the star button in the popoverContent when the mouse click it
@@ -299,19 +266,19 @@ class LayerSearch extends React.Component<Props,State> {
      return (
        <Popover trigger="hover" content={<span>Deselect this Layer</span>} placement="top" >
           <Button className="button" onClick={()=>{this.handleStar(layer)}} >
-            <StarFilled style={{color: '#1890ff', borderColor: '#1890ff'}} />
+            <Icon type="star" theme="filled" style={{color: '#1890ff', borderColor: '#1890ff'}}/>
           </Button>
        </Popover>
-     );
+     )
    }
    else {
-     return (
+     return(
        <Popover trigger="hover" content={<span>Select this Layer</span>} placement="top" >
           <Button className="button" onClick={()=>{this.handleStar(layer)}} >
-            <StarFilled />
+            <Icon type="star" theme="filled" />
           </Button>
        </Popover>
-     );
+     )
    }
  }
 

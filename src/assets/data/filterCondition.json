@@ -1,7 +1,7 @@
 [
         {
             "name" : "Topic",
-            "icon" : "Topic",
+            "icon" : "user",
             "children" : [
                 { "name" : "Agriculture", "count" : 0 },
                 { "name" : "Biodiversity", "count" : 0 },
@@ -16,7 +16,7 @@
             ]
         },{
             "name" : "Provider Type",
-            "icon" : "Tag",
+            "icon" : "tag",
             "children" : [
                 { "name" : "Survey", "count" : 0},
                 { "name" : "University", "count" : 0 },
@@ -26,7 +26,7 @@
             ]
         },{
             "name" : "Public Organization",
-            "icon" : "Public-Organization",
+            "icon" : "laptop",
             "children" : [
                 { "name" : "Earth Data Analysis Center", "count" : 0},
                 { "name" : "NOAA", "count" : 0 },
@@ -58,7 +58,7 @@
             ]
         },{
             "name" : "Continent",
-            "icon" : "Location",
+            "icon" : "notification",
             "children" : [
                 { "name" : "Africa", "count" : 0},
 
