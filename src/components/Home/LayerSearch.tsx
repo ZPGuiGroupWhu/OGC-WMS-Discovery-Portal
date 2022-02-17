@@ -228,12 +228,19 @@ class LayerSearch extends React.Component<Props,State> {
                 <Divider />
                  <div className="main_container_content_shoppingCart">
                      <div className="main_container_content_shoppingCart_head">
-                       <ShoppingCartOutlined className="icon" />
-                       <span className="title">Shopping Cart</span>
-                         {this.state.bSideCollapsed?
-                             <DownSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>:
                              <UpSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>}
-                       <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
+                         <div style={{display:"inline-block"}}>
+                             <ShoppingCartOutlined className="icon"/>
+                             <span className="title">Shopping Cart</span>
+                             {this.state.bSideCollapsed ?
+                                 <DownSquareOutlined className="icon_small" onClick={() => {
+                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed})
+                                 }}/> :
+                                 <UpSquareOutlined className="icon_small" onClick={() => {
+                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed})
+                                 }}/>}
+                         </div>
+                         <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
                        <div className="buttons">
 
                            <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />

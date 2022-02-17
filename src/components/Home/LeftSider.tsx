@@ -214,7 +214,7 @@ class LeftSider extends React.Component<Props,State> {
     // init to render condition selector menu (submenu item)
     public addSubMenuItem = (subMenu: ISubMenu) => {
         return (
-            <Menu.Item key={subMenu.name} onClick = { this.handleMenuClick}><MyIcon className="myIcon" type={this.handleMyIconType(subMenu.name)}/>{subMenu.name}</Menu.Item>
+            <Menu.Item key={subMenu.name} onClick = { this.handleMenuClick}><MyIcon className="optionIcon" type={this.handleMyIconType(subMenu.name)}/>{subMenu.name}</Menu.Item>
         )
     }
 
@@ -225,7 +225,7 @@ class LeftSider extends React.Component<Props,State> {
                 className="main_container_leftsider_menu_item" key={menu.name}
                 title={
                     <span>
-                        <MyIcon className="icon" type={"icon-"+menu.icon}/>
+                        <MyIcon className="titleIcon" type={"icon-"+menu.icon}/>
                         Filter By {menu.name}
                     </span>}
             >
