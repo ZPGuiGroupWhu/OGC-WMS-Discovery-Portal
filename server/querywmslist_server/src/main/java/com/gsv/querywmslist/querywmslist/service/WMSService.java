@@ -1,6 +1,5 @@
 package com.gsv.querywmslist.querywmslist.service;
 
-import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.commons.TransformUtil;
 import com.gsv.querywmslist.querywmslist.dao.ContactInfo;
 import com.gsv.querywmslist.querywmslist.dao.Layer;
@@ -64,13 +63,13 @@ public class WMSService {
     }
     
     
-    public WMSWithLayer getWMSInfo(Integer id, PhotoTransportType photoType){
+    public WMSWithLayer getWMSInfo(Integer id){
     	
     	WMS wms = wmsMapper.getWMSById(id);
     	ContactInfo contactInfo = contactInfoMapper.getContactInfoByServiceId(id);
     	List<Layer> layers = layerMapper.getLayersByServiceId(id);
     	
-    	WMSWithLayer result = TransformUtil.mergeLayerAndWMSAndContactInfo(layers, wms, contactInfo, photoType);
+    	WMSWithLayer result = TransformUtil.mergeLayerAndWMSAndContactInfo(layers, wms, contactInfo);
     	return result;
     }
     

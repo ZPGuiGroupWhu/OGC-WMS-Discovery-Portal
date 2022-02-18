@@ -70,8 +70,7 @@ def query_layer_by_uploaded_template_test():
     data = {'images': json.dumps(images),
             'sessionID': '5a6c03a929ff48e8befb8a09e80d7fc4',
             'pageNum': 1,
-            'pageSize': 2,
-            'photoType': 'Base64Str'}
+            'pageSize': 2}
     # print(json.dumps(data))
     # print(json.dumps(data))
     time0 = time.time()

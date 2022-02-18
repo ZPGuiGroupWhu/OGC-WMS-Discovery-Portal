@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
 import com.gsv.querywmslist.querywmslist.dto.SearchLayerByTempleteResult;
 
@@ -29,10 +28,7 @@ public class LayerServiceTest {
 		Integer[] templeteIdArray = {1};
 		Integer pageNum = 1;
 		Integer pageSize = 5;
-		
-		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-		
-		SearchLayerByTempleteResult result = layerService.getLayerListByTemplateId(templeteIdArray, pageNum, pageSize, photoTransportType);
+		SearchLayerByTempleteResult result = layerService.getLayerListByTemplateId(templeteIdArray, pageNum, pageSize);
 		for(LayerWithFloatBBox layer : result.getLayers()) {
 			System.out.println(layer.getId() + ", " + layer.getName() + ", " + layer.getPhoto() == null);
 		}
@@ -46,8 +42,7 @@ public class LayerServiceTest {
 		String keyword = "water";
 		Integer pageNum = 1;
 		Integer pageSize = 5;
-		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-		List<LayerWithFloatBBox> result = layerService.getLayerList(keyword, null, null, pageNum, pageSize, photoTransportType);
+		List<LayerWithFloatBBox> result = layerService.getLayerList(keyword, null, null, pageNum, pageSize);
 		for(LayerWithFloatBBox layer : result) {
 			System.out.println(layer.getId() + ", " + layer.getName() + ", " + layer.getPhoto() == null);
 		}
@@ -59,8 +54,7 @@ public class LayerServiceTest {
 	public void testGetLayerInfo() {
 		
 		Integer layerId = 1;
-		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-		LayerWithFloatBBox result = layerService.getLayerInfo(layerId, photoTransportType);
+		LayerWithFloatBBox result = layerService.getLayerInfo(layerId);
 		System.out.println(result.toString());
 	}
 }

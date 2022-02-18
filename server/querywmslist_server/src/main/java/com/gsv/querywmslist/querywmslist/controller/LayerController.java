@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithWMS;
 import com.gsv.querywmslist.querywmslist.dto.SearchLayerByTempleteResult;
@@ -42,22 +41,17 @@ public class LayerController {
         @ApiImplicitParam(name = "bound",value = "输入经纬度范围",required = false),
         @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
         @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-        @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-        @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+        @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
 	})
-	public String getLayerList(String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize, String photoType) {
+	public String getLayerList(String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize) {
 		// MultiLayersResponse
 		
 		MultiLayersResponse response = new MultiLayersResponse();
 		
 		// TODO 错误类型分类不够细致，如可细分为代码运行错误、返回为空、参数错误等
 		try {
-			PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-			if("Base64Str".equals(photoType)) {
-				photoTransportType = PhotoTransportType.BASE64_STRING;
-			}
 			// 查询
-			List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerList(keywords, bound, topic, pageNum, pageSize, photoTransportType);
+			List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerList(keywords, bound, topic, pageNum, pageSize);
 			Integer totalLayerNum = layerService.getLayerListNum(keywords, bound, topic);
 			response.setErrCode(0);
 			response.setTotalLayerNum(totalLayerNum);
@@ -80,20 +74,14 @@ public class LayerController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "templateId",value = "样例图片的id，支持多张图片",required = true),
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-            @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
-    public String getLayerList(Integer[] templateId, Integer pageNum, Integer pageSize, String photoType){
+    public String getLayerList(Integer[] templateId, Integer pageNum, Integer pageSize){
 		// MultiLayersResponse
     	MultiLayersResponse response = new MultiLayersResponse();
     	
     	try {
-    		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-			if("Base64Str".equals(photoType)) {
-				photoTransportType = PhotoTransportType.BASE64_STRING;
-			}
-			
-    		SearchLayerByTempleteResult searchResult = layerService.getLayerListByTemplateId(templateId, pageNum, pageSize, photoTransportType);
+    		SearchLayerByTempleteResult searchResult = layerService.getLayerListByTemplateId(templateId, pageNum, pageSize);
     		List<LayerWithFloatBBox> layersWithFloatBBox = searchResult.getLayers();
     		response.setErrCode(0);
 			response.setTotalLayerNum(searchResult.getTotalLayerNum());
@@ -116,8 +104,7 @@ public class LayerController {
     		@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
             @ApiImplicitParam(name = "images",value = "使用Base64编码的多张样例图片",required = true),
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-            @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
     public String getLayerList(@RequestBody Map<String, Object> data){
     	
@@ -130,17 +117,12 @@ public class LayerController {
         	String sessionID = String.valueOf(data.get("sessionID"));
         	Integer pageNum = Integer.parseInt(String.valueOf(data.get("pageNum")));
         	Integer pageSize = Integer.parseInt(String.valueOf(data.get("pageSize")));
-        	String photoType = String.valueOf(data.get("photoType"));
         	
-        	PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-			if("Base64Str".equals(photoType)) {
-				photoTransportType = PhotoTransportType.BASE64_STRING;
-			}
 //        	System.out.println("imageBase64Strs: " + imageBase64Strs);
 //        	System.out.println("sessionID: " + sessionID);
 //        	System.out.println("pageNum: " + pageNum);
 //        	System.out.println("pageSize: " + pageSize);
-    		SearchLayerByTempleteResult searchResult = layerService.getLayerListByTemplateUploaded(sessionID, imageBase64Strs, pageNum, pageSize, photoTransportType);
+    		SearchLayerByTempleteResult searchResult = layerService.getLayerListByTemplateUploaded(sessionID, imageBase64Strs, pageNum, pageSize);
     		if(searchResult == null) {
     			response.setErrCode(1002);
     			response.setReqMsg("hashcode generation failure");
@@ -166,20 +148,13 @@ public class LayerController {
     @ApiOperation(value = "根据id进行查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "输入id", required = true),
-            @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
     })
-    public String queryLayerInfo(Integer id, String photoType){
+    public String queryLayerInfo(Integer id){
 		// LayerWithWMSResponse
 
 		LayerWithWMSResponse response = new LayerWithWMSResponse();
     	try {
-    		
-    		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-			if("Base64Str".equals(photoType)) {
-				photoTransportType = PhotoTransportType.BASE64_STRING;
-			}
-			
-    		LayerWithWMS data = layerService.getLayerInfo(id, photoTransportType);
+    		LayerWithWMS data = layerService.getLayerInfo(id);
     		response.setData(data);
     		response.setErrCode(0);
     	} catch(Exception e) {

@@ -1,11 +1,11 @@
 package com.gsv.querywmslist.querywmslist.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.dto.WMSWithContactInfo;
 import com.gsv.querywmslist.querywmslist.dto.WMSWithLayer;
 import com.gsv.querywmslist.querywmslist.service.WMSService;
 import com.gsv.querywmslist.querywmslist.vo.MultiWMSResponse;
+import com.gsv.querywmslist.querywmslist.vo.Response;
 import com.gsv.querywmslist.querywmslist.vo.WMSWithLayerResponse;
 
 import io.swagger.annotations.Api;
@@ -96,19 +96,13 @@ public class WMSController {
     @ApiOperation(value = "根据id进行查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id",value = "输入id",required = true),
-            @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
     })
-    public String getWMSInfo(Integer id, String photoType) {
+    public String getWMSInfo(Integer id) {
     	// WMSWithLayerResponse
 
         WMSWithLayerResponse response = new WMSWithLayerResponse();
     	try {
-    		PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
-			if("Base64Str".equals(photoType)) {
-				photoTransportType = PhotoTransportType.BASE64_STRING;
-			}
-    		
-            WMSWithLayer result = wmsService.getWMSInfo(id, photoTransportType);
+            WMSWithLayer result = wmsService.getWMSInfo(id);
             response.setErrCode(0);
             response.setData(result);
         }catch (Exception e){

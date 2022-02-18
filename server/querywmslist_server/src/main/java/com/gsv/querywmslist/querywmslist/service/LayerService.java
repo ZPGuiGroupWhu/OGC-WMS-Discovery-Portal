@@ -19,7 +19,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.gsv.querywmslist.querywmslist.commons.HashcodeCache;
 import com.gsv.querywmslist.querywmslist.commons.ImageHashCodesUtils;
 import com.gsv.querywmslist.querywmslist.commons.ObjectSimilarity;
-import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.commons.RegionGrow;
 import com.gsv.querywmslist.querywmslist.commons.Similarity;
 import com.gsv.querywmslist.querywmslist.commons.TransformUtil;
@@ -68,7 +67,7 @@ public class LayerService {
     
     
     
-    public SearchLayerByTempleteResult getLayerListByHashcodeSimilarity(Integer[][] templateHashCodes, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
+    public SearchLayerByTempleteResult getLayerListByHashcodeSimilarity(Integer[][] templateHashCodes, Integer pageNum, Integer pageSize) {
     	
     	List<ObjectSimilarity> similarities = new ArrayList <ObjectSimilarity> ();
     	// 计算图片库中每张图片与样例图片的64位哈希码的平均汉明距离，然后过滤得到相似度大于32的图片id
@@ -95,19 +94,12 @@ public class LayerService {
     		layerIdArray[i - start] = similarities.get(i).getId();
     	}
 
-    	
-    	// 查询Layer，根据图像传输类型选择是否查询图片Base64字符串
-    	List<Layer> layers = null;
-    	if(photoType.equals(PhotoTransportType.BASE64_STRING)) {
-    		layers = layerMapper.getLayersByIdArray(layerIdArray);
-    	} else if(photoType.equals(PhotoTransportType.STATIC_RESOURCE_PATH)) {
-    		layers = layerMapper.getLayersWithoutPhotoByIdArray(layerIdArray);
-    	}
-    	
+    	// 查询Layer
+    	List<Layer> layers = layerMapper.getLayersByIdArray(layerIdArray);
     	
     	// 转换BBox字段
     	List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer -> 
-    			TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
+    			TransformUtil.layerToLayerWithFloatBBox(layer)).collect(Collectors.toList());
     	
     	Integer totalLayerNum = similarities.size();
     	SearchLayerByTempleteResult result = new SearchLayerByTempleteResult();
@@ -119,7 +111,7 @@ public class LayerService {
     /*
      * 根据图层库中已有样例图片查询
      */
-    public SearchLayerByTempleteResult getLayerListByTemplateId(Integer[] templateId, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
+    public SearchLayerByTempleteResult getLayerListByTemplateId(Integer[] templateId, Integer pageNum, Integer pageSize) {
     	
     	
     	if(this.hashcodes == null) {
@@ -131,7 +123,7 @@ public class LayerService {
     		Integer tmp_templateId = templateId[i];
     		templateHashCodes[i] = this.hashcodes.get(tmp_templateId);
     	}
-    	return getLayerListByHashcodeSimilarity(templateHashCodes, pageNum, pageSize, photoType);
+    	return getLayerListByHashcodeSimilarity(templateHashCodes, pageNum, pageSize);
     	
     }
     
@@ -139,7 +131,7 @@ public class LayerService {
     /*
      * 根据用户上传的样例图片查询
      */
-    public SearchLayerByTempleteResult getLayerListByTemplateUploaded(String sessionID, String imageBase64Strs, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
+    public SearchLayerByTempleteResult getLayerListByTemplateUploaded(String sessionID, String imageBase64Strs, Integer pageNum, Integer pageSize) {
     	
     	if(this.hashcodes == null) {
     		initBydatabase();
@@ -230,13 +222,13 @@ public class LayerService {
     		this.hashcodeCache.put(sessionID, templateHashCodes);
     		
     	}
-    	SearchLayerByTempleteResult result = getLayerListByHashcodeSimilarity(templateHashCodes, pageNum, pageSize, photoType);
+    	SearchLayerByTempleteResult result = getLayerListByHashcodeSimilarity(templateHashCodes, pageNum, pageSize);
     	result.setSessionID(sessionID);
     	return result;
     }
     
     
-    public List<LayerWithFloatBBox>  getLayerList(String keywords, float[] bound, String topic, Integer pageNum, Integer pageSize, PhotoTransportType photoType){
+    public List<LayerWithFloatBBox>  getLayerList(String keywords, float[] bound, String topic, Integer pageNum, Integer pageSize){
         
         // 参数预处理
         keywords = (keywords == null) ? keywords : keywords.toLowerCase();
@@ -264,7 +256,7 @@ public class LayerService {
         
         // 转换BBox字段
     	List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer -> 
-    			TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
+    			TransformUtil.layerToLayerWithFloatBBox(layer)).collect(Collectors.toList());
         
         return layersWithFloatBBox;
     }
@@ -297,7 +289,7 @@ public class LayerService {
         return result;
     }
 
-    public LayerWithWMS getLayerInfo(Integer layerId,  PhotoTransportType photoType) {
+    public LayerWithWMS getLayerInfo(Integer layerId) {
     	Integer[] layerIdArray = {layerId};
     	List<Layer> layers = layerMapper.getLayersByIdArray(layerIdArray);
     	
@@ -309,7 +301,7 @@ public class LayerService {
     	WMS wms = wmsMapper.getWMSById(layer.getServiceId());
     	ContactInfo contactInfo = contactInfoMapper.getContactInfoByServiceId(layer.getServiceId());
 
-    	LayerWithWMS layerWithWMS = TransformUtil.mergeLayerAndWMSAndContactInfo(layer, wms, contactInfo, photoType);
+    	LayerWithWMS layerWithWMS = TransformUtil.mergeLayerAndWMSAndContactInfo(layer, wms, contactInfo);
     	
     	return layerWithWMS;
     	
