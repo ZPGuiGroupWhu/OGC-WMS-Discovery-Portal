@@ -35,7 +35,7 @@ class PortalHeader extends React.Component<Props,State>{
     public handleClick =(e:any) =>{
       if (e.key === "6"){
           this.props.dispatch(conveyLoginVisible(true))
-      }else if(e.key === "11"){
+      }else if(e.key === "13"){
           this.props.dispatch(conveyIsLogin(false))
       }
       else{
@@ -89,4 +89,4 @@ class PortalHeader extends React.Component<Props,State>{
          isLogin: state.conveyVisibleReducer.isLogin
      }
 }
-  export default connect(mapStateToProps)(PortalHeader);
+export default connect(mapStateToProps)(PortalHeader);

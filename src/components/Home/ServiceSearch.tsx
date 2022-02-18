@@ -143,7 +143,7 @@ class ServiceSearch extends React.Component<Props, State> {
                             dataSource={this.state.dataList}
                             footer={<div style={{"display":this.state.listFootShow}}><b>service list</b> footer part</div>}
                             renderItem={(item:IServInfo) => (
-                                <List.Item key={item.id} className="main_container_content_list_item">
+                                <List.Item key={item.id} className="main_container_content_list_item" style={{padding: '12px'}}>
                                     <Link to="/serviceInfo" className="title" onClick={()=>{this.props.dispatch(conveyServiceID(item.id))}}>{item.title ? item.title : 'null'}</Link>
                                     <Rate disabled={true} allowHalf={true} value={4.5} className="rank"/><br/>
                                     <span><CompassOutlined className="icon" />Location: {item.administrative_unit}</span>

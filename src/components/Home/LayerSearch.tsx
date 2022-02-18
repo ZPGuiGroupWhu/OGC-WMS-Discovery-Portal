@@ -202,15 +202,15 @@ class LayerSearch extends React.Component<Props,State> {
                        loading={this.state.loading}
                        footer={<div style={{"display":this.state.listFootShow}}><b>Map Layer list</b> footer part</div>}
                        renderItem={(item:ILayer[])=>(
-                          <List.Item>
+                          <List.Item style={{padding: '12px'}}>
                               <List
                               className="main_container_content_childimglist"
                               itemLayout="horizontal"
                               size="small"
-                              grid={{gutter:15,column:8}}
+                              grid={{gutter:12,column:8,}}
                               dataSource={item}
                               renderItem={(childItem:ILayer) => (
-                                  <List.Item key={childItem.id} className="main_container_content_imglist_item" >
+                                  <List.Item key={childItem.id} className="main_container_content_imglist_item" style={{margin: 0, padding:0}}>
                                     <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
                                        <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
                                              style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
@@ -228,12 +228,18 @@ class LayerSearch extends React.Component<Props,State> {
                 <Divider />
                  <div className="main_container_content_shoppingCart">
                      <div className="main_container_content_shoppingCart_head">
-                       <ShoppingCartOutlined className="icon" />
-                       <span className="title">Shopping Cart</span>
-                         {this.state.bSideCollapsed?
-                             <DownSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>:
-                             <UpSquareOutlined className="icon_small" onClick={()=>{this.setState({bSideCollapsed: !this.state.bSideCollapsed})}}/>}
-                       <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
+                         <div style={{display:"inline-block"}}>
+                             <ShoppingCartOutlined className="icon"/>
+                             <span className="title">Shopping Cart</span>
+                             {this.state.bSideCollapsed ?
+                                 <DownSquareOutlined className="icon_small" onClick={() => {
+                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed})
+                                 }}/> :
+                                 <UpSquareOutlined className="icon_small" onClick={() => {
+                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed})
+                                 }}/>}
+                         </div>
+                         <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
                        <div className="buttons">
 
                            <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
@@ -250,7 +256,8 @@ class LayerSearch extends React.Component<Props,State> {
                  </Content>
              <IntensionExp collapsed={this.state.rSideCollapsed}/>
 
-             <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={()=>{this.handleSubmitOk()}} onCancel={()=>{this.setState({submitVisible: false})}} closable={false}
+              <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={() => {this.handleSubmitOk()}}
+                     onCancel={() => {this.setState({submitVisible: false})}} closable={false}
                     title={
                     <div className="main_container_modal_title">
                       <SettingOutlined className="icon" /><span className="span">Submit Setting</span>
@@ -263,7 +270,11 @@ class LayerSearch extends React.Component<Props,State> {
                   <span className="sub_title">Retrieval Method:</span><br/>
                   <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
                   <span className="sub_title">Description:</span><br/>
-                  <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and map content. Firstly, the map is roughly classified according to cartography methods. Then explore the best feature fusion modes corresponding to the maps with same cartography methods, and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer retrieval.</p>
+                    <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and
+                        map content. Firstly, the map is roughly classified according to cartography methods. Then
+                        explore the best feature fusion modes corresponding to the maps with same cartography methods,
+                        and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer
+                        retrieval.</p>
                 </div>
              </Modal>
 
