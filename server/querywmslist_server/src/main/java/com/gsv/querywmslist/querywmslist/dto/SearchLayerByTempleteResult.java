@@ -9,5 +9,4 @@ public class SearchLayerByTempleteResult {
 
 	private List<LayerWithFloatBBox> layers;
 	private Integer totalLayerNum;
-	private String sessionID;
 }

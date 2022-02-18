@@ -1,12 +1,13 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
-import '../../style/_home.scss';  
+import '../../style/_home.scss';
 import $req from '../../util/fetch';
 import LeftSider from './LeftSider';
 import {stringFilter, reqUrl, smoothscroll, delEmptyKey } from '../../util/util';
 import { IServInfo, IPageInfo, IQueryPar } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
-import { Layout, Icon, List, Rate, Statistic, Input, Select, Button, Radio, Tooltip } from 'antd';
+import { CompassOutlined, FileSearchOutlined, PushpinOutlined, SearchOutlined } from '@ant-design/icons';
+import { Layout, List, Rate, Statistic, Input, Select, Button, Radio, Tooltip } from 'antd';
 import {connect}from 'react-redux'
 import {conveyServiceID, conveyQueryPar} from '../../redux/action'
 
@@ -108,8 +109,8 @@ class ServiceSearch extends React.Component<Props, State> {
                     {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
                     <Input  className="content_tool_search" allowClear={true}  placeholder="Input something to search services"  onPressEnter={this.handleSearch} addonAfter={
                         <Radio.Group className="content_tool_radio" buttonStyle="solid" >
-                            <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><Icon type="search"/></Radio.Button></Tooltip>
-                            <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><Icon type="file-search"/></Radio.Button></Tooltip>
+                            <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><SearchOutlined /></Radio.Button></Tooltip>
+                            <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><FileSearchOutlined /></Radio.Button></Tooltip>
                         </Radio.Group>} />
                     <Button className="content_tool_btn" type="primary">Return to Last Result</Button>
                     <Select defaultValue="firstLetter" className="content_tool_select">
@@ -145,8 +146,8 @@ class ServiceSearch extends React.Component<Props, State> {
                                 <List.Item key={item.id} className="main_container_content_list_item">
                                     <Link to="/serviceInfo" className="title" onClick={()=>{this.props.dispatch(conveyServiceID(item.id))}}>{item.title ? item.title : 'null'}</Link>
                                     <Rate disabled={true} allowHalf={true} value={4.5} className="rank"/><br/>
-                                    <span><Icon className="icon" type="compass"/>Location: {item.administrative_unit}</span>
-                                    <span className="span"><Icon className="icon" type="pushpin"/>GeoGraphic Location: ({item.geoLocation[0]}, {item.geoLocation[1]})</span><br/>
+                                    <span><CompassOutlined className="icon" />Location: {item.administrative_unit}</span>
+                                    <span className="span"><PushpinOutlined className="icon" />GeoGraphic Location: ({item.geoLocation[0]}, {item.geoLocation[1]})</span><br/>
                                     Service was public at the website: <a href={item.url}>{item.url}</a><br/>
                                     {item.abstr ? stringFilter(item.abstr) : 'There is no abstract in the service capability document.'}<br/>
                                     <b>Keywords: </b><span>{item.keywords ? stringFilter(item.keywords): 'no keywords'}</span>
@@ -156,7 +157,6 @@ class ServiceSearch extends React.Component<Props, State> {
                     </Content>
                 </Layout>
             </Content>
-              
         );
     }
 
