@@ -34,7 +34,7 @@ import {
   Tooltip,
 } from 'antd';
 import $req from '../../util/fetch';
-import { IQueryPar, IPageInfo,ILayer } from "../../util/interface";
+import {IQueryPar, IPageInfo, ILayer, IHover} from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
 import LeftSider from './LeftSider';
 import IntensionExp from './IntentionExp';
@@ -42,7 +42,7 @@ import {connect} from 'react-redux';
 import {conveyLayerID,conveyQueryPar} from '../../redux/action';
 
 // @ts-ignore
-import hm from 'heatmap.js'
+// import hm from 'heatmap.js'
 
 const { Content} = Layout;
 
@@ -92,6 +92,11 @@ class LayerSearch extends React.Component<Props,State> {
   public data: ILayer [][];
   public submitOptionList: ILayer [];
 
+  // Record time and count when mouse enter the layer
+  public layerInterval: NodeJS.Timeout;
+  public hoverInterval: NodeJS.Timeout;
+  public hoverList: IHover[];
+
   constructor (props:Props) {
     super(props);
     this.state = {
@@ -128,6 +133,7 @@ class LayerSearch extends React.Component<Props,State> {
 
   public componentDidMount(){
     this.initData();
+    this.hoverList=[];
   }
 
     public componentDidUpdate(prevProps: any, prevState: any){
@@ -158,7 +164,7 @@ class LayerSearch extends React.Component<Props,State> {
 
 
   public render() {
-    
+    let layerCounter=0
     this.prepareData();
       return (
       <Content className="content">
@@ -214,7 +220,13 @@ class LayerSearch extends React.Component<Props,State> {
                                     <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
                                        <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
                                              style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
-                                             bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
+                                             bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}
+                                             onMouseEnter={()=>{this.layerInterval=setInterval(()=>{layerCounter+=1},50)}}
+                                             onMouseLeave={()=>{
+                                                 this.updateHoverList(childItem,layerCounter);
+                                                 clearInterval(this.layerInterval);
+                                                 layerCounter=0}}
+                                       >
                                                {childItem.name}
                                        </Card>
                                     </Popover>
@@ -285,8 +297,15 @@ class LayerSearch extends React.Component<Props,State> {
 
   // show card component when the mouse hovers the layers.
   public popoverContent = (layer:ILayer) =>{
+      let hoverCounter=0
     return (
-      <Card  cover={<img src={'data:image/png;base64,'+layer.photo} />} bodyStyle={{padding: "10px"}}>
+      <Card  cover={<img src={'data:image/png;base64,'+layer.photo} />} bodyStyle={{padding: "10px"}}
+             onMouseEnter={()=>{this.hoverInterval=setInterval(()=>{hoverCounter+=1},50)}}
+             onMouseLeave={()=>{
+                 this.updateHoverList(layer,hoverCounter)
+                 clearInterval(this.hoverInterval)
+                 hoverCounter=0}}
+      >
           <div className="main_container_content_imglist_item_popover_description">
               <span><TagOutlined className="icon" /><b>Name:</b>{layer.name}</span><br/>
               <span><ProjectOutlined className="icon" /><b>Title:</b>{layer.title}</span><br/>
@@ -382,6 +401,24 @@ class LayerSearch extends React.Component<Props,State> {
    />
     )
   }
+
+    // update hoverList to save moving action of the users' mouse
+    public updateHoverList=(layer:ILayer,counter:number)=>{
+        let isLayerContain=false
+        const selfHoverList=this.hoverList
+        selfHoverList.map((hoverItem:IHover,index:number,list:IHover[])=>{
+            if(hoverItem.layerID===layer.id){
+                const freq=hoverItem.frequency
+                const time=hoverItem.time
+                list[index]={layerID:layer.id, frequency: freq+1, time: Math.floor((time+counter*0.05)*100)/100}
+                isLayerContain=true
+            }
+        })
+        if(!isLayerContain){
+            selfHoverList.push({layerID: layer.id, frequency: 1, time: Math.floor(counter*0.05*100)/100})
+        }
+        this.hoverList=selfHoverList
+    }
 
     // handle input search in the database
     public handleSearch=()=>{
@@ -665,67 +702,73 @@ class LayerSearch extends React.Component<Props,State> {
   // When to transfer: init render LayerSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
   // @param  params:object = {keyword?:string, bound?:number[], pageNum:number, pageSize:number, topic?:string, organization?:string, organization_type?:string, continent?:string}
   public async queryLayerList(pagePar:object, queryPar:object) {
-    const baseUrl:string = 'search/queryLayerList';
-    const reqPar:object = Object.assign(pagePar,queryPar);
-    const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8081');
-    let requestTime:number=0;  // record request time
-    console.log(url)
-    try {
-        const timer=setInterval(()=>{++requestTime},10)
-        const res: any = await $req(url, {})
-        clearInterval(timer);
-        const resBody:any  = JSON.parse(res)
-        this.setState({
-            currentSize: resBody.currentLayerNum,
-            dataList: resBody.data,
-            listTotal: resBody.totalLayerNum,
-            isUpdate: true,
-            loading: false,
-            queryType: 'byMetadata',
-            time: requestTime*0.01,
-        })
-    } catch(e) {
-        alert(e.message)
-    }
+      this.hoverList=[] // TODO: POST MOUSE DATA TO BACK END
+      const baseUrl: string = 'search/queryLayerList';
+      const reqPar: object = Object.assign(pagePar, queryPar);
+      const url: string = reqUrl(delEmptyKey(reqPar), baseUrl, '8081');
+      let requestTime: number = 0;  // record request time
+      console.log(url)
+      try {
+          const timer = setInterval(() => {
+              ++requestTime
+          }, 10)
+          const res: any = await $req(url, {})
+          clearInterval(timer);
+          const resBody: any = JSON.parse(res)
+          this.setState({
+              currentSize: resBody.currentLayerNum,
+              dataList: resBody.data,
+              listTotal: resBody.totalLayerNum,
+              isUpdate: true,
+              loading: false,
+              queryType: 'byMetadata',
+              time: requestTime * 0.01,
+          })
+      } catch (e) {
+          alert(e.message)
+      }
   }
 
   public async queryLayerByTemplate(pagePar:object,optionList:ILayer[]) {
-    const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
-    let url:string=baseUrl+'&templateId=';
-    // if(this.state.queryType === 'paginateByTemplate'){
-    // }
-    if(this.state.queryType === 'submitByTemplate'){
-      // deep copy
-      this.submitOptionList=JSON.parse(JSON.stringify(this.state.optionList))
-    }
-    for(const each of this.submitOptionList){
-      if(each.id<0){
-        continue;
-      } 
-      url+=each.id.toString()+','
-    }
-    url=url.substring(0,url.length-1)
-    // const url:string = 'http://132.232.98.213:8081/search/querylayerbytemplate?templateId=1,2&pageNum=1&pageSize=40'; 
+      this.hoverList=[]  // TODO: POST MOUSE DATA TO BACK END
+      const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
+      let url: string = baseUrl + '&templateId=';
+      // if(this.state.queryType === 'paginateByTemplate'){
+      // }
+      if (this.state.queryType === 'submitByTemplate') {
+          // deep copy
+          this.submitOptionList = JSON.parse(JSON.stringify(this.state.optionList))
+      }
+      for (const each of this.submitOptionList) {
+          if (each.id < 0) {
+              continue;
+          }
+          url += each.id.toString() + ','
+      }
+      url = url.substring(0, url.length - 1)
+      // const url:string = 'http://132.232.98.213:8081/search/querylayerbytemplate?templateId=1,2&pageNum=1&pageSize=40';
 
-    let requestTime:number=0;  // record request time
-    console.log(url)
-    try {
-        const timer=setInterval(()=>{++requestTime},10)
-        const res: any = await $req(url, {})
-        clearInterval(timer);
-        const resBody:any  = JSON.parse(res)
-        this.setState({
-            currentSize: resBody.currentLayerNum,
-            dataList: resBody.data,
-            listTotal: resBody.totalLayerNum,
-            isUpdate: true,
-            loading: false,
-            queryType: 'paginateByTemplate',
-            time: requestTime*0.01,
-        })
-    } catch(e) {
-        alert(e.message)
-    }
+      let requestTime: number = 0;  // record request time
+      console.log(url)
+      try {
+          const timer = setInterval(() => {
+              ++requestTime
+          }, 10)
+          const res: any = await $req(url, {})
+          clearInterval(timer);
+          const resBody: any = JSON.parse(res)
+          this.setState({
+              currentSize: resBody.currentLayerNum,
+              dataList: resBody.data,
+              listTotal: resBody.totalLayerNum,
+              isUpdate: true,
+              loading: false,
+              queryType: 'paginateByTemplate',
+              time: requestTime * 0.01,
+          })
+      } catch (e) {
+          alert(e.message)
+      }
   }
 }
 

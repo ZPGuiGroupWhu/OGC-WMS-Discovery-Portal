@@ -140,6 +140,7 @@ class Login extends React.Component<Props, State>{
                 </div>
                 <Form  className="login_form" onFinish={(values:any)=>this.handleLogin(values)} layout={"vertical"} ref={this.formRef}>
                     <Form.Item name="identity" label={this.state.identifier=== 'email'? 'Email':'Username'} labelAlign="left"
+                               validateTrigger={"onBlur"}
                                rules={[{required:true, message: 'Please input your ' + this.state.identifier + "!"},
                                    this.state.identifier === 'email' ?
                                        {type: "email", message: "The input is not valid Email!"} : {}]}
