@@ -20,6 +20,7 @@
     }
     &_menu{
         line-height: $header_height !important;
+        width: 490px;
         &_nav,  &_dropdown{
             font-size: $nav_font_size;
         }
