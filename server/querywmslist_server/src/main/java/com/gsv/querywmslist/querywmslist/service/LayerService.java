@@ -1,16 +1,26 @@
 package com.gsv.querywmslist.querywmslist.service;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.gsv.querywmslist.querywmslist.commons.HashcodeCache;
+import com.gsv.querywmslist.querywmslist.commons.ImageHashCodesUtils;
 import com.gsv.querywmslist.querywmslist.commons.ObjectSimilarity;
+import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
+import com.gsv.querywmslist.querywmslist.commons.RegionGrow;
 import com.gsv.querywmslist.querywmslist.commons.Similarity;
 import com.gsv.querywmslist.querywmslist.commons.TransformUtil;
 import com.gsv.querywmslist.querywmslist.dao.ContactInfo;
@@ -24,6 +34,7 @@ import com.gsv.querywmslist.querywmslist.repository.ContactInfoMapper;
 import com.gsv.querywmslist.querywmslist.repository.HashCodeMapper;
 import com.gsv.querywmslist.querywmslist.repository.LayerMapper;
 import com.gsv.querywmslist.querywmslist.repository.WMSMapper;
+import com.mathworks.toolbox.javabuilder.MWException;
 
 @Service
 public class LayerService {
@@ -36,6 +47,7 @@ public class LayerService {
 	
 	private Map<Integer, Integer[]> hashcodes;
 	private Long createAt;
+	private HashcodeCache hashcodeCache = new HashcodeCache();
 	
 	
 	public LayerService() {
@@ -55,22 +67,10 @@ public class LayerService {
 	}
     
     
-    /*
-     * 根据样例图片查询
-     */
-    public SearchLayerByTempleteResult getLayerListByTemplateId(Integer[] templateId, Integer pageNum, Integer pageSize) {
+    
+    public SearchLayerByTempleteResult getLayerListByHashcodeSimilarity(Integer[][] templateHashCodes, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
     	
-    	
-    	if(this.hashcodes == null) {
-    		initBydatabase();
-    	}
     	List<ObjectSimilarity> similarities = new ArrayList <ObjectSimilarity> ();
-    	List<Integer[]> templateHashCodes = new ArrayList<>();
-    	
-    	for(Integer tmp_templateId : templateId) {
-    		templateHashCodes.add(this.hashcodes.get(tmp_templateId));
-    	}
-
     	// 计算图片库中每张图片与样例图片的64位哈希码的平均汉明距离，然后过滤得到相似度大于32的图片id
     	this.hashcodes.forEach((k, v) -> {
     		Float simi = 0f;
@@ -80,7 +80,7 @@ public class LayerService {
     		}
 
     		// 通过排除差异较大的图片减少内存使用，认为如果汉明距离i小于32就不相似了，32为64位哈希码的一半
-    		if(simi / templateHashCodes.size() < 32f ) {
+    		if(simi / templateHashCodes.length < 32f ) {
         		similarities.add(new ObjectSimilarity(k, simi));
     		}
     	});
@@ -95,12 +95,19 @@ public class LayerService {
     		layerIdArray[i - start] = similarities.get(i).getId();
     	}
 
-    	// 查询Layer
-    	List<Layer> layers = layerMapper.getLayersByIdArray(layerIdArray);
+    	
+    	// 查询Layer，根据图像传输类型选择是否查询图片Base64字符串
+    	List<Layer> layers = null;
+    	if(photoType.equals(PhotoTransportType.BASE64_STRING)) {
+    		layers = layerMapper.getLayersByIdArray(layerIdArray);
+    	} else if(photoType.equals(PhotoTransportType.STATIC_RESOURCE_PATH)) {
+    		layers = layerMapper.getLayersWithoutPhotoByIdArray(layerIdArray);
+    	}
+    	
     	
     	// 转换BBox字段
     	List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer -> 
-    			TransformUtil.layerToLayerWithFloatBBox(layer)).collect(Collectors.toList());
+    			TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
     	
     	Integer totalLayerNum = similarities.size();
     	SearchLayerByTempleteResult result = new SearchLayerByTempleteResult();
@@ -109,8 +116,127 @@ public class LayerService {
     	return result;
     }
     
+    /*
+     * 根据图层库中已有样例图片查询
+     */
+    public SearchLayerByTempleteResult getLayerListByTemplateId(Integer[] templateId, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
+    	
+    	
+    	if(this.hashcodes == null) {
+    		initBydatabase();
+    	}
+    	Integer[][] templateHashCodes = new Integer[templateId.length][];
+    	
+    	for(int i = 0; i < templateId.length; i++) {
+    		Integer tmp_templateId = templateId[i];
+    		templateHashCodes[i] = this.hashcodes.get(tmp_templateId);
+    	}
+    	return getLayerListByHashcodeSimilarity(templateHashCodes, pageNum, pageSize, photoType);
+    	
+    }
     
-    public List<LayerWithFloatBBox>  getLayerList(String keywords, float[] bound, String topic, Integer pageNum, Integer pageSize){
+    
+    /*
+     * 根据用户上传的样例图片查询
+     */
+    public SearchLayerByTempleteResult getLayerListByTemplateUploaded(String sessionID, String imageBase64Strs, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
+    	
+    	if(this.hashcodes == null) {
+    		initBydatabase();
+    	}
+    	Integer[][] templateHashCodes;
+    	
+    	if(hashcodeCache.contains(sessionID)) {
+    		templateHashCodes = hashcodeCache.getHashcode(sessionID);
+    	} else {
+    		JSONArray imageBase64StrsJSON = JSON.parseArray(imageBase64Strs);
+    		double[][][][] imagesArray = new double[imageBase64StrsJSON.size()][][][];
+    		for(int i = 0; i < imageBase64StrsJSON.size(); i++) {
+    			String tmpImageBase64Str = imageBase64StrsJSON.getString(i);
+    			BufferedImage tmpImage = null;
+    			try {
+    				tmpImage = ImageHashCodesUtils.base64StrToBufferedImage(tmpImageBase64Str);
+    			} catch (IOException e) {
+    				// TODO Auto-generated catch block
+    				System.out.println("ERROR: base64StrToBufferedImage");
+    				return null;
+    				
+    			}
+    			imagesArray[i] = ImageHashCodesUtils.cvtImageRGBToArray(tmpImage);
+    		}
+    		
+    		// get image mainpart by MC 
+    		int[][][] mainpart_MCs = new int[imagesArray.length][][];
+    		for(int i = 0; i < imagesArray.length; i++) {
+    			double[][][] tmpImage = imagesArray[i];
+    			try {
+    				mainpart_MCs[i] = ImageHashCodesUtils.getMainPartMCInt(tmpImage);
+    			} catch (MWException e) {
+    				// TODO Auto-generated catch block
+    				System.out.println("ERROR: getMainPartMC");
+    				return null;
+    			}
+    		}
+    		// get image mainpart by RG
+    		// get image gray
+    		JSONArray mainpartRGBase64Strs = new JSONArray();
+    		for(int i = 0; i < imagesArray.length; i++) {
+
+    			try {
+    				int[][][] tmpImage = ImageHashCodesUtils.doubleArray2intArray(imagesArray[i]);
+    				int[][] tmpGrayImage = RegionGrow.cvtImageArrayRGBToGray(tmpImage);
+    				int[][] tmpMainPartRG = RegionGrow.regionGrow(tmpGrayImage);
+    				String tmpMainpartRGBase64Str = ImageHashCodesUtils.bufferedImage2Base64Str(ImageHashCodesUtils.array2Image(tmpMainPartRG));
+    				mainpartRGBase64Strs.add(tmpMainpartRGBase64Str);
+    			} catch (Exception e) {
+    				// TODO Auto-generated catch block
+    				System.out.println("ERROR: get image mainpart by RG");
+    				return null;
+    			}
+    		}
+    		
+    		// get hashcodes
+    		int[][] hashcodes;
+    		try {
+    			// convert imageBase64Strs from JSONArrayStr to JSONArray
+    			JSONArray images = JSON.parseArray(imageBase64Strs);
+    			// convert mainpart_MCs from double[][][] to
+    			JSONArray mainpartMCBase64Strs = new JSONArray();
+    			int[][][] mainpart_MCsInt = mainpart_MCs;
+    			for(int i = 0; i < mainpart_MCsInt.length; i++) {
+    				int[][] mainpartMCInt = mainpart_MCsInt[i];
+    				String tmpMainpartMCBase64Str = ImageHashCodesUtils.bufferedImage2Base64Str(ImageHashCodesUtils.array2Image(mainpartMCInt));
+    				mainpartMCBase64Strs.add(tmpMainpartMCBase64Str);
+    			}
+    			hashcodes = ImageHashCodesUtils.getHashCodes(images, mainpartMCBase64Strs, mainpartRGBase64Strs);
+    		} catch (IOException e) {
+    			// TODO Auto-generated catch block
+    			System.out.println("ERROR: getHashCodes");
+    			return null;
+    		}
+    		
+    		templateHashCodes = new Integer[hashcodes.length][];
+    		for(int i = 0; i < hashcodes.length; i++) {
+    			Integer[] tmpHashcode = new Integer[hashcodes[i].length - 1];
+    			// 第一个整数是图片ID，因此从第二个开始
+    			for(int j = 1; j < hashcodes[i].length; j++) {
+    				tmpHashcode[j - 1] = hashcodes[i][j];
+    			}
+    			templateHashCodes[i] = tmpHashcode;
+    		}
+    		
+    		sessionID = UUID.randomUUID().toString().replaceAll("-", "");
+    		// 缓存
+    		this.hashcodeCache.put(sessionID, templateHashCodes);
+    		
+    	}
+    	SearchLayerByTempleteResult result = getLayerListByHashcodeSimilarity(templateHashCodes, pageNum, pageSize, photoType);
+    	result.setSessionID(sessionID);
+    	return result;
+    }
+    
+    
+    public List<LayerWithFloatBBox>  getLayerList(String keywords, float[] bound, String topic, Integer pageNum, Integer pageSize, PhotoTransportType photoType){
         
         // 参数预处理
         keywords = (keywords == null) ? keywords : keywords.toLowerCase();
@@ -138,7 +264,7 @@ public class LayerService {
         
         // 转换BBox字段
     	List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer -> 
-    			TransformUtil.layerToLayerWithFloatBBox(layer)).collect(Collectors.toList());
+    			TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
         
         return layersWithFloatBBox;
     }
@@ -171,7 +297,7 @@ public class LayerService {
         return result;
     }
 
-    public LayerWithWMS getLayerInfo(Integer layerId) {
+    public LayerWithWMS getLayerInfo(Integer layerId,  PhotoTransportType photoType) {
     	Integer[] layerIdArray = {layerId};
     	List<Layer> layers = layerMapper.getLayersByIdArray(layerIdArray);
     	
@@ -183,7 +309,7 @@ public class LayerService {
     	WMS wms = wmsMapper.getWMSById(layer.getServiceId());
     	ContactInfo contactInfo = contactInfoMapper.getContactInfoByServiceId(layer.getServiceId());
 
-    	LayerWithWMS layerWithWMS = TransformUtil.mergeLayerAndWMSAndContactInfo(layer, wms, contactInfo);
+    	LayerWithWMS layerWithWMS = TransformUtil.mergeLayerAndWMSAndContactInfo(layer, wms, contactInfo, photoType);
     	
     	return layerWithWMS;
     	

@@ -15,7 +15,7 @@ import com.gsv.querywmslist.querywmslist.dto.WMSWithLayer;
 
 public class TransformUtil {
 
-	public static LayerWithFloatBBox layerToLayerWithFloatBBox(Layer layer) {
+	public static LayerWithFloatBBox layerToLayerWithFloatBBox(Layer layer, PhotoTransportType photoType) {
 		LayerWithFloatBBox result = new LayerWithFloatBBox();
 		result.setAbstr(layer.getAbstr());
 		result.setAttribution(layer.getAttribution());
@@ -33,8 +33,14 @@ public class TransformUtil {
         bbox[1][0]=Float.parseFloat(bboxStrArray[2]);
         bbox[1][1]=Float.parseFloat(bboxStrArray[3]);
         result.setBbox(bbox);
-        String photoBase64Str = Base64.getEncoder().encodeToString(layer.getPhoto()).replaceAll("\\r\\n","");
-        result.setPhoto(photoBase64Str);
+        
+        if(photoType.equals(PhotoTransportType.BASE64_STRING)) {
+        	String photoBase64Str = Base64.getEncoder().encodeToString(layer.getPhoto()).replaceAll("\\r\\n","");
+            result.setPhoto(photoBase64Str);
+        } else if(photoType.equals(PhotoTransportType.STATIC_RESOURCE_PATH)) {
+        	result.setPhoto(layer.getImagePath());
+        }
+        
         result.setServiceId(layer.getServiceId());
         return result;
 	}
@@ -82,7 +88,7 @@ public class TransformUtil {
 	}
 	
 	
-	public static WMSWithLayer mergeLayerAndWMSAndContactInfo(List<Layer> layers, WMS wms, ContactInfo contactInfo) {
+	public static WMSWithLayer mergeLayerAndWMSAndContactInfo(List<Layer> layers, WMS wms, ContactInfo contactInfo, PhotoTransportType photoType) {
 		
 		WMSWithLayer result = new WMSWithLayer();
         result.setAbstr(wms.getAbstr());
@@ -96,7 +102,7 @@ public class TransformUtil {
         result.setTopic(wms.getTopic());
         result.setVersion(wms.getVersion());
         List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(
-        		layer -> TransformUtil.layerToLayerWithFloatBBox(layer))
+        		layer -> TransformUtil.layerToLayerWithFloatBBox(layer, photoType))
         		.collect(Collectors.toList());
         
         result.setLayers(layersWithFloatBBox);
@@ -106,7 +112,7 @@ public class TransformUtil {
 	}
 	
 	
-public static LayerWithWMS mergeLayerAndWMSAndContactInfo(Layer layer, WMS wms, ContactInfo contactInfo) {
+public static LayerWithWMS mergeLayerAndWMSAndContactInfo(Layer layer, WMS wms, ContactInfo contactInfo, PhotoTransportType photoType) {
 		
 		LayerWithWMS result = new LayerWithWMS();
 		result.setAbstr(layer.getAbstr());
@@ -125,8 +131,14 @@ public static LayerWithWMS mergeLayerAndWMSAndContactInfo(Layer layer, WMS wms, 
         bbox[1][0]=Float.parseFloat(bboxStrArray[2]);
         bbox[1][1]=Float.parseFloat(bboxStrArray[3]);
         result.setBbox(bbox);
-        String photoBase64Str = Base64.getEncoder().encodeToString(layer.getPhoto()).replaceAll("\\r\\n","");
-        result.setPhoto(photoBase64Str);
+        
+        if(photoType.equals(PhotoTransportType.BASE64_STRING)) {
+        	String photoBase64Str = Base64.getEncoder().encodeToString(layer.getPhoto()).replaceAll("\\r\\n","");
+            result.setPhoto(photoBase64Str);
+        } else if(photoType.equals(PhotoTransportType.STATIC_RESOURCE_PATH)) {
+        	result.setPhoto(layer.getImagePath());
+        }
+        
         result.setServiceId(layer.getServiceId());
         
 		WMSWithContactInfo wmsWithContactInfo = TransformUtil.mergeWMSAndContactInfo(wms, contactInfo);
