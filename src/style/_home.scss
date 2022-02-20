@@ -106,13 +106,14 @@
                display: inline-block;
                 .icon{
                     font-size: $nav_font_size*1.5;
-                    margin-left: $bound_padding * 0.5;
-                    line-height: 0;
+                    margin-left: $bound_padding*0.5 ;
+                    // line-height: 0;
                 }
                 .title{
                     font-weight: bold;
                     font-size: $nav_font_size*1.3;
                 }
+
                 .switch{
                     margin-left: $bound_padding ;
                     margin-bottom: $bound_padding*0.5;
@@ -286,22 +287,33 @@
     background: $white;
     &_item{
         line-height: $header_font_size;
-        &_popover_description{
-            float: left;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-            width: 300px;
-           .icon{
-            margin-right:  $bound_padding * 0.5;
+        &_popover{
+            &_description{
+                float: left;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+                width: 300px;
+                .icon{
+                    margin-right:  $bound_padding * 0.5;
+                }
             }
-        }
-        &_popover_button{
-            float: left;
-            border: $bound_padding *0.3;
-            .button{
-                margin: $bound_padding * 0.5;
-                margin-top: 70px;
+            &_button{
+                float: left;
+                border: $bound_padding *0.3;
+                .button{
+                    // margin: $bound_padding * 0.5;
+                    margin-top: 70px;
+                }
+            }
+            .icon{
+                font-size: x-large;
+                font-weight: bold;
+                z-index: 200;
+                position: absolute;
+                cursor: pointer;
+                right: 10px;
+                bottom: 3px
             }
         }
     }
@@ -315,7 +327,8 @@
     &_head{
         margin-bottom: 5px;
         .icon{
-        font-size: $header_font_size
+            font-size: $header_font_size*0.8;
+            padding-left: $bound_padding;
         }
         .icon_small{
             font-size: $nav_font_size;
@@ -352,27 +365,17 @@
                 overflow: hidden;
                 padding: $bound_padding * 0.5;
             }
-            // style for picture wall in the shopping cart
-            .ant-upload-list-picture-card .ant-upload-list-item {
-                // height:  100%;
-                width: 100%;
-              }
-            .ant-upload-list-picture-card-container{
-                // height: 80%;
-                width: 15%;
-                margin: 0 10px 10px 0;
-            }
-            .ant-upload.ant-upload-select-picture-card{
-
-                width: 15%;
-            }
-            .ant-upload-select-picture-card i {
-                font-size: 32px;
-                color: #999;
-              }
-            .ant-upload-select-picture-card .ant-upload-text {
-                margin-top: 8px;
-                color: #666;
+        }
+        &_list{
+            .deleteIcon{
+               font-size: x-large;
+                font-weight: bold;
+                z-index: 200;
+                position: absolute;
+                cursor: pointer;
+                right: 5px;
+                top: -5px;
+                animation: shake-hard 200ms ease-in-out infinite;
             }
         }
     }
@@ -529,4 +532,36 @@
 // style for statistic
 .ant-statistic-content-suffix{
     font-size: $nav_font_size+1;
+}
+
+// style for preview image background
+.ant-image-preview-img{
+    background: white;
+}
+
+// style for carousel button
+.ant-carousel .slick-dots {
+    bottom: -10px ;
+}
+
+// animation for delete icon
+@-webkit-keyframes shake-hard {
+    0% {
+        transform: translate(0px, 0px) rotate(0deg);
+    }
+    20% {
+        transform: translate(-0.193504px, 0.0827499px) rotate(-1.80569deg);
+    }
+    40% {
+        transform: translate(-0.0777544px, 0.346427px) rotate(3.23491deg);
+    }
+    60% {
+        transform: translate(-0.111051px, 0.235091px) rotate(-5.36065deg);
+    }
+    80% {
+        transform: translate(0.24681px, 0.263108px) rotate(4.11977deg);
+    }
+    100% {
+        transform: translate(0px, 0px) rotate(0deg);
+    }
 }

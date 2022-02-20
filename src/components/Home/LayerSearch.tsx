@@ -11,27 +11,30 @@ import {
   PushpinOutlined,
   SearchOutlined,
   SettingOutlined,
-  ShoppingCartOutlined,
-  StarFilled,
   TagOutlined,
   ThunderboltOutlined,
+  CloseCircleTwoTone,
+  HeartOutlined,
+  HeartTwoTone,
 } from '@ant-design/icons';
 
 import {
-  Layout,
-  Statistic,
-  List,
-  Card,
-  Popover,
-  Button,
-  Carousel,
-  Divider,
-  message,
-  Modal,
-  Input,
-  Select,
-  Radio,
-  Tooltip,
+    Layout,
+    Statistic,
+    List,
+    Card,
+    Popover,
+    Button,
+    Carousel,
+    Divider,
+    message,
+    Modal,
+    Image,
+    Input,
+    Select,
+    Radio,
+    Tooltip,
+    Space,
 } from 'antd';
 import $req from '../../util/fetch';
 import {IQueryPar, IPageInfo, ILayer, IHover} from "../../util/interface";
@@ -55,7 +58,7 @@ interface State {
   bSideCollapsed: boolean;
   currentSize: number;
   dataList: ILayer [];
-  isEdit: boolean;
+  isDelete: boolean;
   isUpdate: boolean;
   listFootShow: string;
   listTotal: number;
@@ -64,12 +67,10 @@ interface State {
   pageInfo: IPageInfo;
   queryPar: IQueryPar;
   queryType: string;
-  recycleList: ILayer[];
   rSideCollapsed: boolean;
   submitVisible: boolean;
   time: number;
   uploadList: FormData;
-
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -103,7 +104,7 @@ class LayerSearch extends React.Component<Props,State> {
       bSideCollapsed: true,
       currentSize: 0,
       dataList: [],
-      isEdit: false,
+      isDelete: false,
       isUpdate: false,
       listFootShow: 'none',
       listTotal: 0,
@@ -122,7 +123,6 @@ class LayerSearch extends React.Component<Props,State> {
           topic: '',
       },
       queryType: 'byMetadata',
-      recycleList: [],
       rSideCollapsed: true,
       submitVisible: false,
       time: 0,
@@ -219,7 +219,7 @@ class LayerSearch extends React.Component<Props,State> {
                                   <List.Item key={childItem.id} className="main_container_content_imglist_item" style={{margin: 0, padding:0}}>
                                     <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
                                        <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
-                                             style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #1890ff' :' 1px solid #ccc' }}
+                                             style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #c0392b' :' 1px solid #ccc' }}
                                              bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}
                                              onMouseEnter={()=>{this.layerInterval=setInterval(()=>{layerCounter+=1},50)}}
                                              onMouseLeave={()=>{
@@ -229,6 +229,8 @@ class LayerSearch extends React.Component<Props,State> {
                                        >
                                                {childItem.name}
                                        </Card>
+                                        <HeartTwoTone className="icon" twoToneColor="#c0392b"
+                                                      style={{display: this.forList(childItem, this.state.optionList)?"inline-block": "none"}}/>
                                     </Popover>
                                   </List.Item>
                                  )}
@@ -241,14 +243,14 @@ class LayerSearch extends React.Component<Props,State> {
                  <div className="main_container_content_shoppingCart">
                      <div className="main_container_content_shoppingCart_head">
                          <div style={{display:"inline-block"}}>
-                             <ShoppingCartOutlined className="icon"/>
-                             <span className="title">Shopping Cart</span>
+                             <HeartOutlined className="icon"/>
+                             <span className="title">Interested Layers</span>
                              {this.state.bSideCollapsed ?
                                  <DownSquareOutlined className="icon_small" onClick={() => {
-                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed})
+                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed, isDelete: false})
                                  }}/> :
                                  <UpSquareOutlined className="icon_small" onClick={() => {
-                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed})
+                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed, isDelete: false})
                                  }}/>}
                          </div>
                          <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
@@ -257,12 +259,15 @@ class LayerSearch extends React.Component<Props,State> {
                            <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
                            <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
 
-                         <Button className="button" type="primary" disabled={!!this.state.bSideCollapsed} onClick={()=>{this.handleEdit()}}>{this.state.isEdit?"Delete":"Edit"}</Button>
+                         <Button className="button" type="primary" disabled={!!this.state.bSideCollapsed||this.state.optionList.length===0}
+                                 onClick={()=>{this.setState({isDelete: !this.state.isDelete})}}
+                         >
+                             {this.state.isDelete?"Cancel":"Delete"}</Button>
                          <Button className="button" type="primary" disabled={this.state.optionList.length===0} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
                       </div>
                      </div>
                      <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
-                       {this.shoppingcart()}
+                       {this.renderInterestedCollection()}
                      </div>
                  </div>
                  </Content>
@@ -314,40 +319,28 @@ class LayerSearch extends React.Component<Props,State> {
               <span><ThunderboltOutlined className="icon" /><b>Keywords: </b>{layer.keywords===""?"No keywords":layer.keywords}</span>
           </div>
           <div className="main_container_content_imglist_item_popover_button">
-              {this.popoverContentStar(layer)}
-              <Popover trigger="hover" content={<span>Learn more </span>} placement="top">
-                <Button className="button"  icon={<MoreOutlined />} onClick={()=>{this.props.dispatch(conveyLayerID(layer.id))}} href='layerInfo'/>
-              </Popover>
+              <Space size="small" align="center">
+                  <Tooltip trigger="hover" placement="top"
+                           title={<span>{this.forList(layer,this.state.optionList)? "Deselect ": "Select "}this Layer</span>}>
+                      <Button className="button" onClick={()=>{this.handleStar(layer)}}
+                              type={this.forList(layer,this.state.optionList)?"primary":"default"}>
+                           <HeartOutlined />
+                      </Button>
+                  </Tooltip>
+                  <Tooltip trigger="hover" title={<span>Learn more </span>} placement="top">
+                      <Button className="button"  icon={<MoreOutlined />} onClick={()=>{this.props.dispatch(conveyLayerID(layer.id))}} href='layerInfo'/>
+                  </Tooltip>
+              </Space>
+
            </div>
        </Card>
     );
  }
 
- // show the star button in the popoverContent when the mouse click it
- public popoverContentStar = (layer:ILayer) =>{
-   if(this.forList(layer,this.state.optionList)){
-     return (
-       <Popover trigger="hover" content={<span>Deselect this Layer</span>} placement="top" >
-          <Button className="button" onClick={()=>{this.handleStar(layer)}} >
-            <StarFilled style={{color: '#1890ff', borderColor: '#1890ff'}} />
-          </Button>
-       </Popover>
-     );
-   }
-   else {
-     return (
-       <Popover trigger="hover" content={<span>Select this Layer</span>} placement="top" >
-          <Button className="button" onClick={()=>{this.handleStar(layer)}} >
-            <StarFilled />
-          </Button>
-       </Popover>
-     );
-   }
- }
 
-  // show shopping cart component
-  public shoppingcart = () =>{
-    // prepare two dimention array for optionList
+  // show Interested Layers component
+  public renderInterestedCollection = () =>{
+    // prepare two dimension array for optionList
      const col=6;  // every row has six picture
      const round=Math.floor(this.state.optionList.length/col);
      const remainder=this.state.optionList.length%col;
@@ -389,13 +382,18 @@ class LayerSearch extends React.Component<Props,State> {
       grid={{gutter:15,column:6}}
       dataSource={layer}
       renderItem={(item:ILayer)=>(
-        <List.Item key={item.id}>
-          <Card className="card" hoverable={true}  cover={<img src={'data:image/png;base64,'+item.photo} />} 
-                onClick={()=>{this.handleRecyle(item)}}
-                style={{border: this.forList(item,this.state.recycleList)?' 5px solid #c0392b' :' 1px solid #ccc' }}
+        <List.Item key={item.id} style={{margin: 2, padding: 4}}>
+          <Card className="card" hoverable={true}
+                cover={<Image className="img" alt="Layer Image" preview={!this.state.isDelete}
+                    src={'data:image/png;base64,'+item.photo} style={{display: 'inline-block'}}/>}
+                onClick={()=>{this.handleDelete(item)}}
+                style={{border: this.state.isDelete?' 5px solid #c0392b' :' 1px solid #ccc' }}
                 bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
               {item.name}
           </Card>
+            <CloseCircleTwoTone className="deleteIcon" twoToneColor="#c0392b"
+                                style={{display: this.state.isDelete?"inline-block": "none"}}
+                                onClick={()=>{this.handleDelete(item)}}/>
         </List.Item>
       )}
    />
@@ -494,7 +492,9 @@ class LayerSearch extends React.Component<Props,State> {
                 layer.photo=base64.substring(base64.indexOf('base64')+7);;   // layers' photo user uploaded store Base64
                 layer.name=fileList[i].name;                                 // layers' name user uploaded store photo own name
                 selfOption.push(layer);
-                selfUpload.set(layer.id.toString(),fileList[i]);
+
+                selfUpload.append(layer.id.toString(),fileList[i],fileList[i].name)  // formData.append(name, value, filename)
+                // selfUpload.set(layer.id.toString(),fileList[i]);
 
                 // console.log(selfFile.get(this.state.uploadNum.toString()));
                 if(i===fileList.length-1 && uploadKey===1){
@@ -583,69 +583,34 @@ class LayerSearch extends React.Component<Props,State> {
     })
   }
 
-  // handle those layers in the shopping cart, which are going to delete
-  // If the layer is selected last time in the shopping cart, then remove the layer from recycleList
-  // If the layer is never selected last time in the shopping cart, then add the layer into recycleList
-  public handleRecyle =(layer:ILayer) =>{
-    if(this.state.isEdit){
-       const self= this.state.recycleList;
-      let isContain= false;
-      for (const index in self){
-        if(self[index].id===layer.id){
-           self.splice(Number(index),1);
-           isContain=true;
-           break;
+    // handle those layers in the shopping cart, which are going to delete
+    // update optionList and uploadList
+    public handleDelete = (layer: ILayer) => {
+        // const self=this.state.optionList;
+        if (this.state.isDelete) {
+            const newOptionList = this.state.optionList.filter((itemLayer: ILayer) => {
+                return itemLayer.id !== layer.id
+            })
+
+            // TODO: ALSO DELETE IN THE UPLOADLIST
+            const selfUpload = this.state.uploadList;
+            selfUpload.delete(layer.id.toString())
+
+            // if optionList is null, ban the delete button function
+            if (newOptionList.length === 0) {
+                this.setState({
+                    uploadList: selfUpload,
+                    optionList: newOptionList,
+                    isDelete: false
+                })
+            } else {
+                this.setState({
+                    uploadList: selfUpload,
+                    optionList: newOptionList
+                })
+            }
         }
-      }
-      if(!isContain) {
-         self.push(layer)
-      }
-      this.setState({
-          recycleList: self,
-      })
     }
-  }
-
-  // handle Edit button in the shopping cart
-  public handleEdit = () =>{
-    // if the button is in the deleted state, then detele chosen layers in the shopping cart
-    if(this.state.isEdit){
-      const selfOption=this.state.optionList;
-      const selfRecycle=this.state.recycleList;
-      const selfUpload=this.state.uploadList;
-
-      const newOption=selfOption.filter(item=>{
-        const layer=selfRecycle.map(value=>value)
-        return !layer.includes(item)
-    })
-    
-      // const newUpload=new FormData();
-      selfUpload.forEach((item)=>{
-        for(const layer of selfRecycle){
-           if(selfUpload.has(layer.id.toString())){
-             selfUpload.delete(layer.id.toString());
-           }
-        }
-      })
-
-      selfUpload.forEach((item)=>{
-           console.log(item)
-      })
-      
-    this.setState({
-      optionList: newOption,
-      recycleList: [],
-      isEdit: !this.state.isEdit,
-      uploadList: selfUpload,
-    })
-  }
-  // if the button is in the edited state, then change button state into deleting
-    else{
-      this.setState({
-        isEdit: !this.state.isEdit
-      })
-    }
-}
 
   // handle Submit button in the shopping cart
   public  handleSubmitOk = () => {
