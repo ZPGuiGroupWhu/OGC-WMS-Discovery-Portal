@@ -1,0 +1,36 @@
+name,feature_class,feature_code,country_code,lat,long,nearby_features,neighbouring_features
+Barbados,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,BB,13.16453,-59.55165,None,https://sws.geonames.org/3374084/neighbours.rdf
+Guyana,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,GY,5,-59,None,https://sws.geonames.org/3378535/neighbours.rdf
+Suriname,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,SR,4,-56,None,https://sws.geonames.org/3382998/neighbours.rdf
+Paraguay,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,PY,-23.33333,-58,None,https://sws.geonames.org/3437598/neighbours.rdf
+Uruguay,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,UY,-33,-56,None,https://sws.geonames.org/3439705/neighbours.rdf
+Brazil,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,BR,-10,-55,None,https://sws.geonames.org/3469034/neighbours.rdf
+Jamaica,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,JM,18.16667,-77.25,None,https://sws.geonames.org/3489940/neighbours.rdf
+Dominican Republic,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,DO,19,-70.66667,None,https://sws.geonames.org/3508796/neighbours.rdf
+Cuba,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,CU,22,-79.5,None,https://sws.geonames.org/3562981/neighbours.rdf
+Bahamas,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,BS,25.04082,-77.37122,None,https://sws.geonames.org/3572887/neighbours.rdf
+Trinidad and Tobago,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,TT,11,-61,None,https://sws.geonames.org/3573591/neighbours.rdf
+St Kitts and Nevis,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,KN,17.33333,-62.75,None,https://sws.geonames.org/3575174/neighbours.rdf
+Dominica,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,DM,15.5,-61.33333,None,https://sws.geonames.org/3575830/neighbours.rdf
+Antigua and Barbuda,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,AG,17.05,-61.8,None,https://sws.geonames.org/3576396/neighbours.rdf
+Saint Lucia,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,LC,13.88333,-60.96667,None,https://sws.geonames.org/3576468/neighbours.rdf
+St Vincent and Grenadines,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,VC,13.08333,-61.2,None,https://sws.geonames.org/3577815/neighbours.rdf
+Grenada,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,GD,12.11667,-61.66667,None,https://sws.geonames.org/3580239/neighbours.rdf
+Belize,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,BZ,17.25,-88.75,None,https://sws.geonames.org/3582678/neighbours.rdf
+El Salvador,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,SV,13.83333,-88.91667,None,https://sws.geonames.org/3585968/neighbours.rdf
+Guatemala,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,GT,15.5,-90.25,None,https://sws.geonames.org/3595528/neighbours.rdf
+Honduras,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,HN,15,-86.5,None,https://sws.geonames.org/3608932/neighbours.rdf
+Nicaragua,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,NI,13,-85,None,https://sws.geonames.org/3617476/neighbours.rdf
+Costa Rica,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,CR,10,-84,None,https://sws.geonames.org/3624060/neighbours.rdf
+Venezuela,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,VE,8,-66,None,https://sws.geonames.org/3625428/neighbours.rdf
+Ecuador,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,EC,-1.25,-78.25,None,https://sws.geonames.org/3658394/neighbours.rdf
+Colombia,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,CO,4,-73.25,None,https://sws.geonames.org/3686110/neighbours.rdf
+Panama,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,PA,9,-80,None,https://sws.geonames.org/3703430/neighbours.rdf
+Haiti,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,HT,19.07582,-72.29616,None,https://sws.geonames.org/3723988/neighbours.rdf
+Argentina,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,AR,-34,-64,None,https://sws.geonames.org/3865483/neighbours.rdf
+Chile,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,CL,-30,-71,None,https://sws.geonames.org/3895114/neighbours.rdf
+Bolivia,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,BO,-17,-65,None,https://sws.geonames.org/3923057/neighbours.rdf
+Peru,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,PE,-10,-75.25,None,https://sws.geonames.org/3932488/neighbours.rdf
+Mexico,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,MX,23,-102,None,https://sws.geonames.org/3996063/neighbours.rdf
+Canada,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,CA,60.10867,-113.64258,None,https://sws.geonames.org/6251999/neighbours.rdf
+United States,https://www.geonames.org/ontology#A,https://www.geonames.org/ontology#A.PCLI,US,39.76,-98.5,None,https://sws.geonames.org/6252001/neighbours.rdf
