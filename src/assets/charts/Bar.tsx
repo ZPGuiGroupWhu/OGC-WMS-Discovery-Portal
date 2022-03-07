@@ -7,8 +7,8 @@ export default class Bar extends React.Component{
 
         const option = {
             backgroundColor: "#344b58",
-            "title": {
-                "text": "Yearly distribution of Map layers and WMSs with current map layers",
+            title: {
+                text: "Yearly distribution of Map layers and WMSs with current map layers",
                 x: "4%",
 
                 textStyle: {
@@ -21,56 +21,56 @@ export default class Bar extends React.Component{
 
                 },
             },
-            "tooltip": {
-                "trigger": "axis",
-                "axisPointer": {
-                    "type": "shadow",
+            tooltip: {
+                trigger: "axis",
+                axisPointer: {
+                    type: "shadow",
                     textStyle: {
                         color: "#fff"
                     }
 
                 },
             },
-            "grid": {
-                "borderWidth": 0,
-                "top": 110,
-                "bottom": 95,
+            grid: {
+                borderWidth: 0,
+                top: 110,
+                bottom: 95,
                 textStyle: {
                     color: "#fff"
                 }
             },
-            "legend": {
+            legend: {
                 x: '4%',
                 top: '11%',
                 textStyle: {
                     color: '#90979c',
                 },
-                "data": ['The total number of map layers collected in a paticular year', 'The number of WMSs whose latest map layers were collected in a paticular year', '平均']
+                data: ['The total number of map layers collected in a paticular year', 'The number of WMSs whose latest map layers were collected in a paticular year']
             },
              
 
-            "calculable": true,
-            "xAxis": [{
-                "type": "category",
-                "axisLine": {
+            calculable: true,
+            xAxis: [{
+                type: "category",
+                axisLine: {
                     lineStyle: {
                         color: '#90979c'
                     }
                 },
-                "splitLine": {
-                    "show": false
+                splitLine: {
+                    show: false
                 },
-                "axisTick": {
-                    "show": false
+                axisTick: {
+                    show: false
                 },
-                "splitArea": {
-                    "show": false
+                splitArea: {
+                    show: false
                 },
-                "axisLabel": {
-                    "interval": 0,
+                axisLabel: {
+                    interval: 0,
 
                 },
-                "data": [
+                data: [
                     1995,
                     1996,
                     1997,
@@ -94,37 +94,37 @@ export default class Bar extends React.Component{
                     2015
                 ]
             }],
-            "yAxis": [{
-                "type": "value",
-                "splitLine": {
-                    "show": false
+            yAxis: [{
+                type: "value",
+                splitLine: {
+                    show: false
                 },
-                "axisLine": {
+                axisLine: {
                     lineStyle: {
                         color: '#90979c'
                     }
                 },
-                "axisTick": {
-                    "show": false
+                axisTick: {
+                    show: false
                 },
-                "axisLabel": {
-                    "interval": 0,
+                axisLabel: {
+                    interval: 0,
 
                 },
-                "splitArea": {
-                    "show": false
+                splitArea: {
+                    show: false
                 },
 
             }],
-            "dataZoom": [{
-                "show": true,
-                "height": 30,
-                "xAxisIndex": [
+            dataZoom: [{
+                show: true,
+                height: 30,
+                xAxisIndex: [
                     0
                 ],
                 bottom: 30,
-                "start": 10,
-                "end": 80,
+                start: 10,
+                end: 80,
                 handleIcon: 'path://M306.1,413c0,2.2-1.8,4-4,4h-59.8c-2.2,0-4-1.8-4-4V200.8c0-2.2,1.8-4,4-4h59.8c2.2,0,4,1.8,4,4V413z',
                 handleSize: '110%',
                 handleStyle:{
@@ -137,33 +137,28 @@ export default class Bar extends React.Component{
                 
                 
             }, {
-                "type": "inside",
-                "show": true,
-                "height": 15,
-                "start": 1,
-                "end": 35
+                type: "inside",
+                show: true,
+                height: 15,
+                start: 1,
+                end: 35
             }],
-            "series": [{
-                    "name": "The total number of map layers collected in a paticular year",
-                    "type": "bar",
-                    "barMaxWidth": 35,
-                    "barGap": "10%",
-                    "itemStyle": {
-                        "normal": {
-                            "color": "rgba(255,144,128,1)",
-                            "label": {
-                                "show": true,
-                                "textStyle": {
-                                    "color": "#fff"
-                                },
-                                "position": "insideTop",
-                                formatter: (p:any) => {
-                                    return p.value > 0 ? (p.value) : '';
-                                }
-                            }
-                        }
+            series: [{
+                    name: "The total number of map layers collected in a paticular year",
+                    type: "bar",
+                    barMaxWidth: 35,
+                    barGap: "10%",
+                    label: {
+                        show: true,
+                        color: "#fff",
+                        position: "insideTop",
+                        formatter: (p:any) => {
+                            return p.value > 0 ? (p.value) : '';
+                        }},
+                    itemStyle: {
+                        color: "rgba(255,144,128,1)",
                     },
-                    "data": [
+                    data: [
                         1544,
                         1538,
                         1596,
@@ -188,24 +183,22 @@ export default class Bar extends React.Component{
                     ],
                 }, 
                 {
-                    "name": "The number of WMSs whose latest map layers were collected in a paticular year",
-                    "type": "line",
+                    name: "The number of WMSs whose latest map layers were collected in a paticular year",
+                    type: "line",
                     symbolSize:10,
                     symbol:'circle',
-                    "itemStyle": {
-                        "normal": {
-                            "color": "rgba(252,230,48,1)",
-                            "barBorderRadius": 0,
-                            "label": {
-                                "show": true,
-                                "position": "top",
-                                formatter: (p:any) => {
-                                    return p.value > 0 ? (p.value) : '';
-                                }
-                            }
+                    label: {
+                        show: true,
+                        position: "top",
+                        formatter: (p:any) => {
+                            return p.value > 0 ? (p.value) : '';
                         }
                     },
-                    "data": [
+                    itemStyle: {
+                        color: "rgba(252,230,48,1)",
+                        barBorderRadius: 0,
+                    },
+                    data: [
                         46,
                         36,
                         23,

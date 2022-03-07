@@ -33,13 +33,13 @@ export default class Pie extends React.Component{
                         {value:0.15, name:'Oceania'},
                         {value:0.01, name:'Africa'}
                     ],
-                    itemStyle: {
-                        emphasis: {
+                    emphasis:{
+                        itemStyle:{
                             shadowBlur: 10,
                             shadowOffsetX: 0,
                             shadowColor: 'rgba(0, 0, 0, 0.5)'
                         }
-                    }
+                    },
                 }
             ]
         };
@@ -74,8 +74,8 @@ export default class Pie extends React.Component{
                         {value:25, name:'Industry'},
                         {value:81, name:'Other'}
                     ],
-                    itemStyle: {
-                        emphasis: {
+                    emphasis:{
+                        itemStyle: {
                             shadowBlur: 10,
                             shadowOffsetX: 0,
                             shadowColor: 'rgba(0, 0, 0, 0.5)'
