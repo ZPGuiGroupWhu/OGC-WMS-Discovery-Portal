@@ -81,3 +81,24 @@ export interface IHover{
     frequency: number;
     time: number;
 }
+
+// Record subIntention and the whole intention
+export interface ISubIntent{
+    "confidence": number,
+    "content": string,
+    "location": string,
+    "style": string,
+    "topic": string
+}
+
+// export interface IIntent{
+//     "intention": ISubIntent[],
+//     "confidence": number,
+//     "parameter": {
+//         "encodingLength": number[],
+//         "filtrationCoefficient": number,
+//         "initMinEncodingLength": number,
+//         "mergeNum": number,
+//         "minEncodingLength": number
+//     }
+// }

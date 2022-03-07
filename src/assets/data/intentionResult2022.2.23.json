@@ -1,0 +1,36 @@
+{
+  "errCode": 0,
+  "parameter": {
+    "encodingLength": [
+      201.51856736636483,
+      161.25746303381734,
+      71.47564858757214
+    ],
+    "filtrationCoefficient": 0.3,
+    "initMinEncodingLength": 201.51856736636483,
+    "mergeNum": 50,
+    "minEncodingLength": 71.47564858757214
+  },
+  "reqMsg": "\u6b63\u786e\u54cd\u5e94",
+  "result": [
+    {
+      "confidence": 0.46716309942171186,
+      "intention": [
+        {
+          "confidence": 0.6717939188150325,
+          "content": "http://sweetontology.net/matrSediment/Soil",
+          "location": "Florida",
+          "style": "Quality Base Method",
+          "topic": "Agriculture"
+        },
+        {
+          "confidence": 0.17300834976752788,
+          "content": "http://sweetontology.net/realmHydroBody/River",
+          "location": "Wisconsin",
+          "style": "null",
+          "topic": "Water"
+        }
+      ]
+    }
+  ]
+}
