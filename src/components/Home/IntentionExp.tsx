@@ -33,37 +33,40 @@ const MyIcon=createFromIconfontCN({
 
 interface Props { 
   collapsed: boolean;
+  callback: (advancedPanel:boolean)=>void;
 }
 
 interface State {
-  settingPar:{
-    colors: string[];
-    generation: string;
-    style: string[];
-    topic: string[];
-  };
-  collapsed: boolean;
-  color: string;
-  isEdit: boolean;
-  pickerVisible: boolean;
+    advancedPanel: boolean;
+    settingPar: {
+        colors: string[];
+        generation: string;
+        style: string[];
+        topic: string[];
+    };
+    collapsed: boolean;
+    color: string;
+    isEdit: boolean;
+    pickerVisible: boolean;
 }
 
 class IntentionExp extends React.Component<Props,State> {
-  constructor (props:Props) {
-    super(props);
-    this.state = {
-      settingPar:{
-        colors: ['#FF6900','#FCB900','#7BDCB5','#00D084','#8ED1FC','#0693E3'],
-        style: ['Line'],
-        generation: 'Computer',
-        topic: ['Agriculture','Biodiversity',"Disaster"],
-     },
-    collapsed: this.props.collapsed,
-    color: '',
-    isEdit: false,
-    pickerVisible: false,
-    };
-  }
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            advancedPanel: false,
+            settingPar: {
+                colors: ['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3'],
+                style: ['Line'],
+                generation: 'Computer',
+                topic: ['Agriculture', 'Biodiversity', "Disaster"],
+            },
+            collapsed: this.props.collapsed,
+            color: '',
+            isEdit: false,
+            pickerVisible: false,
+        };
+    }
 
 // public componentWillReceiveProps =()=>{
 //   this.setState({
@@ -81,7 +84,16 @@ public render(){
           <span className="title">Retrieval Intention</span>
           <Switch className="switch" checkedChildren="Save" unCheckedChildren="Edit" onChange={()=>{this.setState({isEdit: !this.state.isEdit})}} />
         </div>
-        {this.rightsiderBody()}
+        {/*{this.rightsiderBody()}*/}
+          <Button className="advanced_Btn" type="primary" size="large" shape="round"
+                  style={{ position:'relative', width: '60%', left: '20%', margin: '10px'}}
+                  onClick={()=>{
+                      this.props.callback(true)
+                      this.setState({advancedPanel: true})
+                  }}
+          >
+              &lt;&lt;&nbsp;Advanced
+          </Button>
       </div>
       <div className="main_container_rightsider_trigger" onClick={()=>{this.setState({collapsed: !this.state.collapsed})}}>
           {this.state.collapsed?<DoubleLeftOutlined />:<DoubleRightOutlined />}

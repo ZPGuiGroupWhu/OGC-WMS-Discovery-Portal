@@ -43,6 +43,7 @@ import LeftSider from './LeftSider';
 import IntensionExp from './IntentionExp';
 import {connect} from 'react-redux';
 import {conveyLayerID,conveyQueryPar} from '../../redux/action';
+import AdvIntentionPanel from "./AdvIntentionPanel";
 
 // @ts-ignore
 // import hm from 'heatmap.js'
@@ -68,9 +69,12 @@ interface State {
   queryPar: IQueryPar;
   queryType: string;
   rSideCollapsed: boolean;
+  showAdvIntentPanel: boolean;
   submitVisible: boolean;
   time: number;
   uploadList: FormData;
+
+
 }
 
 class LayerSearch extends React.Component<Props,State> {
@@ -82,9 +86,11 @@ class LayerSearch extends React.Component<Props,State> {
             return {
                 queryPar: nextProps.queryPar,
                 loading: true,
-                pageInfo:{ pageNum: 1,
+                pageInfo:{
+                    pageNum: 1,
                     pageSize: 40
-                }
+                },
+                showAdvIntentPanel: false
             }
         }
         return null
@@ -98,38 +104,39 @@ class LayerSearch extends React.Component<Props,State> {
   public hoverInterval: NodeJS.Timeout;
   public hoverList: IHover[];
 
-  constructor (props:Props) {
-    super(props);
-    this.state = {
-      bSideCollapsed: true,
-      currentSize: 0,
-      dataList: [],
-      isDelete: false,
-      isUpdate: false,
-      listFootShow: 'none',
-      listTotal: 0,
-      loading: true,
-      optionList: [],
-      pageInfo: {
-          pageNum: 1,
-          pageSize: 40// should be multiple of 8
-      },
-      queryPar: {
-          bound: [],
-          continent: '',
-          keywords: '',
-          organization: '',
-          organization_type: '',
-          topic: '',
-      },
-      queryType: 'byMetadata',
-      rSideCollapsed: true,
-      submitVisible: false,
-      time: 0,
-      uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
+    constructor(props: Props) {
+        super(props);
+        this.state = {
+            bSideCollapsed: true,
+            currentSize: 0,
+            dataList: [],
+            isDelete: false,
+            isUpdate: false,
+            listFootShow: 'none',
+            listTotal: 0,
+            loading: true,
+            optionList: [],
+            pageInfo: {
+                pageNum: 1,
+                pageSize: 40// should be multiple of 8
+            },
+            queryPar: {
+                bound: [],
+                continent: '',
+                keywords: '',
+                organization: '',
+                organization_type: '',
+                topic: '',
+            },
+            queryType: 'byMetadata',
+            rSideCollapsed: true,
+            showAdvIntentPanel: false,
+            submitVisible: false,
+            time: 0,
+            uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
 
-    };
-  }
+        };
+    }
 
   public componentDidMount(){
     this.initData();
@@ -162,6 +169,10 @@ class LayerSearch extends React.Component<Props,State> {
     //     }
     // }
 
+    // deliver callback function to IntentionExp and AdvIntentionPanel components to change the state of showAdvIntentPanel
+    public intentionPanelCallback=(advancePanel:boolean)=>{
+       this.setState({showAdvIntentPanel: advancePanel})
+    }
 
   public render() {
     let layerCounter=0
@@ -185,6 +196,9 @@ class LayerSearch extends React.Component<Props,State> {
           </div>
           <Layout className="main_container">
               <LeftSider queryType={"layer"}/>
+              {
+                  this.state.showAdvIntentPanel?
+                  <AdvIntentionPanel callback={this.intentionPanelCallback}/> :
               <Content className="main_container_content" id="main_container_content" >
                 <div className="main_container_content_imglist_statis">
                    <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
@@ -271,7 +285,8 @@ class LayerSearch extends React.Component<Props,State> {
                      </div>
                  </div>
                  </Content>
-             <IntensionExp collapsed={this.state.rSideCollapsed}/>
+              }
+             <IntensionExp callback={this.intentionPanelCallback} collapsed={this.state.rSideCollapsed}/>
 
               <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={() => {this.handleSubmitOk()}}
                      onCancel={() => {this.setState({submitVisible: false})}} closable={false}

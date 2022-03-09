@@ -1,0 +1,160 @@
+@import '_common-style.scss';
+
+$body_padding_left: 50px;
+$dimension_margin_tb: 2.5vmin 1vmin;
+$body_font_size: 15px;
+$sub_header_font-size: 18px;
+$column_color: #797d62 #baa587 #e8ac65 #d08c60 #b58463 #997b66;
+
+.advanced_intent_spin {
+  position: relative;
+  left: 50%;
+  // width: 1000px;
+  margin: 50px auto;
+}
+
+.advanced_intent_panel {
+  padding: $bound_padding;
+
+  &_chart{
+     float: right;
+     position: relative;
+     right:2%;
+     .boxplot, .heatMap, .wordCloud{
+       width: 402px;
+       border: 2px solid #555555;
+       border-radius: 10px;
+       margin-bottom: 2.5vmin;
+
+       .title{
+         margin: 2px 5px;
+         font-size: $sub_header_font-size;
+       }
+       .icon{
+         // position: absolute;
+         float: right;
+         margin: 5px 5px;
+         cursor: pointer;
+       }
+     }
+    .boxplot:hover, .heatMap:hover, .wordCloud:hover {
+      position: relative;
+      box-shadow: 0 10px 40px -10px rgba(0, 64, 128, 0.4);
+      top: -2px;
+    }
+  }
+
+  &_encode_length {
+    margin: 1.5vmin 1vmin;
+    h3{
+      font-size: $sub_header_font-size;
+    }
+    &_body {
+      padding-left: $body_padding_left;
+      @for $i from 1 through 6 {
+        #column#{$i} {
+          background: nth($column_color, $i);
+          border: 2px solid nth($column_color, $i);
+          color: nth($column_color, $i);
+        }
+        #column#{$i}:hover {
+          color: white;
+          cursor: pointer;
+          animation: animation-border#{$i} 1s infinite;
+        }
+
+        @keyframes animation-border#{$i} {
+          0% {
+            box-shadow: 0 0 0 0 rgba(nth($column_color, $i), 0.4);
+          }
+          100% {
+            box-shadow: 0 0 0 10px rgba(nth($column_color, $i), 0);
+          }
+        }
+      }
+
+      .column {
+        text-align: center;
+        margin: 5px 30px;
+        position: relative;
+        display: inline-block;
+        border-radius: 5px;
+        color: white;
+        font-size: $body_font_size;
+      }
+    }
+  }
+
+  &_intent_result{
+    margin: $dimension_margin_tb;
+    h3{
+      font-size: $sub_header_font-size;
+    }
+  }
+
+  &_description {
+    margin: $dimension_margin_tb;
+    h3{
+      font-size: $sub_header_font-size;
+      .icon{
+        margin-left: 3px;
+      }
+    }
+    &_body {
+      // font-weight: bold;
+      font-size: $body_font_size;
+      font-weight: 500;
+      padding-left: $body_padding_left;
+
+      .tag {
+        margin: 0px 5px;
+        height: auto;
+        padding: 1px 5px;
+        white-space: nowrap;
+        color: #fafafa;
+        font-weight: 500;
+        font-size: inherit;
+        border: 1px solid #d9d9d9;
+        border-radius: 2px;
+        line-height: 20px;
+        transition: all 0.3s;
+      }
+    }
+  }
+
+  &_filtration, &_mergeNum {
+    h3{
+      font-size: $sub_header_font-size;
+    }
+    vertical-align: center;
+    margin: $dimension_margin_tb;
+
+    h3 {
+      display: inline;
+    }
+  }
+
+  &_confidence{
+    margin: $dimension_margin_tb;
+    h3{
+      font-size: $sub_header_font-size;
+    }
+  }
+  &_btn{
+    margin: $dimension_margin_tb;
+    // width: 200px;
+  }
+}
+
+// style for InputNumber
+.ant-input-number {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+// style for Slider
+.ant-slider {
+  display: inline-block;
+  margin: 0 15px;
+}
+
