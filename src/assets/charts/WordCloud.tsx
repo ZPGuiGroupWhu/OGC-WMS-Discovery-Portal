@@ -137,7 +137,7 @@ export default class WordCloud extends React.Component{
     }
        
     public render() {
-        return (<div id="wordCloud" style ={{ width: 270 + 'px', height: 200 + 'px'}} />)
+        return (<div id="wordCloud" style ={{ width: 400 + 'px', height: 300 + 'px'}} />)
      }
  }
  
