@@ -3,8 +3,6 @@ import '../../style/_home.scss';
 
 import {
   BulbOutlined,
-  DownSquareOutlined,
-  UpSquareOutlined,
   FileSearchOutlined,
   MoreOutlined,
   ProjectOutlined,
@@ -15,7 +13,10 @@ import {
   ThunderboltOutlined,
   CloseCircleTwoTone,
   HeartOutlined,
+  FrownOutlined,
   HeartTwoTone,
+  UpOutlined,
+  DownOutlined,
 } from '@ant-design/icons';
 
 import {
@@ -31,6 +32,7 @@ import {
     Modal,
     Image,
     Input,
+    Tabs,
     Select,
     Radio,
     Tooltip,
@@ -49,6 +51,7 @@ import AdvIntentionPanel from "./AdvIntentionPanel";
 // import hm from 'heatmap.js'
 
 const { Content} = Layout;
+const { TabPane } = Tabs;
 
 interface Props { 
   queryPar: IQueryPar;
@@ -61,10 +64,12 @@ interface State {
   dataList: ILayer [];
   isDelete: boolean;
   isUpdate: boolean;
+  isPositiveTab: boolean;
   listFootShow: string;
   listTotal: number;
   loading: boolean;
-  optionList: ILayer[];
+  positiveList: ILayer[];
+  negativeList: ILayer[];
   pageInfo: IPageInfo;
   queryPar: IQueryPar;
   queryType: string;
@@ -112,10 +117,12 @@ class LayerSearch extends React.Component<Props,State> {
             dataList: [],
             isDelete: false,
             isUpdate: false,
+            isPositiveTab: true,
             listFootShow: 'none',
             listTotal: 0,
             loading: true,
-            optionList: [],
+            positiveList: [],
+            negativeList: [],
             pageInfo: {
                 pageNum: 1,
                 pageSize: 40// should be multiple of 8
@@ -139,8 +146,15 @@ class LayerSearch extends React.Component<Props,State> {
     }
 
   public componentDidMount(){
-    this.initData();
-    this.hoverList=[];
+      this.initData();
+      this.hoverList = [];
+      // ban the default function of right click in the main_container_content_imglist
+      const element = document.getElementById("main_container_content_imglist")
+      if (element) {
+          element.addEventListener('contextmenu', (e) => {
+              e.preventDefault();
+          })
+      }
   }
 
     public componentDidUpdate(prevProps: any, prevState: any){
@@ -171,12 +185,58 @@ class LayerSearch extends React.Component<Props,State> {
 
     // deliver callback function to IntentionExp and AdvIntentionPanel components to change the state of showAdvIntentPanel
     public intentionPanelCallback=(advancePanel:boolean)=>{
-       this.setState({showAdvIntentPanel: advancePanel})
+        this.setState({showAdvIntentPanel: advancePanel})
     }
 
   public render() {
-    let layerCounter=0
-    this.prepareData();
+      let layerCounter=0
+      this.prepareData();
+      const createTabsExtraContent = () => {
+          return (
+              <div className="main_container_content_markCollection_head">
+                  <div className="words">
+                      <Statistic className="value"
+                                 value={this.state.isPositiveTab ? this.state.positiveList.length : this.state.negativeList.length}
+                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the Interested Collection." :
+                                     "  layers have been selected in the Annoying Collection."}/>
+                  </div>
+                  <div className="buttons">
+                      <input type="file" id="upload_file" multiple={true} style={{display: 'none'}}
+                             accept=".jpg, .jpeg, .png"/>
+                      <Button className="button" type="primary" disabled={!this.state.isPositiveTab}
+                              onClick={() => {
+                                  this.uploadButton()
+                              }}>
+                          Upload
+                      </Button>
+                      <Button className="button" type="primary"
+                              disabled={!!this.state.bSideCollapsed
+                              || (this.state.isPositiveTab && this.state.positiveList.length === 0)
+                              || (!this.state.isPositiveTab && this.state.negativeList.length === 0)}
+                              onClick={() => {
+                                  this.setState({isDelete: !this.state.isDelete})
+                              }}
+                      >
+                          {this.state.isDelete ? "Cancel" : "Remove"}</Button>
+                      <Button className="button" type="primary" disabled={this.state.positiveList.length === 0}
+                              onClick={() => {
+                                  this.setState({submitVisible: true})
+                              }}>
+                          Submit
+                      </Button>
+                  </div>
+                  <div className="rightIcon">
+                      {this.state.bSideCollapsed ?
+                          <DownOutlined  onClick={() => {
+                              this.setState({bSideCollapsed: !this.state.bSideCollapsed, isDelete: false})
+                          }}/> :
+                          <UpOutlined  onClick={() => {
+                              this.setState({bSideCollapsed: !this.state.bSideCollapsed, isDelete: false})
+                          }}/>}
+                  </div>
+              </div>)
+      }
+
       return (
       <Content className="content">
           <div className="content_tool">
@@ -198,7 +258,7 @@ class LayerSearch extends React.Component<Props,State> {
               <LeftSider queryType={"layer"}/>
               {
                   this.state.showAdvIntentPanel?
-                  <AdvIntentionPanel callback={this.intentionPanelCallback}/> :
+                      <AdvIntentionPanel callback={this.intentionPanelCallback}/> :
               <Content className="main_container_content" id="main_container_content" >
                 <div className="main_container_content_imglist_statis">
                    <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
@@ -232,8 +292,10 @@ class LayerSearch extends React.Component<Props,State> {
                               renderItem={(childItem:ILayer) => (
                                   <List.Item key={childItem.id} className="main_container_content_imglist_item" style={{margin: 0, padding:0}}>
                                     <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
-                                       <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.handleStar(childItem)}}
-                                             style={{border: this.forList(childItem,this.state.optionList)?' 5px solid #c0392b' :' 1px solid #ccc' }}
+                                       <Card hoverable={true} onContextMenu={()=>{this.handleDiscard(childItem)}} cover={<img src={'data:image/png;base64,'+childItem.photo} />}
+                                             onClick={()=>{this.handleStar(childItem)}}
+                                             style={{border: (this.forList(childItem,this.state.positiveList))?' 5px solid #c0392b':
+                                                     (this.forList(childItem,this.state.negativeList)?' 5px solid #808080':' 1px solid #ccc') }}
                                              bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}
                                              onMouseEnter={()=>{this.layerInterval=setInterval(()=>{layerCounter+=1},50)}}
                                              onMouseLeave={()=>{
@@ -244,7 +306,9 @@ class LayerSearch extends React.Component<Props,State> {
                                                {childItem.name}
                                        </Card>
                                         <HeartTwoTone className="icon" twoToneColor="#c0392b"
-                                                      style={{display: this.forList(childItem, this.state.optionList)?"inline-block": "none"}}/>
+                                                      style={{display: this.forList(childItem, this.state.positiveList)?"inline-block": "none"}}/>
+                                        <FrownOutlined className="icon"
+                                                      style={{display: this.forList(childItem, this.state.negativeList)?"inline-block": "none",color: "#808080"}}/>
                                     </Popover>
                                   </List.Item>
                                  )}
@@ -254,39 +318,43 @@ class LayerSearch extends React.Component<Props,State> {
                     />
                 </div>
                 <Divider />
-                 <div className="main_container_content_shoppingCart">
-                     <div className="main_container_content_shoppingCart_head">
-                         <div style={{display:"inline-block"}}>
-                             <HeartOutlined className="icon"/>
-                             <span className="title">Interested Layers</span>
-                             {this.state.bSideCollapsed ?
-                                 <DownSquareOutlined className="icon_small" onClick={() => {
-                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed, isDelete: false})
-                                 }}/> :
-                                 <UpSquareOutlined className="icon_small" onClick={() => {
-                                     this.setState({bSideCollapsed: !this.state.bSideCollapsed, isDelete: false})
-                                 }}/>}
-                         </div>
-                         <Statistic className="value" value={this.state.optionList.length} suffix="  layers have been selected."/>
-                       <div className="buttons">
-
-                           <input type="file" id="upload_file" multiple={true} style={{display: 'none'}} accept=".jpg, .jpeg, .png" />
-                           <Button className="button" type="primary" onClick={()=>{this.uploadButton()}}>Upload</Button>
-
-                         <Button className="button" type="primary" disabled={!!this.state.bSideCollapsed||this.state.optionList.length===0}
-                                 onClick={()=>{this.setState({isDelete: !this.state.isDelete})}}
-                         >
-                             {this.state.isDelete?"Cancel":"Delete"}</Button>
-                         <Button className="button" type="primary" disabled={this.state.optionList.length===0} onClick={()=>{this.setState({submitVisible: true})}}>Submit</Button>
+                <div className="main_container_content_markCollection">
+                  <Tabs defaultActiveKey="1" tabBarExtraContent={createTabsExtraContent()}
+                        onTabClick={(activeKey:string)=>{
+                            this.setState({isPositiveTab: activeKey==="1"?true: false,isDelete:false,})
+                        }}
+                  >
+                      <TabPane  key="1"
+                          tab={
+                              <div className="main_container_content_markCollection_head">
+                                      <HeartOutlined className="icon"/>
+                                      <span className="title">Interested Collection</span>
+                              </div>
+                          }
+                      >
+                      <div  className="main_container_content_markCollection_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
+                          {this.renderMarkCollection()}
                       </div>
-                     </div>
-                     <div  className="main_container_content_shoppingCart_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
-                       {this.renderInterestedCollection()}
-                     </div>
-                 </div>
-                 </Content>
+                      </TabPane>
+
+                      <TabPane  key="2"
+                          tab={
+                              <div className="main_container_content_markCollection_head">
+                                      <FrownOutlined className="icon"/>
+                                      <span className="title">Annoying Collection</span>
+                              </div>
+                          }
+                      >
+                          <div  className="main_container_content_markCollection_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
+                              {this.renderMarkCollection()}
+                          </div>
+                      </TabPane>
+                  </Tabs>
+                </div>
+              </Content>
               }
-             <IntensionExp callback={this.intentionPanelCallback} collapsed={this.state.rSideCollapsed}/>
+
+              <IntensionExp callback={this.intentionPanelCallback} collapsed={this.state.rSideCollapsed}/>
 
               <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={() => {this.handleSubmitOk()}}
                      onCancel={() => {this.setState({submitVisible: false})}} closable={false}
@@ -336,11 +404,20 @@ class LayerSearch extends React.Component<Props,State> {
           <div className="main_container_content_imglist_item_popover_button">
               <Space size="small" align="center">
                   <Tooltip trigger="hover" placement="top"
-                           title={<span>{this.forList(layer,this.state.optionList)? "Deselect ": "Select "}this Layer</span>}>
+                           title={<span>{this.forList(layer,this.state.positiveList)? "Deselect ": "Select "}this Layer</span>}>
                       <Button className="button" onClick={()=>{this.handleStar(layer)}}
-                              type={this.forList(layer,this.state.optionList)?"primary":"default"}>
+                              type={this.forList(layer,this.state.positiveList)?"primary":"default"}>
                            <HeartOutlined />
                       </Button>
+                  </Tooltip>
+                  {/*add an annoying collection button*/}
+                  <Tooltip trigger="hover" placement="top"
+                           title={<span>{this.forList(layer,this.state.negativeList)? "Cancel the deletion of ": "Discard "}this Layer</span>}>
+                      <Button className="button" onClick={()=>{this.handleDiscard(layer)}}
+                              type={this.forList(layer,this.state.negativeList)?"primary":"default"}>
+                          <FrownOutlined />
+                      </Button>
+
                   </Tooltip>
                   <Tooltip trigger="hover" title={<span>Learn more </span>} placement="top">
                       <Button className="button"  icon={<MoreOutlined />} onClick={()=>{this.props.dispatch(conveyLayerID(layer.id))}} href='layerInfo'/>
@@ -353,30 +430,30 @@ class LayerSearch extends React.Component<Props,State> {
  }
 
 
-  // show Interested Layers component
-  public renderInterestedCollection = () =>{
-    // prepare two dimension array for optionList
+  // show the collection component of marking layers
+  public renderMarkCollection = () =>{
+    // prepare two dimension array for positiveList or negativeList
      const col=6;  // every row has six picture
-     const round=Math.floor(this.state.optionList.length/col);
-     const remainder=this.state.optionList.length%col;
+     const round=Math.floor((this.state.isPositiveTab?this.state.positiveList:this.state.negativeList).length/col);
+     const remainder=(this.state.isPositiveTab?this.state.positiveList:this.state.negativeList).length % col;
      let temp:ILayer[][];
 
      temp=[[]];
      for(let i=0;i<round;++i){
       temp[i]=[]
         for(let k=0;k<col;++k){
-          temp[i][k]=this.state.optionList[i*col+k];
+          temp[i][k]=(this.state.isPositiveTab?this.state.positiveList:this.state.negativeList)[i*col+k];
         }
       }
       if (remainder!==0){
         temp[round]=[]
         for(let m=0;m<remainder;++m){
-          temp[round][m]=this.state.optionList[round*col+m]
+          temp[round][m]=(this.state.isPositiveTab?this.state.positiveList:this.state.negativeList)[round*col+m]
          }
       }
 
       return (
-        <Carousel  className="main_container_content_shoppingCart_body_carousel">
+        <Carousel  className="main_container_content_markCollection_body_carousel">
             {temp.map((item:ILayer[],index:number)=>{
               return this.carouselComponent(item,index)
           })}
@@ -384,14 +461,14 @@ class LayerSearch extends React.Component<Props,State> {
 
         )
     }
- 
 
-  // carouse component in the shopping cart 
+
+  // carouse component in the marking collection
   public carouselComponent = (layer:ILayer[],index: number) =>{
     return (
       <List
       key={index}
-      className="main_container_content_shoppingCart_body_list"
+      className="main_container_content_markCollection_body_list"
       itemLayout="horizontal"
       size="small"
       grid={{gutter:15,column:6}}
@@ -401,19 +478,20 @@ class LayerSearch extends React.Component<Props,State> {
           <Card className="card" hoverable={true}
                 cover={<Image className="img" alt="Layer Image" preview={!this.state.isDelete}
                     src={'data:image/png;base64,'+item.photo} style={{display: 'inline-block'}}/>}
-                onClick={()=>{this.handleDelete(item)}}
+                onClick={()=>{(this.state.isPositiveTab?this.handlePositiveDelete:this.handleNegativeDelete)(item)}}
                 style={{border: this.state.isDelete?' 5px solid #c0392b' :' 1px solid #ccc' }}
                 bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
               {item.name}
           </Card>
             <CloseCircleTwoTone className="deleteIcon" twoToneColor="#c0392b"
                                 style={{display: this.state.isDelete?"inline-block": "none"}}
-                                onClick={()=>{this.handleDelete(item)}}/>
+                                onClick={()=>{(this.state.isPositiveTab?this.handlePositiveDelete:this.handleNegativeDelete)(item)}}/>
         </List.Item>
       )}
    />
     )
   }
+
 
     // update hoverList to save moving action of the users' mouse
     public updateHoverList=(layer:ILayer,counter:number)=>{
@@ -450,8 +528,8 @@ class LayerSearch extends React.Component<Props,State> {
         // complete refine interface...
     }
 
-  // handle upload button in the shopping cart.
-  // upload users' layers and push them into optionList.
+  // handle upload button in the marking collection.
+  // upload users' layers and push them into positiveList.
   public uploadButton () {
     // read file by Base64
     function getBase64 (file:File){
@@ -464,7 +542,7 @@ class LayerSearch extends React.Component<Props,State> {
     }
 
     const input = document.getElementById("upload_file") as HTMLInputElement;  // get upload DOM
-    const selfOption=this.state.optionList;
+    const selfPositive=this.state.positiveList;
     const selfUpload=this.state.uploadList;
     // get uploadList length
     let uploadListLength=0;
@@ -480,7 +558,7 @@ class LayerSearch extends React.Component<Props,State> {
           if(fileList.length!==0){
             let uploadKey=1;
             // tslint:disable-next-line
-           for(let i=0;i<fileList.length;i++){     // push every layers user uploaded into shopping cart
+           for(let i=0;i<fileList.length;i++){     // push every layers user uploaded into positiveList
             if(fileList[i].type!=='image/jpeg' && fileList[i].type!=='image/jpg' && fileList[i].type!=='image/png'){
               message.error('Upload file '+fileList[i].name+ ' is not JPG, JPEG or PNG fomat',2);
               uploadKey=0;
@@ -506,7 +584,7 @@ class LayerSearch extends React.Component<Props,State> {
                 layer.id=-(uploadListLength);                                // layers' id user uploaded start from -1 to -∞
                 layer.photo=base64.substring(base64.indexOf('base64')+7);;   // layers' photo user uploaded store Base64
                 layer.name=fileList[i].name;                                 // layers' name user uploaded store photo own name
-                selfOption.push(layer);
+                selfPositive.push(layer);
 
                 selfUpload.append(layer.id.toString(),fileList[i],fileList[i].name)  // formData.append(name, value, filename)
                 // selfUpload.set(layer.id.toString(),fileList[i]);
@@ -516,7 +594,7 @@ class LayerSearch extends React.Component<Props,State> {
                   message.success('Upload Successfully',2);
                 }
                 this.setState({
-                  optionList: selfOption,
+                  positiveList: selfPositive,
                   // uploadNum: -layer.id,
                   uploadList: selfUpload}); 
              }
@@ -577,11 +655,47 @@ class LayerSearch extends React.Component<Props,State> {
     // }
   }
 
+  // handleDiscard button
+  public handleDiscard =(layer:ILayer)=>{
+      // Find out if this layer is in the positiveList
+      const selfPositive = this.state.positiveList;
+      for (const i in selfPositive){
+          if(selfPositive[i].id===layer.id){
+              this.state.positiveList.splice(Number(i),1);
+              break;
+          }
+      }
+
+      const self= this.state.negativeList;
+      let isContain= false;
+      for (const index in self){
+          if(self[index].id===layer.id){
+              self.splice(Number(index),1);
+              isContain=true;
+              break;
+          }
+      }
+      if(!isContain) {
+          self.push(layer)
+      }
+      this.setState({
+          negativeList: self,
+      })
+
+  }
   // handleStar button
-  // If the layer is selected last time, then remove the layer from optionList
-  // If the layer is never selected last time, then add the layer into optionList
+  // If the layer is selected last time, then remove the layer from positiveList
+  // If the layer is never selected last time, then add the layer into positiveList
   public handleStar =(layer:ILayer)=>{
-    const self= this.state.optionList;
+    // Find out if this layer is in the negativeList
+    const discard = this.state.negativeList;
+    for (const i in discard){
+        if(discard[i].id===layer.id){
+            this.state.negativeList.splice(Number(i),1);
+            break;
+        }
+    }
+    const self= this.state.positiveList;
     let isContain= false;
     for (const index in self){
       if(self[index].id===layer.id){
@@ -594,16 +708,16 @@ class LayerSearch extends React.Component<Props,State> {
        self.push(layer)
     }
     this.setState({
-        optionList: self,
+        positiveList: self,
     })
   }
 
-    // handle those layers in the shopping cart, which are going to delete
-    // update optionList and uploadList
-    public handleDelete = (layer: ILayer) => {
-        // const self=this.state.optionList;
+    // handle those layers in the positive collection, which are going to delete
+    // update positiveList and uploadList
+    public handlePositiveDelete = (layer: ILayer) => {
+        // const self=this.state.positiveList;
         if (this.state.isDelete) {
-            const newOptionList = this.state.optionList.filter((itemLayer: ILayer) => {
+            const newPositiveList = this.state.positiveList.filter((itemLayer: ILayer) => {
                 return itemLayer.id !== layer.id
             })
 
@@ -611,23 +725,44 @@ class LayerSearch extends React.Component<Props,State> {
             const selfUpload = this.state.uploadList;
             selfUpload.delete(layer.id.toString())
 
-            // if optionList is null, ban the delete button function
-            if (newOptionList.length === 0) {
+            // if positiveList is null, ban the delete button function
+            if (newPositiveList.length === 0) {
                 this.setState({
                     uploadList: selfUpload,
-                    optionList: newOptionList,
+                    positiveList: newPositiveList,
                     isDelete: false
                 })
             } else {
                 this.setState({
                     uploadList: selfUpload,
-                    optionList: newOptionList
+                    positiveList: newPositiveList
                 })
             }
         }
     }
 
-  // handle Submit button in the shopping cart
+    // handle those layers in the negative collection, which are going to delete
+    public handleNegativeDelete = (layer: ILayer) => {
+        if (this.state.isDelete) {
+            const newNegativeList = this.state.negativeList.filter((itemLayer: ILayer) => {
+                return itemLayer.id !== layer.id
+            })
+
+            // if negativeList is null, ban the delete button function
+            if (newNegativeList.length === 0) {
+                this.setState({
+                    negativeList: newNegativeList,
+                    isDelete: false
+                })
+            } else {
+                this.setState({
+                    negativeList: newNegativeList
+                })
+            }
+        }
+    }
+
+  // handle Submit button in the marking collection
   public  handleSubmitOk = () => {
     smoothscroll();
      this.setState({
@@ -638,7 +773,7 @@ class LayerSearch extends React.Component<Props,State> {
           pageSize: 40,
       },
       queryType: 'submitByTemplate',
-    },()=>{this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList)})
+    },()=>{this.queryLayerByTemplate(this.state.pageInfo,this.state.positiveList)})
   }
 
 
@@ -668,7 +803,7 @@ class LayerSearch extends React.Component<Props,State> {
       this.queryLayerList(this.state.pageInfo,this.props.queryPar);
     }
     if (this.state.queryType === 'paginateByTemplate'){
-      this.queryLayerByTemplate(this.state.pageInfo,this.state.optionList);
+      this.queryLayerByTemplate(this.state.pageInfo,this.state.positiveList);
     }
 
 }
@@ -709,7 +844,7 @@ class LayerSearch extends React.Component<Props,State> {
       }
   }
 
-  public async queryLayerByTemplate(pagePar:object,optionList:ILayer[]) {
+  public async queryLayerByTemplate(pagePar:object,positiveList:ILayer[]) {
       this.hoverList=[]  // TODO: POST MOUSE DATA TO BACK END
       const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
       let url: string = baseUrl + '&templateId=';
@@ -717,7 +852,7 @@ class LayerSearch extends React.Component<Props,State> {
       // }
       if (this.state.queryType === 'submitByTemplate') {
           // deep copy
-          this.submitOptionList = JSON.parse(JSON.stringify(this.state.optionList))
+          this.submitOptionList = JSON.parse(JSON.stringify(this.state.positiveList))
       }
       for (const each of this.submitOptionList) {
           if (each.id < 0) {
