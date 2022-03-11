@@ -7,6 +7,7 @@ import {Button, InputNumber,Layout, message, Popconfirm, Progress, Slider, Spin,
 import '../../style/_intention.scss'
 import HeatMap from "../../assets/charts/HeatMap";
 import BoxPlot from "../../assets/charts/BoxPlot";
+import Graphin,{ Behaviors } from "@antv/graphin";
 // import WordCloud from 'src/assets/charts/WordCloud';
 
 // tslint:disable-next-line:no-empty-interface
@@ -61,7 +62,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                 isLoading: false,
                 mergeNum: res.parameter.mergeNum
             })
-        }, 2000)
+        }, 100)
 
     }
 
@@ -103,7 +104,89 @@ class AdvIntentionPanel extends React.Component<Props,State>{
     }
 
     public render(){
+        // const data = Utils.mock(8)
+        //     .tree()
+        //     .graphinTree();
 
+        const treeData = {
+            id: 'node1',
+            label: 'Intention',
+            children: [
+                {
+                    id: 'node2',
+                    label: 'Sub-Intention-1',
+                    children: [
+                        {
+                            id: 'node4',
+                            label: 'Content'
+                        },
+                        {
+                            id: 'node5',
+                            label: 'Location'
+                        },
+                        {
+                            id: 'node6',
+                            label: 'Topic'
+                        },
+                        {
+                            id: 'node7',
+                            label: 'Style'
+                        },
+                    ]
+                }, {
+                    id: 'node3',
+                    label: 'Sub-Intention-2',
+                    children: [
+                        {
+                            id: 'node8',
+                            label: 'Content'
+                        },
+                        {
+                            id: 'node9',
+                            label: 'Location'
+                        },
+                        {
+                            id: 'node10',
+                            label: 'Topic'
+                        },
+                        {
+                            id: 'node11',
+                            label: 'Style'
+                        },
+                    ]
+                }
+            ]
+        }
+
+        // 定制节点
+        // Graphin.registerNode('icon-node',
+        //     {
+        //         size: [60,20],  // 矩形框的长宽
+        //         stroke:
+        //         fill: '#91d5ff',
+        //     })
+        // const layouts={
+        //     type: 'compactBox',
+        //     title: '紧凑树布局',
+        //     options:{
+        //         direction: "TB",
+        //         getId: function getId(d:any) {
+        //             return d.id;
+        //         },
+        //         getHeight: function getHeight() {
+        //             return 16;
+        //         },
+        //         getWidth: function getWidth() {
+        //             return 16;
+        //         },
+        //         getVGap: function getVGap() {
+        //             return 80;
+        //         },
+        //         getHGap: function getHGap() {
+        //             return 50;
+        //         },
+        //     }
+        // }
         return(
             <Layout.Content className="main_container_content">
                 {this.state.isLoading?
@@ -150,7 +233,32 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                         </div>
                         <div className="advanced_intent_panel_intent_result">
                             <h3>Intention Result:</h3>
+                            <div className="advanced_intent_panel_intent_result_body" >
+                                <Graphin width={700} height={400}  fitView={true} data={treeData}
+                                layout={{
+                                    type: 'compactBox',
+                                    direction: 'TB',
+                                    getId: function getId(d:any) {
+                                        return d.id;
+                                    },
+                                    getHeight: function getHeight() {
+                                        return 16;
+                                    },
+                                    getWidth: function getWidth() {
+                                        return 16;
+                                    },
+                                    getVGap: function getVGap() {
+                                        return 80;
+                                    },
+                                    getHGap: function getHGap() {
+                                        return 50;
+                                    },
+                                }}>
+                                    <Behaviors.TreeCollapse trigger="click"/>
+                                </Graphin>
+                            </div>
                         </div>
+
                         <div className="advanced_intent_panel_description">
                             <h3>Description
                                 {this.state.isSatisfy===-1?
