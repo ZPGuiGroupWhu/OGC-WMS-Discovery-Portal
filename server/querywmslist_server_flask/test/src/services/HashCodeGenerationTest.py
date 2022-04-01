@@ -83,8 +83,45 @@ def query_layer_by_uploaded_template_test():
     for tmp_key in result:
         print(tmp_key, result[tmp_key])
 
+def testsearchByIntentionID():
+    url = "http://127.0.0.1:8081/search/searchByIntentionLayerIds"
+    headers = {"Content-Type": "application/json"}
+
+    data = {
+        'sessionID': '',
+        'layerIds': '{\"positive samples\":[1,2,3],\"negative samples\":[4,5,6]}',
+        'pageNum': 1,
+        'pageSize': 10,
+        'photoType': ' '}
+    r1 = requests.post(url, headers=headers, json=data)
+    result = json.loads(r1.content)
+    for tmp_key in result:
+        print(tmp_key, result[tmp_key])
+
+
+def testsearchByIntention():
+    url = "http://127.0.0.1:8081/search/searchByIntention"
+    headers = {"Content-Type": "application/json"}
+    file_object = open(r"G://1文档//intension2022.1.30.json")
+    all_the_text = file_object.read()
+
+    arr = json.loads(all_the_text)
+    file_object.close()
+
+    data = {
+        'sessionID': '',
+        'intention': all_the_text,
+        'pageNum': 1,
+        'pageSize': 10,
+        'photoType': ' '}
+    r1 = requests.post(url, headers=headers, json=data)
+    result = json.loads(r1.content)
+    for tmp_key in result:
+        print(tmp_key, result[tmp_key])
+
 
 if __name__ == '__main__':
     # image_base64_decode_test()
     # get_hashcodes_test()
-    query_layer_by_uploaded_template_test()
+    #query_layer_by_uploaded_template_test()
+    testsearchByIntention()

@@ -1,7 +1,8 @@
 package com.gsv.querywmslist.querywmslist.service;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,20 +14,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.gsv.querywmslist.querywmslist.commons.HashcodeCache;
-import com.gsv.querywmslist.querywmslist.commons.ImageHashCodesUtils;
-import com.gsv.querywmslist.querywmslist.commons.ObjectSimilarity;
-import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
-import com.gsv.querywmslist.querywmslist.commons.RegionGrow;
-import com.gsv.querywmslist.querywmslist.commons.Similarity;
-import com.gsv.querywmslist.querywmslist.commons.TransformUtil;
-import com.gsv.querywmslist.querywmslist.dao.ContactInfo;
-import com.gsv.querywmslist.querywmslist.dao.HashCode;
-import com.gsv.querywmslist.querywmslist.dao.Layer;
-import com.gsv.querywmslist.querywmslist.dao.WMS;
+import com.gsv.querywmslist.querywmslist.commons.*;
+import com.gsv.querywmslist.querywmslist.dao.*;
+import okhttp3.*;
+
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithWMS;
 import com.gsv.querywmslist.querywmslist.dto.SearchLayerByTempleteResult;
@@ -34,8 +28,8 @@ import com.gsv.querywmslist.querywmslist.repository.ContactInfoMapper;
 import com.gsv.querywmslist.querywmslist.repository.HashCodeMapper;
 import com.gsv.querywmslist.querywmslist.repository.LayerMapper;
 import com.gsv.querywmslist.querywmslist.repository.WMSMapper;
+//import com.mathworks.toolbox.javabuilder.MWException;
 import com.mathworks.toolbox.javabuilder.MWException;
-
 @Service
 public class LayerService {
 
@@ -48,7 +42,7 @@ public class LayerService {
 	private Map<Integer, Integer[]> hashcodes;
 	private Long createAt;
 	private HashcodeCache hashcodeCache = new HashcodeCache();
-	
+	private IntentionCache intentionCache = new IntentionCache();
 	
 	public LayerService() {
 		this.createAt = System.currentTimeMillis();
@@ -314,5 +308,185 @@ public class LayerService {
     	return layerWithWMS;
     	
     }
-    
+
+	public String getIntentionByLayerIds(Integer[][] layerIds) throws IOException {
+		//根据正负反馈样本图层编号查询正负样本集
+		//samples的正负样本集的key分别relevance和irrelevance
+		List<Layer>totalLayers=new ArrayList<>();
+		//根据样本集查询意图
+		// 查询Layer
+		List<Layer> relevance = layerMapper.getLayersByIdArray(layerIds[0]);
+		List<Layer> irrelevance = layerMapper.getLayersByIdArray(layerIds[1]);
+		IntentionUtils utils=new IntentionUtils();
+		String Str =utils.getIntentionJson(relevance,irrelevance);
+		return Str;
+	}
+
+
+
+	public SearchLayerByTempleteResult getLayerListByIntentionLayerIds(String sessionID,Integer[][] layerIds, Integer pageNum, Integer pageSize, PhotoTransportType photoType) throws IOException {
+		//根据正负反馈样本图层编号查询正负样本集
+		//samples的正负样本集的key分别relevance和irrelevance
+		//Map<String,List<LayerWithFloatBBox>> samples=new HashMap<String,List<LayerWithFloatBBox>>();
+		//samples=queryLayer(layerIds);
+		List<Layer>totalLayers=new ArrayList<>();
+		if(intentionCache.contains(sessionID)) {
+			totalLayers = intentionCache.getHashcode(sessionID);
+		} else {
+			//根据样本集查询意图
+			Intention intention= new Intention();
+
+			// 查询Layer
+			List<Layer> relevance = layerMapper.getLayersByIdArray(layerIds[0]);
+			List<Layer> irrelevance = layerMapper.getLayersByIdArray(layerIds[1]);
+
+			//输出json
+//			String path = "C://Users//123//Desktop//新建文件夹//data1.json";
+//			File file = new File(path);
+//			if (!file.getParentFile().exists()) {
+//				file.getParentFile().mkdir();
+//			}
+//			file.createNewFile();
+//			Writer writer = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
+//			String userData = JSON.toJSONString(relevance);
+//			writer.write(userData + "\n");
+//			writer.flush();
+//			writer.close();
+
+			//调用接口三
+			intention = queryIntention(relevance, irrelevance);
+
+			totalLayers =getLayersByIntention(intention);
+			sessionID = UUID.randomUUID().toString().replaceAll("-", "");
+			// 缓存
+			this.intentionCache.put(sessionID, totalLayers);
+		}
+
+
+		// 根据页码数确定结果图层ID
+		int start = (pageNum - 1) * pageSize;
+		int layerNum = Math.min(pageSize, totalLayers.size() - start);
+		List<Layer> layers = Arrays.asList(new Layer[layerNum]);
+		for(int i = start; i < Math.min(start + pageSize, totalLayers.size()); i++) {
+			layers.set(i - start, totalLayers.get(i));
+		}
+		// 转换BBox字段
+		List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer ->
+				TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
+
+		Integer totalLayerNum = totalLayers.size();
+		SearchLayerByTempleteResult result = new SearchLayerByTempleteResult();
+		result.setLayers(layersWithFloatBBox);
+		result.setTotalLayerNum(totalLayerNum);
+		result.setSessionID(sessionID);
+		return result;
+	}
+
+	public SearchLayerByTempleteResult getLayerListByIntention(String sessionID,Intention intention, Integer pageNum, Integer pageSize, PhotoTransportType photoType) throws IOException {
+		//根据意图查询正负样本集
+		List<Layer>totalLayers=new ArrayList<>();
+		if(intentionCache.contains(sessionID)) {
+			totalLayers = intentionCache.getHashcode(sessionID);
+		} else {
+			//意图查询接口
+			Integer fromRowNum = (pageNum - 1) * pageSize;
+			totalLayers =getLayersByIntention(intention);
+			sessionID = UUID.randomUUID().toString().replaceAll("-", "");
+			// 缓存
+			this.intentionCache.put(sessionID, totalLayers);
+		}
+		// 根据页码数确定结果图层ID
+		int start = (pageNum - 1) * pageSize;
+		int layerNum = Math.min(pageSize, totalLayers.size() - start);
+		List<Layer> layers = Arrays.asList(new Layer[layerNum]);
+		for(int i = start; i < Math.min(start + pageSize, totalLayers.size()); i++) {
+			layers.set(i - start, totalLayers.get(i));
+		}
+		// 转换BBox字段
+		List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer ->
+				TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
+
+		Integer totalLayerNum = totalLayers.size();
+		SearchLayerByTempleteResult result = new SearchLayerByTempleteResult();
+		result.setLayers(layersWithFloatBBox);
+		result.setTotalLayerNum(totalLayerNum);
+		result.setSessionID(sessionID);
+		return result;
+	}
+
+	private Intention queryIntention(List<Layer> relevance, List<Layer> irrelevance) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+		Intention intention =new Intention();
+		intention.subIntention=new ArrayList<>();
+//		IntentionUtils utils=new IntentionUtils();
+//		String Str =utils.getIntentionJson(relevance,irrelevance);
+		URL resource = this.getClass().getClassLoader().getResource("json.json");
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.openStream()));
+		String jsonStr = new String();
+		String line;
+		while ((line = bufferedReader.readLine()) != null) {
+			jsonStr+=line;
+		}
+		RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
+		Request request = new Request.Builder()
+				.url("http://127.0.0.1:5000/process/recognizeIntention")
+				.post(body)
+				.build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			String Str = response.body().string();
+			JSONObject jsonObject = JSON.parseObject(Str);
+			JSONArray result = jsonObject.getJSONArray("result");
+			//JSONArray  jsintention  = jsonObject.getJSONArray("intention");
+			JSONArray jsintention = result.getJSONObject(0).getJSONArray("intention");
+			System.out.println(jsintention);
+			intention.subIntentionNum=jsintention.size();
+			jsintention.stream().forEach(subIntention -> {
+				JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
+				String content= (String) jsonIntention.get("content");
+				String location= (String) jsonIntention.get("location");
+				String style= (String) jsonIntention.get("style");
+				String topic= (String) jsonIntention.get("topic");
+				String temSubIntention="";
+
+				if (content.equals("null")==false){temSubIntention+=content.substring(content.lastIndexOf("/")+1)+' ';}
+				if (location.equals("null")==false){temSubIntention+=location+' ';}
+				if (style.equals("null")==false){temSubIntention+=style+' ';}
+				if (topic.equals("null")==false){temSubIntention+=topic;}
+
+				intention.subIntention.add(temSubIntention);
+				System.out.println(temSubIntention);
+			});
+		} else {
+			throw new IOException("Unexpected code " + response);
+		}
+		return intention;
+	}
+
+
+	public List<Layer> getLayersByIntention(Intention intention) {
+		List<Layer>resultLayers=new ArrayList<>();
+
+		for(int j = intention.subIntentionNum -1; j>=0; j--) {
+			String tempSubIntention= intention.subIntention.get(j);
+			List<Layer> tempLayers = layerMapper.getLayersbySubIntention(tempSubIntention);
+
+			int max = resultLayers.size() > tempLayers.size() ? resultLayers.size() : tempLayers.size();
+			//新建一个数组list，来接受最终结果
+			List<Layer> list = new ArrayList<>(resultLayers.size() + tempLayers.size());
+			//遍历较大长度，保证所有数据都能取到
+			for (int i = 0; i < max; i++) {
+				if (i < resultLayers.size()) {
+					list.add(resultLayers.get(i));
+				}
+
+				if (i < tempLayers.size()) {
+					list.add(tempLayers.get(i));
+				}
+			}
+			resultLayers=list;
+		}
+		return resultLayers;
+	}
+
 }
