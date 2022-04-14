@@ -15,8 +15,17 @@ $column_color: #797d62 #baa587 #e8ac65 #d08c60 #b58463 #997b66;
 
 .advanced_intent_panel {
   padding: $bound_padding;
-
+  &_intention_process{
+    margin: 1.5vmin 1vmin;
+    h3{
+      font-size: $sub_header_font-size;
+    }
+    img{
+      width: 100%;
+    }
+  }
   &_chart{
+     margin: $bound_padding $bound_padding;
      float: right;
      position: relative;
      right:2%;
@@ -92,7 +101,7 @@ $column_color: #797d62 #baa587 #e8ac65 #d08c60 #b58463 #997b66;
     }
     &_body{
       margin-left: $body_padding_left;
-      width: 700px;
+      width: 600px;
       height: 400px;
       border: 5px solid #ced6e0;
       .graphin-core{

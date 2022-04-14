@@ -8,6 +8,7 @@ import '../../style/_intention.scss'
 import HeatMap from "../../assets/charts/HeatMap";
 import BoxPlot from "../../assets/charts/BoxPlot";
 import Graphin,{ Behaviors } from "@antv/graphin";
+import * as Iprocess from "../../assets/img/Intention Retrieval Process.png"
 // import WordCloud from 'src/assets/charts/WordCloud';
 
 // tslint:disable-next-line:no-empty-interface
@@ -87,7 +88,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
 
 
     public renderEncodingLen = (len:number, index: number, arr:number[])=>{
-        const totalWidth=600
+        const totalWidth=580
         const label=['①','②','③','③','④','⑤','⑥']
         const iterator=['first', 'second', 'third', 'fourth', 'fourth', 'sixth']
         return(
@@ -195,6 +196,10 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                         <div className="advanced_intent_panel_header">
                             <h2>Retrieval Intention Extracted By MDL</h2>
                         </div>
+                        <div className="advanced_intent_panel_intention_process">
+                            <h3 className="title">Intention Retrieval Process:</h3>
+                            <img  src={Iprocess} alt="Intention Retrieval Process" />
+                        </div>
                         <div className="advanced_intent_panel_chart">
                             <div className="boxplot">
                                 <h3 className="title">Confidence Boxplot:
@@ -234,7 +239,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                         <div className="advanced_intent_panel_intent_result">
                             <h3>Intention Result:</h3>
                             <div className="advanced_intent_panel_intent_result_body" >
-                                <Graphin width={700} height={400}  fitView={true} data={treeData}
+                                <Graphin width={600} height={400}  fitView={true} data={treeData}
                                 layout={{
                                     type: 'compactBox',
                                     direction: 'TB',
