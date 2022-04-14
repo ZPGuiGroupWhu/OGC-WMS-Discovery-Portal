@@ -1,0 +1,2813 @@
+{
+  "parameter": {
+    "random_merge_number": 50,
+    "rule_covered_positive_sample_rate_threshold": 0.3
+  },
+  "layers": {
+    "irrelevance": [
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrElement/P"
+        ]
+      },
+      {
+        "Spatial": [
+          "Nunavut"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "South Abaco District"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint George Gingerland"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/PeroxyRadical"
+        ]
+      },
+      {
+        "Spatial": [
+          "Asunci\u00f3n"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWind/TradeWind"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenOceanCoastal/Swell"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/LongShoreWind"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpaceDistance/Fetch"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propConductivity/HydraulicConductivity"
+        ]
+      },
+      {
+        "Spatial": [
+          "Minas Gerais"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrFacility/Base"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint John Capesterre"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrSediment/Loess"
+        ]
+      },
+      {
+        "Spatial": [
+          "Regi\u00f3n de Arica y Parinacota"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/MethylTertButylEther"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWind/JetStreak"
+        ]
+      },
+      {
+        "Spatial": [
+          "Acre"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenWave/AlfvenWave"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrMicrobiota/Coliform"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenOceanCoastal/Swell"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrElement/U"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIsotope/O18"
+        ]
+      },
+      {
+        "Spatial": [
+          "Distrikt Sipaliwini"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/Xylene"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint Joseph"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/HypochlorousMonoxide"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/Matinal"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrElement/Silicon"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenStar/PMode"
+        ]
+      },
+      {
+        "Spatial": [
+          "Cuyuni-Mazaruni Region"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrPlant/Fungi"
+        ]
+      },
+      {
+        "Spatial": [
+          "Mayaro"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenStar/PMode"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia del Guayas"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrPlant/Vegetable"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tumbes"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrEnergy/GeothermalPowerPlant"
+        ]
+      },
+      {
+        "Spatial": [
+          "Oklahoma"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tumbes"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/stateTimeFrequency/Biweekly"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/CH2CHCN"
+        ]
+      },
+      {
+        "Spatial": [
+          "Idaho"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpaceDistance/MeanFreePath"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propConductivity/HydraulicConductivity"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Azua"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrEquipment/Infrastructure"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrNaturalResource/SubBituminous"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmAtmoWeather/FreezingLevel"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenCycle/PolarWander"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIsotope/O17"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Paraguar\u00ed"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propTemperature/WindChillIndex"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de San Jos\u00e9 de Ocoa"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenOceanCoastal/Swell"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de El Progreso"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "O'Higgins Region"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoFog/MixingFog"
+        ]
+      },
+      {
+        "Spatial": [
+          "Nacional"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Nuevo Le\u00f3n"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Veracruz"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Oklahoma"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/ChlorophyllA"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmRegion/Austral"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tamaulipas"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrEquipment/ComputerHardware"
+        ]
+      },
+      {
+        "Spatial": [
+          "Bogota D.C."
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/C2H3NO5"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Los Santos"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/SulfuricAcid"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/DissolvedOxygen"
+        ]
+      },
+      {
+        "Spatial": [
+          "Suriname"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/OceanWind"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Paraguar\u00ed"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Hanover"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propConductivity/HydraulicConductivity"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/Fe2.3"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/Phosphate"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Sacatep\u00e9quez"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Caazap\u00e1"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrMicrobiota/Protist"
+        ]
+      },
+      {
+        "Spatial": [
+          "Trujillo"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Grenadines"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "O'Higgins Region"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpeed/IonVelocity"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrElement/AlkaliMetal"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpaceHeight/Crest"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Arauca"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/CCl4"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenWave/RayleighWave"
+        ]
+      },
+      {
+        "Spatial": [
+          "Westmoreland"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrMicrobiota/Sporozoan"
+        ]
+      },
+      {
+        "Spatial": [
+          "Mahaica-Berbice Region"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIon/HydrogenCarbonate"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de San Pedro"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Lempira"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoPressure/Barometric"
+        ]
+      },
+      {
+        "Spatial": [
+          "Artemisa"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/PolychlorinatedBiphenyl"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrPlant/Vegetable"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Caaguaz\u00fa"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpaceHeight/Elevation"
+        ]
+      },
+      {
+        "Spatial": [
+          "Upper Takutu-Upper Essequibo Region"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Atl\u00e1ntico"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIsotope/U238"
+        ]
+      },
+      {
+        "Spatial": [
+          "Mahaica-Berbice Region"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/CCl4"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpaceDistance/PulseLength"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Santa Cruz"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrFacility/Facility"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrElementalMolecule/O2"
+        ]
+      },
+      {
+        "Spatial": [
+          "Nacional"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de San Crist\u00f3bal"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/BromineNitrate"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIon/Cation"
+        ]
+      },
+      {
+        "Spatial": [
+          "Chiapas"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrFacility/AirTrafficControlRadarRoom"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Camag\u00fcey"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrSediment/Peat"
+        ]
+      },
+      {
+        "Spatial": [
+          "United States"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenCycle/SolarCycle"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Sucumb\u00edos"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      },
+      {
+        "Spatial": [
+          "Lambayeque"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/stateTimeFrequency/Diurnal"
+        ]
+      },
+      {
+        "Spatial": [
+          "Par\u00e1"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matr/Mixture"
+        ]
+      }
+    ],
+    "relevance": [
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrMineral/Pyroxene"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/ExtrusiveRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Barinas"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/HeterogenousRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Los R\u00edos"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Xenolith"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Monte Cristi"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Basalt"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Lempira"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Aa"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Arauca"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/CompositeCone"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrEquipment/MonitoringWell"
+        ]
+      },
+      {
+        "Spatial": [
+          "North Caribbean Coast"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Pumice"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIon/SaltIon"
+        ]
+      },
+      {
+        "Spatial": [
+          "Rond\u00f4nia"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Hypabyssal"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de Monse\u00f1or Nouel"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Pahoehoe"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpaceThickness/StreamStage"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrMicrobiota/Microalgae"
+        ]
+      },
+      {
+        "Spatial": [
+          "Vermont"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/VolcanicCone"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia de La Vega"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/SedimentaryRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "\u00d1uble"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/HeterogenousRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Moore\u2019s Island District"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Kimberlite"
+        ]
+      },
+      {
+        "Spatial": [
+          "Orange Walk District"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Pumice"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Cuscatl\u00e1n"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/SedimentaryRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrSediment/Cobble"
+        ]
+      },
+      {
+        "Spatial": [
+          "Stann Creek District"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/PillowLava"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIsotope/K40"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Masaya"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Melange"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrBiomass/Organism"
+        ]
+      },
+      {
+        "Spatial": [
+          "Venezuela"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Aa"
+        ]
+      },
+      {
+        "Spatial": [
+          "Pernambuco"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Breccia"
+        ]
+      },
+      {
+        "Spatial": [
+          "Sucre"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Basalt"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propEnergyFlux/HeatFlux"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/Karema"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propChemical/DissolvedLoad"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrMineral/Mineraloid"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/prop/ThermodynamicProperty"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoCloud/SelfCloud"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrEquipment/ConfinedWell"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmCryo/CongelationIce"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/LakeBreeze"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tumbes"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Rock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propEnergy/LatentHeat"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tunapuna/Piarco"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Trachyandesite"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tocantins"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Andesite"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenCycle/DiurnalCycle"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint Paul"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/SedimentaryRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Buenos Aires F.D."
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Trachybasalt"
+        ]
+      },
+      {
+        "Spatial": [
+          "New Jersey"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Tuff"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint David"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/TuffRing"
+        ]
+      },
+      {
+        "Spatial": [
+          "Trinity Palmetto Point"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Mafic"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWind/SandStorm"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWind/Microburst"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de \u00d1eembuc\u00fa"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Tephra"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrOrganicCompound/C10H16"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrParticle/EnergeticParticle"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propPressure/SurfaceTension"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmOceanFeature/m"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Santa Ana"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Breccia"
+        ]
+      },
+      {
+        "Spatial": [
+          "Parish of Saint Peter"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Ultramaphic"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Caaguaz\u00fa"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Serpentinite"
+        ]
+      },
+      {
+        "Spatial": [
+          "Hidalgo"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/IntrusiveRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWind/CrossWind"
+        ]
+      },
+      {
+        "Spatial": [
+          "Louisiana"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Peridotite"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmCryo/LandIce"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint John Capesterre"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/HeterogenousRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrIon/Nitrate"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenOceanDynamics/Tsunami"
+        ]
+      },
+      {
+        "Spatial": [
+          "Bimini"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Aa"
+        ]
+      },
+      {
+        "Spatial": [
+          "Lima region"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Tuff"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propSpeed/TangentialAcceleration"
+        ]
+      },
+      {
+        "Spatial": [
+          "Rhode Island"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Pyroclastic"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmRegion/SouthernHemisphere"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrInstrument/GlobalPositioningSystem"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de C\u00f3rdoba"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Ultramaphic"
+        ]
+      },
+      {
+        "Spatial": [
+          "Barima-Waini Region"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/IgneousRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Entre Rios"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Meteor"
+        ]
+      },
+      {
+        "Spatial": [
+          "Oruro"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/SedimentaryRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/MalojaWind"
+        ]
+      },
+      {
+        "Spatial": [
+          "\u00d1uble"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Hypabyssal"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Agriculture"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/Leste"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/ClONO2"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Health"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrPlant/Trunk"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrEnergy/HeatExchanger"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Geology"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/phenAtmoWindMesoscale/N_aschi"
+        ]
+      },
+      {
+        "Spatial": [
+          "Corozal District"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "No Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/AnorogenicIgneousRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Region of Magallanes"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "MapMethodRoot"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Rock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/stateTimeFrequency/Hourly"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrSediment/Varve"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrCompound/NitricAcidTrihydrate"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrPlant/Mangrove"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmLandProtected/CountyPark"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Paysand\u00fa"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Trachyte"
+        ]
+      },
+      {
+        "Spatial": [
+          "Tunapuna/Piarco"
+        ],
+        "Theme": [
+          "ThemeRoot"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Meteor"
+        ]
+      },
+      {
+        "Spatial": [
+          "Provincia del Carchi"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Tephra"
+        ]
+      },
+      {
+        "Spatial": [
+          "Guerrero"
+        ],
+        "Theme": [
+          "Ecosystem"
+        ],
+        "MapMethod": [
+          "Others"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/VolcanicRock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Saint Peter Basseterre"
+        ],
+        "Theme": [
+          "Climate"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Dacite"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Disaster"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/realmRegion/LatitudeBand"
+        ]
+      },
+      {
+        "Spatial": [
+          "Parish of Saint Ann"
+        ],
+        "Theme": [
+          "Weather"
+        ],
+        "MapMethod": [
+          "Line Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Aa"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Area Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrElement/AlkaliMetal"
+        ]
+      },
+      {
+        "Spatial": [
+          "Departamento de Boyac\u00e1"
+        ],
+        "Theme": [
+          "Biodiversity"
+        ],
+        "MapMethod": [
+          "Choloplethic Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Rock"
+        ]
+      },
+      {
+        "Spatial": [
+          "Newfoundland and Labrador"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRockIgneous/Pahoehoe"
+        ]
+      },
+      {
+        "Spatial": [
+          "Florida"
+        ],
+        "Theme": [
+          "Water"
+        ],
+        "MapMethod": [
+          "Point Symbol Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/propChemical/SuspensionLoad"
+        ]
+      },
+      {
+        "Spatial": [
+          "Maranh\u00e3o"
+        ],
+        "Theme": [
+          "Energy"
+        ],
+        "MapMethod": [
+          "Quality Base Method"
+        ],
+        "MapContent": [
+          "http://sweetontology.net/matrRock/Meteor"
+        ]
+      }
+    ]
+  }
+}
+
