@@ -7,8 +7,9 @@ import {Button, InputNumber,Layout, message, Popconfirm, Progress, Slider, Spin,
 import '../../style/_intention.scss'
 import HeatMap from "../../assets/charts/HeatMap";
 import BoxPlot from "../../assets/charts/BoxPlot";
-import Graphin,{ Behaviors } from "@antv/graphin";
 import * as Iprocess from "../../assets/img/Intention Retrieval Process.png"
+import IntentionTree from "../../assets/charts/IntentionTree";
+
 // import WordCloud from 'src/assets/charts/WordCloud';
 
 // tslint:disable-next-line:no-empty-interface
@@ -73,13 +74,13 @@ class AdvIntentionPanel extends React.Component<Props,State>{
         return(
             <div key={index} style={{margin: '5px 0px'}}>
                 A {val.content === 'null' ? '' :
-                <span className="tag" style={{background: "#ef476f"}}>{val.content.slice(val.content.lastIndexOf('/') + 1, val.content.length)}</span>}
+                <span className="tag" style={{background: "#9BC1E1"}}>{val.content.slice(val.content.lastIndexOf('/') + 1, val.content.length)}</span>}
                 Map {val.location === 'null' ? '' :
-                <span>  in <span className="tag" style={{background: "#f9c74f"}}> {val.location}</span></span>}
+                <span>  in <span className="tag" style={{background: "#C39EE2"}}> {val.location}</span></span>}
                 {val.topic === 'null' ? '' :
-                    <span>  with <span className="tag" style={{background: "#43aa8b"}}>{val.topic}</span> theme </span>}
+                    <span>  with <span className="tag" style={{background: "#F0A573"}}>{val.topic}</span> theme </span>}
                 {val.style === 'null' ? '' :
-                    <span>  drew by <Tag className="tag" color="#277da1">{val.style}</Tag></span>}
+                    <span>  drew by <Tag className="tag" color="#A9D18E">{val.style}</Tag></span>}
                 {index === this.state.intent.length - 1 ? '.' :
                     <span style={{fontWeight: "bold"}}> OR </span>}
             </div>
@@ -104,90 +105,8 @@ class AdvIntentionPanel extends React.Component<Props,State>{
         )
     }
 
+
     public render(){
-        // const data = Utils.mock(8)
-        //     .tree()
-        //     .graphinTree();
-
-        const treeData = {
-            id: 'node1',
-            label: 'Intention',
-            children: [
-                {
-                    id: 'node2',
-                    label: 'Sub-Intention-1',
-                    children: [
-                        {
-                            id: 'node4',
-                            label: 'Content'
-                        },
-                        {
-                            id: 'node5',
-                            label: 'Location'
-                        },
-                        {
-                            id: 'node6',
-                            label: 'Topic'
-                        },
-                        {
-                            id: 'node7',
-                            label: 'Style'
-                        },
-                    ]
-                }, {
-                    id: 'node3',
-                    label: 'Sub-Intention-2',
-                    children: [
-                        {
-                            id: 'node8',
-                            label: 'Content'
-                        },
-                        {
-                            id: 'node9',
-                            label: 'Location'
-                        },
-                        {
-                            id: 'node10',
-                            label: 'Topic'
-                        },
-                        {
-                            id: 'node11',
-                            label: 'Style'
-                        },
-                    ]
-                }
-            ]
-        }
-
-        // 定制节点
-        // Graphin.registerNode('icon-node',
-        //     {
-        //         size: [60,20],  // 矩形框的长宽
-        //         stroke:
-        //         fill: '#91d5ff',
-        //     })
-        // const layouts={
-        //     type: 'compactBox',
-        //     title: '紧凑树布局',
-        //     options:{
-        //         direction: "TB",
-        //         getId: function getId(d:any) {
-        //             return d.id;
-        //         },
-        //         getHeight: function getHeight() {
-        //             return 16;
-        //         },
-        //         getWidth: function getWidth() {
-        //             return 16;
-        //         },
-        //         getVGap: function getVGap() {
-        //             return 80;
-        //         },
-        //         getHGap: function getHGap() {
-        //             return 50;
-        //         },
-        //     }
-        // }
         return(
             <Layout.Content className="main_container_content">
                 {this.state.isLoading?
@@ -239,28 +158,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                         <div className="advanced_intent_panel_intent_result">
                             <h3>Intention Result:</h3>
                             <div className="advanced_intent_panel_intent_result_body" >
-                                <Graphin width={600} height={400}  fitView={true} data={treeData}
-                                layout={{
-                                    type: 'compactBox',
-                                    direction: 'TB',
-                                    getId: function getId(d:any) {
-                                        return d.id;
-                                    },
-                                    getHeight: function getHeight() {
-                                        return 16;
-                                    },
-                                    getWidth: function getWidth() {
-                                        return 16;
-                                    },
-                                    getVGap: function getVGap() {
-                                        return 80;
-                                    },
-                                    getHGap: function getHGap() {
-                                        return 50;
-                                    },
-                                }}>
-                                    <Behaviors.TreeCollapse trigger="click"/>
-                                </Graphin>
+                                <IntentionTree />
                             </div>
                         </div>
 
