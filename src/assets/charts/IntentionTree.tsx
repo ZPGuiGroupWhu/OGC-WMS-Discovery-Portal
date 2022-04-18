@@ -2,8 +2,9 @@
 import Graphin, {Components, Behaviors, GraphinContext, } from "@antv/graphin";
 // @ts-ignore
 import type {ContextMenuValue}from "@antv/graphin";
-import {Menu, message} from "antd";
+import {Menu, message, Drawer,Input, Select, Space, Button} from "antd";
 import { EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeOutlined, DownloadOutlined} from '@ant-design/icons';
+import '../../style/_intention.scss'
 // import { ContextMenu, FishEye } from '@antv/graphin-components';
 
 import * as React from "react";
@@ -52,8 +53,6 @@ const buildTreeData=()=>{
                  else if(key==='topic') {tmp.class='Topic'}
                  j++
                  subIntent.children.push(tmp)
-             }else{
-                 continue
              }
         }
         treeDate.children.push(subIntent)
@@ -118,6 +117,7 @@ const buildTreeData=()=>{
 //         }
 //     ]
 // }
+
 
 // 自定义节点
 Graphin.registerNode(
@@ -329,46 +329,6 @@ const layout={
     }
 }
 
-// 设置右键菜单， 使用graphin封装的内置组件而不是graphin-components
-const NodeMenu = (value: ContextMenuValue) => {
-    const {onClose, id} = value;
-    const handleClick = (e: { key: unknown }) => {
-        message.info(`${e.key}:${id}`);
-        onClose();
-    };
-
-    return (
-        <Menu onClick={handleClick}>
-            <Menu.Item key="copy" icon={<PlusCircleOutlined />} disabled={id.search(/^0-0-0-[0-9]$/)!==-1}>添加</Menu.Item>
-            <Menu.Item key="delete" icon={<DeleteOutlined />} disabled={id.search(/^0-0$/)!==-1}>删除</Menu.Item>
-            <Menu.Item key="tag" icon={<EditOutlined />} disabled={id.search(/0-0-0-[0-9]/)===-1}>修改</Menu.Item>
-        </Menu>
-    );
-
-}
-
-// 设置画布菜单， 使用graphin封装的内置组件而不是graphin-components
-const CanvasMenu = ({value,onClick}:{value:ContextMenuValue,onClick:()=>void}) => {
-    const {graph}=React.useContext(GraphinContext)
-    const handleDownLoad=()=>{
-        graph.downloadFullImage('canvas-contextmenu');
-        value.onClose()
-        // contextMenu.canvas.handleClose();
-    }
-    const handleOpenFishEye=()=>{
-        onClick()
-        value.onClose()
-        buildTreeData()
-    }
-
-    return (
-        <Menu >
-            <Menu.Item key="fishEye" icon={<EyeOutlined />} onClick={handleOpenFishEye}>开启鱼眼</Menu.Item>
-            <Menu.Item key="download" icon={<DownloadOutlined />} onClick={handleDownLoad}>下载画布</Menu.Item>
-        </Menu>
-    );
-}
-
 // 使用graphin-components封装的内置组件
 // const CanvasMenu = (props:any) => {
 //     const { graph, contextmenu } = React.useContext(GraphinContext);
@@ -389,17 +349,199 @@ const CanvasMenu = ({value,onClick}:{value:ContextMenuValue,onClick:()=>void}) =
 //     );
 // };
 
+const dimension=['Content','Topic','Style','Location']
+const style=["Chart","Line","Point","Satellite","Scope","Text"]
+const topic=["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"]
+
+
+
 // 渲染意图树
 const IntentionTree = () => {
-    const [visible,setVisible]=React.useState(false)
+    const [treeData,setTreeData]=React.useState(buildTreeData())
+    const [visible,setVisible]=React.useState({drawerVisible: false, fishEyeVisible: false})
+    const [modifyData,setModifyData]=React.useState({dimValue:'Topic',labelValue: 'Agriculture'})
+    const [modifyAction,setModifyAction]=React.useState({type:'EDIT', id: ''})
+    
     const handleOpenFishEye=()=>{
-        setVisible(true)
+        setVisible({...visible,fishEyeVisible: true})
     }
     const handleCloseFishEye=()=>{
-        setVisible(false)
+        setVisible({...visible,fishEyeVisible: false})
     }
+
+    // 设置右键菜单， 使用graphin封装的内置组件而不是graphin-components
+    const NodeMenu = (value:ContextMenuValue) => {
+        const {onClose, id} = value;
+        const handleClick = (e: { key: string }) => {
+            setModifyAction({type:e.key,id})
+            if(e.key!=='DELETE'){
+                setVisible({...visible,drawerVisible: true})
+            }
+            message.info(`${e.key}:${id}`);
+            onClose();
+        };
+
+
+        const sumHyphen=(s:string)=>{
+            let hyphenNum=0
+            for(let i=0;i<s.length;i++){
+                if(s.charAt(i)==='-'){
+                    ++hyphenNum
+                }
+            }
+            return hyphenNum
+        }
+        return (
+            <Menu onClick={handleClick}>
+                <Menu.Item key="ADD" icon={<PlusCircleOutlined />} disabled={sumHyphen(id)===3}>Add</Menu.Item>
+                <Menu.Item key="DELETE" icon={<DeleteOutlined />} disabled={sumHyphen(id)===1}
+                           onClick={()=>handleDeleteNode(treeData,id)}>Delete</Menu.Item>
+                <Menu.Item key="EDIT" icon={<EditOutlined />} disabled={sumHyphen(id)!==3}>Edit</Menu.Item>
+            </Menu>
+        );
+
+    }
+
+    // 设置画布菜单， 使用graphin封装的内置组件而不是graphin-components
+    const CanvasMenu = (value:ContextMenuValue) => {
+        const {graph}=React.useContext(GraphinContext)
+        const handleDownLoad=()=>{
+            graph.downloadFullImage('canvas-contextmenu');
+            value.onClose()
+        }
+        const openFishEye=()=>{
+            handleOpenFishEye()
+            value.onClose()
+            buildTreeData()
+        }
+
+        return (
+            <Menu >
+                <Menu.Item key="fishEye" icon={<EyeOutlined />} onClick={openFishEye}>Open Fish Eye</Menu.Item>
+                <Menu.Item key="download" icon={<DownloadOutlined />} onClick={handleDownLoad}>DownLoad</Menu.Item>
+            </Menu>
+        );
+    }
+
+    // 渲染编辑下拉框
+    const RenderEditSelector=({value}:{value:string})=>{
+        switch (value){
+            case 'Topic': return (
+                <Select className="label_value" style={{width: '120px'}} size="small" value={modifyData.labelValue}
+                        onChange={(val)=>setModifyData({...modifyData,labelValue: val})}>
+                    {topic.map((item)=><Select.Option key={item}>{item}</Select.Option>)}
+                </Select>)
+            case 'Style': return (
+                <Select className="label_value" style={{width: '120px'}} size="small" value={modifyData.labelValue}
+                        onChange={(val)=>setModifyData({...modifyData,labelValue: val})}>
+                    {style.map((item)=><Select.Option key={item}>{item}</Select.Option>)}
+                </Select>)
+            default: return <Input className="label_value" style={{width: '120px'}} size="small"/>
+        }
+    }
+
+    const editSummit=()=>{
+        let labelValue=document.getElementsByClassName("label_value")[0].getAttribute("value")
+        labelValue=(labelValue===null?modifyData.labelValue:labelValue)
+        if(modifyAction.type==='ADD'){
+            handleAddNode(treeData, modifyAction.id, modifyData.dimValue, labelValue)
+
+        } else if(modifyAction.type==='EDIT'){
+            handleEditNode(treeData, modifyAction.id, labelValue)
+        }
+        setVisible({...visible, drawerVisible: false})
+    }
+
+    const handleDeleteNode=(data:Node,key:string)=>{
+        const tmp=[]
+        tmp.push(data)
+        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for(let i=0;i<arr.length;i++){
+                const node=arr[i]
+                if(node.id===key){
+                    arr.splice(i,1)
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(newData,key)
+        setTreeData(newData[0])
+    }
+
+    const handleEditNode=(data:Node,key:string,label:string)=>{
+        getNodeClass(data,key)
+
+        const tmp=[]
+        tmp.push(data)
+        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for (const node of arr) {
+                if (node.id === key) {
+                    node.label=label
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(newData,key)
+        setTreeData(newData[0])
+    }
+
+    const handleAddNode=(data:Node,key:string, dimValue:string, labelValue:string)=>{
+        const tmp=[]
+        tmp.push(data)
+        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for (const node of arr) {
+                if (node.id === key) {
+                    const endNode=node.children[node.children.length-1]
+                    const nodeNum=parseInt(endNode.id.slice(endNode.id.lastIndexOf('-')+1,endNode.id.length),10) // 获取该层最大的id数
+                    const nNode = new Node()
+                    nNode.id=node.id+'-'+(nodeNum+1).toString()
+                    nNode.class=dimValue
+                    nNode.label=labelValue
+                    node.children.push(nNode)
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(newData,key)
+        setTreeData(newData[0])
+    }
+
+    const getNodeClass=(data:Node, key:string)=>{
+        const tmp=[]
+        tmp.push(data)
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for (const node of arr) {
+                if (node.id === key) {
+                    setModifyData({...modifyData, dimValue: node.class})
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(tmp,key)
+    }
+
+
     return (
-        <Graphin width={600} height={400} fitView={true} animate={true} data={buildTreeData()}
+        <Graphin id="graphin" width={600} height={400} fitView={true} animate={true} data={treeData} enabledStack={true}
                      defaultNode={{type: 'icon-node', anchorPoints: [0.5, 0]}}
                      defaultEdge={{sourceAnchor: 0, targetAnchor: 0}}
                      modes={modes}
@@ -413,16 +555,44 @@ const IntentionTree = () => {
                 {(value: ContextMenuValue) => <NodeMenu {...value}/>}
             </Components.ContextMenu>
 
-            <Components.ContextMenu bindType="canvas" style={{background: '#fff'}}>
-                {(value: ContextMenuValue)=><CanvasMenu value={value} onClick={handleOpenFishEye} />}
+            <Components.ContextMenu bindType="canvas" style={{width:150, background: '#fff'}}>
+                {(value: ContextMenuValue)=><CanvasMenu {...value} />}
             </Components.ContextMenu>
-            <Components.FishEye visible={visible} handleEscListener={handleCloseFishEye} />
+            <Components.FishEye visible={visible.fishEyeVisible} handleEscListener={handleCloseFishEye} />
 
             {/*<ContextMenu style={{background: '#fff'}} bindType="canvas">*/}
             {/*    <CanvasMenu handleOpenFishEye={handleOpenFishEye} />*/}
             {/*</ContextMenu>*/}
             {/*<FishEye options={{}} visible={visible} handleEscListener={handleCloseFishEye} />*/}
+
+            <Drawer placement="top" style={{position: "absolute"}}
+                    bodyStyle={{display:"none"}} headerStyle={{padding: '8px 12px'}}
+                    drawerStyle={{height:"auto"}} contentWrapperStyle={{height:"auto"}}
+                    visible={visible.drawerVisible} getContainer={false} onClose={()=>setVisible({...visible,drawerVisible: false})}
+                    destroyOnClose={true}
+                    extra={
+                        <Space>
+                            <Space>
+                                <b>Dimension:</b>
+                                <Select style={{width:120}} size="small" disabled={modifyAction.type==='EDIT'}
+                                        defaultValue={modifyData.dimValue}
+                                        onChange={(val)=>{setModifyData({...modifyData, dimValue: val})}}>
+                                    {dimension.map((dim)=><Select.Option key={dim}>{dim}</Select.Option>)}
+                                </Select>
+                                <b>Value:</b>
+                                   <RenderEditSelector value={modifyData.dimValue}/>
+                            </Space>
+                            <Space>
+                                <Button onClick={editSummit} type="primary" size="small">
+                                    Submit
+                                </Button>
+                                <Button onClick={()=>setVisible({...visible,drawerVisible: false})} size="small">Cancel</Button>
+                            </Space>
+                        </Space>
+                    }
+            />
         </Graphin>
+
     )
 }
 
