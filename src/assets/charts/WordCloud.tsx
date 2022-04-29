@@ -114,16 +114,14 @@ export default class WordCloud extends React.Component{
                 drawOutOfBound: false,
                 // Global text style
              textStyle: {
-               normal: {
+                 // Color can be a callback function or a color string
+                 color: ()=>{return 'rgb(' + [
+                     Math.round(Math.random() * 160),
+                     Math.round(Math.random() * 160),
+                     Math.round(Math.random() * 160)
+                 ].join(',') + ')';},
                 fontFamily: 'sans-serif',
                 fontWeight: 'bold',
-                // Color can be a callback function or a color string
-                color: ()=>{return 'rgb(' + [
-                    Math.round(Math.random() * 160),
-                    Math.round(Math.random() * 160),
-                    Math.round(Math.random() * 160)
-                ].join(',') + ')';},
-               },
                emphasis: {
                 shadowBlur: 10,
                 shadowColor: '#333'
@@ -137,7 +135,7 @@ export default class WordCloud extends React.Component{
     }
        
     public render() {
-        return (<div id="wordCloud" style ={{ width: 400 + 'px', height: 300 + 'px'}} />)
+        return (<div id="wordCloud" style ={{ width: 300 + 'px', height: 250 + 'px'}} />)
      }
  }
  

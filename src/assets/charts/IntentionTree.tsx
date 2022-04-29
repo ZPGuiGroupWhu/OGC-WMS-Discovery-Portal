@@ -2,15 +2,24 @@
 import Graphin, {Components, Behaviors, GraphinContext, } from "@antv/graphin";
 // @ts-ignore
 import type {ContextMenuValue}from "@antv/graphin";
-import {Menu, message, Drawer,Input, Select, Space, Button} from "antd";
-import { EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeOutlined, DownloadOutlined} from '@ant-design/icons';
+import { Toolbar } from '@antv/graphin-components';
+import {Menu, message, Drawer, Input, Select, Space, Button, Tooltip} from "antd";
+import {
+    EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeOutlined, DownloadOutlined, AimOutlined,
+    EyeInvisibleOutlined, UndoOutlined, RedoOutlined, createFromIconfontCN
+} from '@ant-design/icons';
 import '../../style/_intention.scss'
 // import { ContextMenu, FishEye } from '@antv/graphin-components';
 
 import * as React from "react";
 import rawData from "../data/intentionResult2022.2.23.json";
+import {useEffect} from "react";
 
 declare const require:any;
+
+const MyIcon=createFromIconfontCN({
+    scriptUrl: '//at.alicdn.com/t/font_1728748_42yz4wxteli.js', // use some icon from iconfont
+});
 
 class Node{
     public id:string
@@ -236,33 +245,6 @@ Graphin.registerNode(
                     })
             }
 
-
-            // // 如果不需要动态增加或删除元素，则不需要 add 这两个 marker
-            // group.addShape('marker', {
-            //     attrs: {
-            //         x: 40 - w / 2,
-            //         y: 52 - h / 2,
-            //         r: 6,
-            //         stroke: '#73d13d',
-            //         cursor: 'pointer',
-            //         symbol: EXPAND_ICON,
-            //     },
-            //     name: 'add-item',
-            // });
-            //
-            // group.addShape('marker', {
-            //     attrs: {
-            //         x: 80 - w / 2,
-            //         y: 52 - h / 2,
-            //         r: 6,
-            //         stroke: '#ff4d4f',
-            //         cursor: 'pointer',
-            //         symbol: COLLAPSE_ICON,
-            //     },
-            //     name: 'remove-item',
-            // });
-
-
             const labelObj = group.addShape('text', {
                 attrs: {
                     fill: 'black',
@@ -282,10 +264,10 @@ Graphin.registerNode(
             })
             return keyShape;
         },
-        update(cfg: any, node: any) {
-            console.log(cfg)
-            console.log(node)
-        },
+        // update(cfg: any, node: any) {
+        //     console.log(cfg)
+        //     console.log(node)
+        // },
     },
     'rect',
 );
@@ -350,17 +332,21 @@ const layout={
 // };
 
 const dimension=['Content','Topic','Style','Location']
-const style=["Chart","Line","Point","Satellite","Scope","Text"]
+const style=["Point symbol method","Line symbol method","Area method","Quality base method","Choloplethic method","Others"]
 const topic=["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"]
 
+const historyUndoList:any[]=[]
+let historyRedoList:any[]=[]
 
 
 // 渲染意图树
 const IntentionTree = () => {
     const [treeData,setTreeData]=React.useState(buildTreeData())
     const [visible,setVisible]=React.useState({drawerVisible: false, fishEyeVisible: false})
-    const [modifyData,setModifyData]=React.useState({dimValue:'Topic',labelValue: 'Agriculture'})
+    const [modifyData,setModifyData]=React.useState({dimValue:'Content',labelValue: ''})
     const [modifyAction,setModifyAction]=React.useState({type:'EDIT', id: ''})
+
+    useEffect(()=>{historyUndoList.push(treeData)},[]) // init historyUndoList
     
     const handleOpenFishEye=()=>{
         setVisible({...visible,fishEyeVisible: true})
@@ -373,14 +359,27 @@ const IntentionTree = () => {
     const NodeMenu = (value:ContextMenuValue) => {
         const {onClose, id} = value;
         const handleClick = (e: { key: string }) => {
+            const node=getNode(treeData,id)
+
             setModifyAction({type:e.key,id})
-            if(e.key!=='DELETE'){
+            setModifyData({dimValue: node.class,labelValue: node.label})
+            if(e.key==='EDIT'){
+                setModifyData({dimValue: node.class,labelValue: node.label})
                 setVisible({...visible,drawerVisible: true})
+            }
+            if(e.key==='ADD'){
+                if(id==='0-0'){
+                    const endNode=node.children[node.children.length-1]
+                    const nodeNum=parseInt(endNode.id.slice(endNode.id.lastIndexOf('-')+1,endNode.id.length),10) // 获取该层最大的id数
+                    handleAddNode(treeData,id,'Sub-Intention','Sub-Intention-'+(nodeNum+1).toString())
+                }else{
+                    setModifyData({dimValue: 'Content',labelValue: ''})
+                    setVisible({...visible,drawerVisible: true})
+                }
             }
             message.info(`${e.key}:${id}`);
             onClose();
         };
-
 
         const sumHyphen=(s:string)=>{
             let hyphenNum=0
@@ -427,21 +426,140 @@ const IntentionTree = () => {
     const RenderEditSelector=({value}:{value:string})=>{
         switch (value){
             case 'Topic': return (
-                <Select className="label_value" style={{width: '120px'}} size="small" value={modifyData.labelValue}
-                        onChange={(val)=>setModifyData({...modifyData,labelValue: val})}>
+                <Select className="label_value" style={{width: '170px'}} size="small" value={modifyData.labelValue}
+                        onChange={(val)=>setModifyData({...modifyData,labelValue: val})}
+                        defaultValue={modifyData.labelValue}>
                     {topic.map((item)=><Select.Option key={item}>{item}</Select.Option>)}
                 </Select>)
             case 'Style': return (
-                <Select className="label_value" style={{width: '120px'}} size="small" value={modifyData.labelValue}
-                        onChange={(val)=>setModifyData({...modifyData,labelValue: val})}>
+                <Select className="label_value" style={{width: '170px'}} size="small" value={modifyData.labelValue}
+                        onChange={(val)=>setModifyData({...modifyData,labelValue: val})}
+                        defaultValue={modifyData.labelValue}>
                     {style.map((item)=><Select.Option key={item}>{item}</Select.Option>)}
                 </Select>)
-            default: return <Input className="label_value" style={{width: '120px'}} size="small"/>
+            default: return <Input id='inputLabel' style={{width: '170px'}} size="small"
+                                   placeholder={'Please input value'} allowClear={true}/>
         }
     }
 
+    // 渲染工具栏
+    const RenderToolbar = () => {
+        const {apis,graph}=React.useContext(GraphinContext)
+        const {handleAutoZoom}=apis
+        const options=[
+            {
+                key: 'autoZoom',
+                name: <AimOutlined />,
+                description: 'Auto Zoom',
+                action:()=>{
+                    handleAutoZoom()
+                }
+            },
+            {
+                key: 'fishEye',
+                name: visible.fishEyeVisible?<EyeInvisibleOutlined />:<EyeOutlined />,
+                description: visible.fishEyeVisible?'Close Fish Eye':'Open Fish Eye',
+                action:()=>{
+                    visible.fishEyeVisible?handleCloseFishEye():handleOpenFishEye()
+                }
+            },
+            {
+                key: 'downLoad',
+                name: <DownloadOutlined />,
+                description: 'DownLoad the Canvas',
+                action:()=>{
+                    graph.downloadFullImage('canvas-contextmenu');
+                }
+            },
+            {
+                key: 'unDo',
+                name: <UndoOutlined />,
+                description: 'Undo',
+                action:()=>{
+                    console.log(historyUndoList)
+                    historyRedoList.push(historyUndoList.pop())
+                    setTreeData(historyUndoList[historyUndoList.length-1])
+                }
+            },
+            {
+                key: 'reDo',
+                name: <RedoOutlined />,
+                description: 'Redo',
+                action:()=>{
+                    historyUndoList.push(historyRedoList.pop())
+                    setTreeData(historyUndoList[historyUndoList.length-1])
+                }
+            }
+        ]
+        //
+        //
+        // return (
+        //     <div>
+        //         {options.map((item)=>{
+        //             return(
+        //                 <Tooltip title={item.description} key={item.key}>
+        //                     <Button onClick={item.action}>{item.name}</Button>
+        //                 </Tooltip>
+        //             )
+        //         })}
+        //     </div>
+        // );
+
+        return (
+            <Toolbar  direction="vertical" style={{position: 'absolute', bottom: 168, left: 28}}>
+                <Space className="toolbar" direction="vertical" size={0}>
+                    {options.map((item) => {
+                        return (
+                            <Tooltip title={item.description} key={item.key} placement="right">
+                                <Button icon={item.name} onClick={item.action}
+                                        disabled={(item.key==='unDo' && historyUndoList.length===1)||
+                                        (item.key==='reDo' && historyRedoList.length===0)}/>
+                            </Tooltip>
+                        )
+                    })}
+                </Space>
+            </Toolbar>
+        )
+
+    };
+
+    // 渲染图例
+    const RenderLegend=()=>{
+        return(
+            <div className='legend'>
+                <div className='item'>
+                    <MyIcon className='myIcon' type={'icon-intent'} style={{background:'#B0B0B0'}}/>
+                    <span className='text' style={{background: '#D9D9D9'}}>Intention</span>
+                </div>
+                <div className='item'>
+                    <MyIcon className='myIcon' type={'icon-subIntent'} style={{background:'#F4CA5E'}}/>
+                    <span className='text' style={{background: '#FFF2CC'}}>Sub-Intention</span>
+                </div>
+
+                <div className='item'>
+                    <MyIcon className='myIcon' type={'icon-content'} style={{background:'#9BC1E1'}}/>
+                    <span className='text' style={{background: '#C4D9EE'}}>Content</span>
+                </div>
+                <div className='item'>
+                    <MyIcon className='myIcon' type={'icon-location'} style={{background: '#C39EE2'}}/>
+                    <span className='text' style={{background: '#D7CAE4'}}>Location</span>
+                </div>
+                <div className='item'>
+                    <MyIcon className='myIcon' type={'icon-style'} style={{background:'#A9D18E'}}/>
+                    <span className='text' style={{background: '#C5E0B2'}}>Style</span>
+                </div>
+                <div className='item'>
+                    <MyIcon className='myIcon' type={'icon-topic'} style={{background:'#F0A573'}}/>
+                    <span className='text' style={{background: '#F2C2A5'}}>Topic</span>
+                </div>
+            </div>
+            )
+    }
+
+    // summit changed treeData
     const editSummit=()=>{
-        let labelValue=document.getElementsByClassName("label_value")[0].getAttribute("value")
+        const el=document.getElementById("inputLabel")
+        let labelValue=el?el.getAttribute("value"):null
         labelValue=(labelValue===null?modifyData.labelValue:labelValue)
         if(modifyAction.type==='ADD'){
             handleAddNode(treeData, modifyAction.id, modifyData.dimValue, labelValue)
@@ -452,6 +570,7 @@ const IntentionTree = () => {
         setVisible({...visible, drawerVisible: false})
     }
 
+    // Delete a node
     const handleDeleteNode=(data:Node,key:string)=>{
         const tmp=[]
         tmp.push(data)
@@ -471,10 +590,15 @@ const IntentionTree = () => {
         }
         helper(newData,key)
         setTreeData(newData[0])
+        // record change
+        historyUndoList.push(newData[0])
+        historyRedoList=[]
+
     }
 
+    // Edit a node
     const handleEditNode=(data:Node,key:string,label:string)=>{
-        getNodeClass(data,key)
+        getNode(data,key)
 
         const tmp=[]
         tmp.push(data)
@@ -493,8 +617,11 @@ const IntentionTree = () => {
         }
         helper(newData,key)
         setTreeData(newData[0])
+        // record change
+        historyUndoList.push(newData[0])
+        historyRedoList=[]
     }
-
+    // Add a node
     const handleAddNode=(data:Node,key:string, dimValue:string, labelValue:string)=>{
         const tmp=[]
         tmp.push(data)
@@ -519,24 +646,31 @@ const IntentionTree = () => {
         }
         helper(newData,key)
         setTreeData(newData[0])
+        // record change
+        historyUndoList.push(newData[0])
+        historyRedoList=[]
     }
-
-    const getNodeClass=(data:Node, key:string)=>{
+    // find a node in the treeData
+    const getNode=(data:Node, key:string):Node=>{
         const tmp=[]
         tmp.push(data)
+        let resNode=new Node()
         // 暴力递归，直接找数据
-        const helper=(arr:Node[],key:string):void=>{
+        const helper=(arr:Node[],key:string)=>{
             for (const node of arr) {
                 if (node.id === key) {
-                    setModifyData({...modifyData, dimValue: node.class})
+                    // setModifyData({...modifyData, dimValue: node.class})
+                    resNode=node
                     return
                 }
                 if(node.children.length){
-                    helper(node.children,key)
+                     helper(node.children,key)
                 }
             }
+            return
         }
         helper(tmp,key)
+        return resNode
     }
 
 
@@ -548,6 +682,9 @@ const IntentionTree = () => {
                      layout={layout}
 
         >
+
+            <RenderToolbar/>
+            <RenderLegend/>
             <Behaviors.TreeCollapse trigger="click"/>
             {/*<Behaviors.Hoverable bindType="node"/>*/}
             {/*<Behaviors.Hoverable bindType="edge"/>*/}
@@ -574,7 +711,7 @@ const IntentionTree = () => {
                         <Space>
                             <Space>
                                 <b>Dimension:</b>
-                                <Select style={{width:120}} size="small" disabled={modifyAction.type==='EDIT'}
+                                <Select style={{width:90}} size="small" disabled={modifyAction.type==='EDIT'}
                                         defaultValue={modifyData.dimValue}
                                         onChange={(val)=>{setModifyData({...modifyData, dimValue: val})}}>
                                     {dimension.map((dim)=><Select.Option key={dim}>{dim}</Select.Option>)}

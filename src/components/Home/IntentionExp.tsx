@@ -84,7 +84,7 @@ public render(){
           <span className="title">Retrieval Intention</span>
           <Switch className="switch" checkedChildren="Save" unCheckedChildren="Edit" onChange={()=>{this.setState({isEdit: !this.state.isEdit})}} />
         </div>
-        {/*{this.rightsiderBody()}*/}
+        {this.rightsiderBody()}
           <Button className="advanced_Btn" type="primary" size="large" shape="round"
                   style={{ position:'relative', width: '60%', left: '20%', margin: '10px'}}
                   onClick={()=>{
