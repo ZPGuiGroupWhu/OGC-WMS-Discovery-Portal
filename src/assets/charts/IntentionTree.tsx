@@ -1,5 +1,6 @@
 // @ts-ignore
 import Graphin, {Components, Behaviors, GraphinContext, } from "@antv/graphin";
+// import { ContextMenu, FishEye } from '@antv/graphin-components';
 // @ts-ignore
 import type {ContextMenuValue}from "@antv/graphin";
 import { Toolbar } from '@antv/graphin-components';
@@ -9,7 +10,6 @@ import {
     EyeInvisibleOutlined, UndoOutlined, RedoOutlined, createFromIconfontCN
 } from '@ant-design/icons';
 import '../../style/_intention.scss'
-// import { ContextMenu, FishEye } from '@antv/graphin-components';
 
 import * as React from "react";
 import rawData from "../data/intentionResult2022.2.23.json";
@@ -36,7 +36,7 @@ class Node{
     }
 }
 
-// 动态生成数据
+// generate data dynamically
 const buildTreeData=()=>{
     const intent=rawData.result[0].intention
     const intentLen=intent.length
@@ -69,7 +69,7 @@ const buildTreeData=()=>{
     return treeDate
 }
 
-// 示例数据
+// treeData example
 // const treeData = {
 //     id: '0-0',
 //     class: 'Intention',
@@ -80,47 +80,63 @@ const buildTreeData=()=>{
 //             id: '0-0-0',
 //             class: 'Sub-Intention',
 //             label: 'Sub-Intention-1',
+//             type: 'icon-node',
 //             children: [
 //                 {
 //                     id: '0-0-0-0',
 //                     class: 'Content',
 //                     label: 'Soil',
+//                     type: 'icon-node',
+//                     children:[]
 //                 },
 //                 {
 //                     id: '0-0-0-1',
 //                     class: 'Location',
-//                     label: 'Florida'
+//                     label: 'Florida',
+//                     type: 'icon-node',
+//                     children: []
 //                 },
 //                 {
 //                     id: '0-0-0-2',
 //                     class: 'Topic',
-//                     label: 'Agriculture'
+//                     label: 'Agriculture',
+//                     type: 'icon-node',
+//                     children: []
 //                 },
 //                 {
 //                     id: '0-0-0-3',
 //                     class: 'Style',
-//                     label: 'Quality Base'
+//                     label: 'Quality Base',
+//                     type: 'icon-node',
+//                     children: []
 //                 },
 //             ]
 //         }, {
 //             id: '0-0-1',
 //             class: 'Sub-Intention',
 //             label: 'Sub-Intention-2',
+//             type: 'icon-node',
 //             children: [
 //                 {
 //                     id: '0-0-1-0',
 //                     class: 'Content',
-//                     label: 'River'
+//                     label: 'River',
+//                     type: 'icon-node',
+//                     children: []
 //                 },
 //                 {
 //                     id: '0-0-1-1',
 //                     class: 'Location',
-//                     label: 'Wisconsin'
+//                     label: 'Wisconsin',
+//                     type: 'icon-node',
+//                     children: []
 //                 },
 //                 {
 //                     id: '0-0-1-2',
 //                     class: 'Topic',
-//                     label: 'Water'
+//                     label: 'Water',
+//                     type: 'icon-node',
+//                     children: []
 //                 },
 //             ]
 //         }
@@ -128,7 +144,7 @@ const buildTreeData=()=>{
 // }
 
 
-// 自定义节点
+// customize node style
 Graphin.registerNode(
     'icon-node',
     {
@@ -272,7 +288,7 @@ Graphin.registerNode(
     'rect',
 );
 
-// 设置编辑模式
+// set canvas mode
 const modes = {
     default: [
         'drag-node',
@@ -307,7 +323,7 @@ const layout={
         return 80;
     },
     getHGap: function getHGap(d: any) {
-        return 50
+        return 60
     }
 }
 
@@ -339,7 +355,7 @@ const historyUndoList:any[]=[]
 let historyRedoList:any[]=[]
 
 
-// 渲染意图树
+// render intention tree
 const IntentionTree = () => {
     const [treeData,setTreeData]=React.useState(buildTreeData())
     const [visible,setVisible]=React.useState({drawerVisible: false, fishEyeVisible: false})
@@ -355,7 +371,111 @@ const IntentionTree = () => {
         setVisible({...visible,fishEyeVisible: false})
     }
 
-    // 设置右键菜单， 使用graphin封装的内置组件而不是graphin-components
+    // find a node in the treeData
+    const getNode=(data:Node, key:string):Node=>{
+        const tmp=[]
+        tmp.push(data)
+        let resNode=new Node()
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string)=>{
+            for (const node of arr) {
+                if (node.id === key) {
+                    resNode=node
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+            return
+        }
+        helper(tmp,key)
+        return resNode
+    }
+
+    // Add a node
+    const handleAddNode=(data:Node,key:string, dimValue:string, labelValue:string)=>{
+        const tmp=[]
+        tmp.push(data)
+        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for (const node of arr) {
+                if (node.id === key) {
+                    const endNode=node.children[node.children.length-1]
+                    const nodeNum=parseInt(endNode.id.slice(endNode.id.lastIndexOf('-')+1,endNode.id.length),10) // 获取该层最大的id数
+                    const nNode = new Node()
+                    nNode.id=node.id+'-'+(nodeNum+1).toString()
+                    nNode.class=dimValue
+                    nNode.label=labelValue
+                    node.children.push(nNode)
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(newData,key)
+        setTreeData(newData[0])
+        // record change
+        historyUndoList.push(newData[0])
+        historyRedoList=[]
+    }
+
+    // Edit a node
+    const handleEditNode=(data:Node,key:string,label:string)=>{
+        getNode(data,key)
+
+        const tmp=[]
+        tmp.push(data)
+        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for (const node of arr) {
+                if (node.id === key) {
+                    node.label=label
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(newData,key)
+        setTreeData(newData[0])
+        // record change
+        historyUndoList.push(newData[0])
+        historyRedoList=[]
+    }
+
+    // Delete a node
+    const handleDeleteNode=(data:Node,key:string)=>{
+        const tmp=[]
+        tmp.push(data)
+        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
+        // 暴力递归，直接找数据
+        const helper=(arr:Node[],key:string):void=>{
+            for(let i=0;i<arr.length;i++){
+                const node=arr[i]
+                if(node.id===key){
+                    arr.splice(i,1)
+                    return
+                }
+                if(node.children.length){
+                    helper(node.children,key)
+                }
+            }
+        }
+        helper(newData,key)
+        setTreeData(newData[0])
+        // record change
+        historyUndoList.push(newData[0])
+        historyRedoList=[]
+
+    }
+
+    // right click menu(设置右键菜单， 使用graphin封装的内置组件而不是graphin-components)
     const NodeMenu = (value:ContextMenuValue) => {
         const {onClose, id} = value;
         const handleClick = (e: { key: string }) => {
@@ -401,7 +521,7 @@ const IntentionTree = () => {
 
     }
 
-    // 设置画布菜单， 使用graphin封装的内置组件而不是graphin-components
+    // canvas menu(设置画布菜单， 使用graphin封装的内置组件而不是graphin-components)
     const CanvasMenu = (value:ContextMenuValue) => {
         const {graph}=React.useContext(GraphinContext)
         const handleDownLoad=()=>{
@@ -422,7 +542,7 @@ const IntentionTree = () => {
         );
     }
 
-    // 渲染编辑下拉框
+    // edit selector (渲染编辑下拉框)
     const RenderEditSelector=({value}:{value:string})=>{
         switch (value){
             case 'Topic': return (
@@ -442,7 +562,7 @@ const IntentionTree = () => {
         }
     }
 
-    // 渲染工具栏
+    // toolbar (渲染工具栏)
     const RenderToolbar = () => {
         const {apis,graph}=React.useContext(GraphinContext)
         const {handleAutoZoom}=apis
@@ -476,7 +596,6 @@ const IntentionTree = () => {
                 name: <UndoOutlined />,
                 description: 'Undo',
                 action:()=>{
-                    console.log(historyUndoList)
                     historyRedoList.push(historyUndoList.pop())
                     setTreeData(historyUndoList[historyUndoList.length-1])
                 }
@@ -491,19 +610,6 @@ const IntentionTree = () => {
                 }
             }
         ]
-        //
-        //
-        // return (
-        //     <div>
-        //         {options.map((item)=>{
-        //             return(
-        //                 <Tooltip title={item.description} key={item.key}>
-        //                     <Button onClick={item.action}>{item.name}</Button>
-        //                 </Tooltip>
-        //             )
-        //         })}
-        //     </div>
-        // );
 
         return (
             <Toolbar  direction="vertical" style={{position: 'absolute', bottom: 168, left: 28}}>
@@ -523,7 +629,7 @@ const IntentionTree = () => {
 
     };
 
-    // 渲染图例
+    // legend (渲染图例)
     const RenderLegend=()=>{
         return(
             <div className='legend'>
@@ -561,116 +667,16 @@ const IntentionTree = () => {
         const el=document.getElementById("inputLabel")
         let labelValue=el?el.getAttribute("value"):null
         labelValue=(labelValue===null?modifyData.labelValue:labelValue)
-        if(modifyAction.type==='ADD'){
+        if(labelValue===''){
+            message.error('Please input value!')
+        }
+        if(modifyAction.type==='ADD' && labelValue!==''){
             handleAddNode(treeData, modifyAction.id, modifyData.dimValue, labelValue)
 
-        } else if(modifyAction.type==='EDIT'){
+        } else if(modifyAction.type==='EDIT' && labelValue!==''){
             handleEditNode(treeData, modifyAction.id, labelValue)
         }
         setVisible({...visible, drawerVisible: false})
-    }
-
-    // Delete a node
-    const handleDeleteNode=(data:Node,key:string)=>{
-        const tmp=[]
-        tmp.push(data)
-        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
-        // 暴力递归，直接找数据
-        const helper=(arr:Node[],key:string):void=>{
-            for(let i=0;i<arr.length;i++){
-                const node=arr[i]
-                if(node.id===key){
-                    arr.splice(i,1)
-                    return
-                }
-                if(node.children.length){
-                    helper(node.children,key)
-                }
-            }
-        }
-        helper(newData,key)
-        setTreeData(newData[0])
-        // record change
-        historyUndoList.push(newData[0])
-        historyRedoList=[]
-
-    }
-
-    // Edit a node
-    const handleEditNode=(data:Node,key:string,label:string)=>{
-        getNode(data,key)
-
-        const tmp=[]
-        tmp.push(data)
-        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
-        // 暴力递归，直接找数据
-        const helper=(arr:Node[],key:string):void=>{
-            for (const node of arr) {
-                if (node.id === key) {
-                    node.label=label
-                    return
-                }
-                if(node.children.length){
-                    helper(node.children,key)
-                }
-            }
-        }
-        helper(newData,key)
-        setTreeData(newData[0])
-        // record change
-        historyUndoList.push(newData[0])
-        historyRedoList=[]
-    }
-    // Add a node
-    const handleAddNode=(data:Node,key:string, dimValue:string, labelValue:string)=>{
-        const tmp=[]
-        tmp.push(data)
-        const newData=JSON.parse(JSON.stringify(tmp)) // 深拷贝，封装成数组
-        // 暴力递归，直接找数据
-        const helper=(arr:Node[],key:string):void=>{
-            for (const node of arr) {
-                if (node.id === key) {
-                    const endNode=node.children[node.children.length-1]
-                    const nodeNum=parseInt(endNode.id.slice(endNode.id.lastIndexOf('-')+1,endNode.id.length),10) // 获取该层最大的id数
-                    const nNode = new Node()
-                    nNode.id=node.id+'-'+(nodeNum+1).toString()
-                    nNode.class=dimValue
-                    nNode.label=labelValue
-                    node.children.push(nNode)
-                    return
-                }
-                if(node.children.length){
-                    helper(node.children,key)
-                }
-            }
-        }
-        helper(newData,key)
-        setTreeData(newData[0])
-        // record change
-        historyUndoList.push(newData[0])
-        historyRedoList=[]
-    }
-    // find a node in the treeData
-    const getNode=(data:Node, key:string):Node=>{
-        const tmp=[]
-        tmp.push(data)
-        let resNode=new Node()
-        // 暴力递归，直接找数据
-        const helper=(arr:Node[],key:string)=>{
-            for (const node of arr) {
-                if (node.id === key) {
-                    // setModifyData({...modifyData, dimValue: node.class})
-                    resNode=node
-                    return
-                }
-                if(node.children.length){
-                     helper(node.children,key)
-                }
-            }
-            return
-        }
-        helper(tmp,key)
-        return resNode
     }
 
 
@@ -682,12 +688,10 @@ const IntentionTree = () => {
                      layout={layout}
 
         >
-
             <RenderToolbar/>
             <RenderLegend/>
+
             <Behaviors.TreeCollapse trigger="click"/>
-            {/*<Behaviors.Hoverable bindType="node"/>*/}
-            {/*<Behaviors.Hoverable bindType="edge"/>*/}
             <Components.ContextMenu bindType="node" style={{background: '#fff'}}>
                 {(value: ContextMenuValue) => <NodeMenu {...value}/>}
             </Components.ContextMenu>
