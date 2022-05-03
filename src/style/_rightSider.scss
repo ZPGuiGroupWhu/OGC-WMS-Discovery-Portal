@@ -1,0 +1,172 @@
+// style file of rightSider
+@import '_common-style.scss';
+
+.rightSider{
+  padding: 0.1rem 0.5rem;
+  &_head{
+    display: inline-block;
+    .icon{
+      font-size: $nav_font_size*1.5;
+    }
+    .title{
+      padding: 0.2rem;
+      font-weight: bold;
+      font-size: $nav_font_size*1.3;
+    }
+    //.switch{
+    //  margin-left: $bound_padding ;
+    //  margin-bottom: $bound_padding*0.5;
+    //
+    //}
+  }
+  &_tree{
+    margin: 0.2rem 0;
+    &_title{
+      font-size: $nav_font_size;
+      font-weight: bold;
+      padding-bottom: 0.2rem;
+    }
+    .label{
+      color: black;
+    }
+    .myIcon{
+      font-size: 20px;
+      vertical-align: text-top;
+    }
+  }
+
+  &_description{
+    margin: 0.2rem 0;
+    &_title{
+      font-size: $nav_font_size;
+      font-weight: bold;
+      padding-bottom: 0.2rem;
+    }
+    &_body{
+      padding-left: 0.5rem;
+      // font-weight: 50;
+    }
+    .tag {
+      margin: 0px 2px;
+      height: auto;
+      padding: 1px 3px;
+      white-space: nowrap;
+      // color: #fafafa;
+      font-weight: 500;
+      font-size: inherit;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      line-height: 28px;
+      transition: all 0.3s;
+    }
+  }
+
+  &_confidence{
+    margin: 0.2rem 0;
+    &_title{
+      font-size: $nav_font_size;
+      font-weight: bold;
+      padding-bottom: 0.2rem;
+    }
+    .progress{
+      padding-left: 0.5rem;
+      width: 250px;
+    }
+  }
+
+  &_body{
+    padding: $bound_padding;
+    &_list{
+      margin-bottom: $bound_padding*0.5;
+      .span{
+        font-weight: bold;
+        font-size: $nav_font_size;
+      }
+      .bar{
+        margin: $bound_padding*0.3 0px 0px 20px;
+        height: 30px;
+        padding: 5px;
+        background: $dark_grey;
+        .barInside{
+          float:left;
+          height: 20px;
+        }
+      }
+      .iconList{
+        margin: $bound_padding*0.3  $bound_padding;
+        .myIcon{
+          font-size: 40px;
+          margin-right: $bound_padding*0.5;
+          margin-top: $bound_padding*0.3;
+        }
+      }
+      .card{
+        width: 180px;
+        margin:  $bound_padding*0.5 60px;
+        outline: $dark_grey solid 3px;
+      }
+      .tag{
+        margin: $bound_padding*0.3 30px;
+        font-size: 16px;
+      }
+
+    }
+    &_setting{
+      margin-bottom: $bound_padding*0.5;
+      .span{
+        font-weight: bold;
+        font-size: $nav_font_size;
+        margin-bottom: $bound_padding*0.3;
+      }
+      .newColorBtn{
+        position: absolute;
+        right: 30%;
+      }
+      .select{
+        margin: $bound_padding*0.3 0px 0px 30px;
+        width: 230px;
+      }
+      .bar{
+        margin: 5px 0px 0px 5px;
+        padding: 5px;
+        background: $dark_grey;
+        width: 280px;
+        .ant-tag{
+          margin-bottom: 5px;
+        }
+      }
+      .icon{
+        font-size: $nav_font_size*1.5;
+        margin-left: $bound_padding * 0.5;
+      }
+      .radioGroup{
+        margin: $bound_padding*0.3 0px 0px 30px;
+        .radioBtn{
+          margin-top: $bound_padding*0.5;
+          font-size: $nav_font_size;
+        }
+      }
+      .checkboxGroup{
+        .ant-checkbox-wrapper{
+          margin-left: 0px;
+        }
+        .ant-checkbox{
+          float: left;
+          margin-top: 60px;
+        }
+        .card{
+          margin: $bound_padding*0.5 $bound_padding;
+          font-size: $nav_font_size;
+          width: 200px;
+          float: left;
+        }
+      }
+
+    }
+
+  }
+  &_trigger{
+    text-align: center;
+    cursor: pointer;
+  }
+}
