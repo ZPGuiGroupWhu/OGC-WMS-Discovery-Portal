@@ -3,7 +3,7 @@ import * as React from 'react';
 import {ISubIntent} from '../../util/interface'
 import res from '../../assets/data/intentionResult2022.2.23.json'
 import {QuestionCircleOutlined, CheckCircleOutlined, FrownOutlined, DownCircleOutlined, UpCircleOutlined} from '@ant-design/icons';
-import {Button, InputNumber,Layout, message, Popconfirm, Progress, Slider, Spin, Tag, Tooltip} from "antd";
+import {Button, InputNumber,Layout, message, Popconfirm, Progress, Slider, Spin, Tooltip} from "antd";
 import '../../style/_intention.scss'
 import HeatMap from "../../assets/charts/HeatMap";
 import BoxPlot from "../../assets/charts/BoxPlot";
@@ -80,7 +80,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                 {val.topic === 'null' ? '' :
                     <span>  with <span className="tag" style={{background: "#F0A573"}}>{val.topic}</span> theme </span>}
                 {val.style === 'null' ? '' :
-                    <span>  drew by <Tag className="tag" color="#A9D18E">{val.style}</Tag></span>}
+                    <span>  drew by <span className="tag" style={{background: "#A9D18E"}}>{val.style}</span></span>}
                 {index === this.state.intent.length - 1 ? '.' :
                     <span style={{fontWeight: "bold"}}> OR </span>}
             </div>
