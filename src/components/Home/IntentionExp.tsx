@@ -321,7 +321,8 @@ const MyIcon = createFromIconfontCN({
 
 interface Props {
     collapsed: boolean;
-    callback: (advancedPanel:boolean)=>void;
+    advancedPanelCallback: (advancedPanel:boolean)=>void;
+    rSideCallback:(rSideCollapse:boolean)=>void
 }
 
 interface State {
@@ -476,6 +477,11 @@ const buildTreeData=()=>{
 
 // tslint:disable-next-line:max-classes-per-file
 class IntentionExp extends React.Component<Props, State> {
+    public static getDerivedStateFromProps(nextProps:any,preState: any){
+        return{
+            collapsed: nextProps.collapsed
+        }
+    }
 
     constructor(props: Props) {
         super(props);
@@ -516,7 +522,7 @@ class IntentionExp extends React.Component<Props, State> {
                           onChange={(activeKey) => {
                               this.setState({activeTabKey: activeKey})
                           }}>
-                        <Tabs.TabPane tab="Intention" key="0-0">
+                        <Tabs.TabPane tab="Intention" key="0-0" >
                             <div className='rightSider_tree'>
                                 <div className='rightSider_tree_title'>
                                     Intention Tree:
@@ -560,7 +566,7 @@ class IntentionExp extends React.Component<Props, State> {
                     <Button className="advanced_Btn" type="primary" size="large" shape="round"
                             style={{position: 'relative', width: '60%', left: '20%', margin: '10px'}}
                             onClick={() => {
-                                this.props.callback(true)
+                                this.props.advancedPanelCallback(true)
                                 this.setState({advancedPanel: true})
                             }}
                     >
@@ -570,7 +576,8 @@ class IntentionExp extends React.Component<Props, State> {
                 </div>
 
                 <div className="main_container_rightsider_trigger" onClick={() => {
-                    this.setState({collapsed: !this.state.collapsed})
+                    this.props.rSideCallback(!this.state.collapsed)
+                    // this.setState({collapsed: !this.state.collapsed})
                 }}>
                     {this.state.collapsed ? <DoubleLeftOutlined/> : <DoubleRightOutlined/>}
                 </div>

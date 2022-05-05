@@ -526,6 +526,13 @@
         .sub_title{
             font-weight: bold;
         }
+        .radioGroup{
+            margin: 0.3rem;
+            .ant-radio-wrapper{
+                margin: 10px 0px;
+                line-height: 1.5rem;
+            }
+        }
     }
 }
 

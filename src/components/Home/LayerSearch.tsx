@@ -73,6 +73,7 @@ interface State {
   pageInfo: IPageInfo;
   queryPar: IQueryPar;
   queryMethod: string;  // 'metaData', 'MDLIntention', 'layerVision'
+  radioValue: string;
   rSideCollapsed: boolean;
   showAdvIntentPanel: boolean;
   submitVisible: boolean;
@@ -102,7 +103,7 @@ class LayerSearch extends React.Component<Props,State> {
     }
 
   public data: ILayer [][];
-  public submitOptionList: ILayer [];
+  public submitOptionList: ILayer [][]=new Array(2).fill([]);
 
   // Record time and count when mouse enter the layer
   public layerInterval: NodeJS.Timeout;
@@ -136,12 +137,12 @@ class LayerSearch extends React.Component<Props,State> {
                 topic: '',
             },
             queryMethod: 'metaData',
+            radioValue: 'MDLIntention',
             rSideCollapsed: true,
             showAdvIntentPanel: false,
             submitVisible: false,
             time: 0,
             uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
-
         };
     }
 
@@ -188,6 +189,11 @@ class LayerSearch extends React.Component<Props,State> {
         this.setState({showAdvIntentPanel: advancePanel})
     }
 
+    // deliver callback function to IntentionExp to control IntentionExp component visually
+    public rSideCallback=(rSide:boolean)=>{
+        this.setState({rSideCollapsed: rSide})
+    }
+
   public render() {
       let layerCounter=0
       this.prepareData();
@@ -197,7 +203,7 @@ class LayerSearch extends React.Component<Props,State> {
                   <div className="words">
                       <Statistic className="value"
                                  value={this.state.isPositiveTab ? this.state.positiveList.length : this.state.negativeList.length}
-                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the Interested Collection." :
+                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the Interesting Collection." :
                                      "  layers have been selected in the Annoying Collection."}/>
                   </div>
                   <div className="buttons">
@@ -218,7 +224,8 @@ class LayerSearch extends React.Component<Props,State> {
                               }}
                       >
                           {this.state.isDelete ? "Cancel" : "Remove"}</Button>
-                      <Button className="button" type="primary" disabled={this.state.positiveList.length === 0}
+                      <Button className="button" type="primary"
+                              disabled={this.state.positiveList.length === 0 && this.state.negativeList.length===0}
                               onClick={() => {
                                   this.setState({submitVisible: true})
                               }}>
@@ -328,7 +335,7 @@ class LayerSearch extends React.Component<Props,State> {
                           tab={
                               <div className="main_container_content_markCollection_head">
                                       <HeartOutlined className="icon"/>
-                                      <span className="title">Interested Collection</span>
+                                      <span className="title">Interesting</span>
                               </div>
                           }
                       >
@@ -341,7 +348,7 @@ class LayerSearch extends React.Component<Props,State> {
                           tab={
                               <div className="main_container_content_markCollection_head">
                                       <FrownOutlined className="icon"/>
-                                      <span className="title">Annoying Collection</span>
+                                      <span className="title">Annoying</span>
                               </div>
                           }
                       >
@@ -354,7 +361,8 @@ class LayerSearch extends React.Component<Props,State> {
               </Content>
               }
 
-              <IntensionExp callback={this.intentionPanelCallback} collapsed={this.state.rSideCollapsed}/>
+              <IntensionExp advancedPanelCallback={this.intentionPanelCallback} rSideCallback={this.rSideCallback}
+                            collapsed={this.state.rSideCollapsed}/>
 
               <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={() => {this.handleSubmitOk()}}
                      onCancel={() => {this.setState({submitVisible: false})}} closable={false}
@@ -368,13 +376,20 @@ class LayerSearch extends React.Component<Props,State> {
 
                 <div className="main_container_modal_body">
                   <span className="sub_title">Retrieval Method:</span><br/>
-                  <p>Content-based WMS layer retrieval by considering cartographic method and main area of map</p>
-                  <span className="sub_title">Description:</span><br/>
-                    <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and
-                        map content. Firstly, the map is roughly classified according to cartography methods. Then
-                        explore the best feature fusion modes corresponding to the maps with same cartography methods,
-                        and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer
-                        retrieval.</p>
+                    <Radio.Group className="radioGroup" defaultValue='MDLIntention' value={this.state.radioValue}
+                          onChange={(e)=>{this.setState({radioValue: e.target.value})}}>
+                        <Radio value='MDLIntention'>
+                            Map Retrieval Intention Recognition based on Minimum Description Length Principle and Random Merge Strategy
+                        </Radio>
+                        <Radio value='layerVision' disabled={!!this.state.negativeList.length}>
+                            Content-based WMS Layer Retrieval by Considering Cartographic Method and Main Area of Map
+                        </Radio>
+                    </Radio.Group>
+                  {/*  <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and*/}
+                  {/*      map content. Firstly, the map is roughly classified according to cartography methods. Then*/}
+                  {/*      explore the best feature fusion modes corresponding to the maps with same cartography methods,*/}
+                  {/*      and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer*/}
+                  {/*      retrieval.</p>*/}
                 </div>
              </Modal>
 
@@ -765,15 +780,28 @@ class LayerSearch extends React.Component<Props,State> {
   // handle Submit button in the marking collection
   public  handleSubmitOk = () => {
     smoothscroll();
-     this.setState({
-      loading:true,
-      submitVisible: false,
-      pageInfo:{
-          pageNum: 1,
-          pageSize: 40,
-      },
-      queryMethod:'layerVision',
-    },()=>{this.queryLayerByTemplate(this.state.pageInfo,this.state.positiveList)})
+    this.setState({
+        loading: true,
+        submitVisible: false,
+        pageInfo:{
+            pageNum: 1,
+            pageSize: 40,
+        },
+    })
+
+    if(this.state.radioValue==='MDLIntention'){
+        const newSampleList=[this.state.positiveList,this.state.negativeList]
+        this.setState({
+            queryMethod: 'MDLIntention',
+        },
+            ()=>{this.queryLayerByMDLIntention(this.state.pageInfo,newSampleList)
+            // ()=>{this.queryLayerByLayerVision(this.state.pageInfo,this.state.positiveList)
+        })
+    }else if(this.state.radioValue==='layerVision'){
+        this.setState({
+            queryMethod:'layerVision',
+        },()=>{this.queryLayerByLayerVision(this.state.pageInfo,this.state.positiveList)})
+    }
   }
 
 
@@ -802,8 +830,12 @@ class LayerSearch extends React.Component<Props,State> {
     if (this.state.queryMethod === 'metaData'){
       this.queryLayerList(this.state.pageInfo,this.props.queryPar);
     }
-    if (this.state.queryMethod === 'layerVision'){
-      this.queryLayerByTemplate(this.state.pageInfo,this.submitOptionList);
+    else if (this.state.queryMethod === 'layerVision'){
+      this.queryLayerByLayerVision(this.state.pageInfo,this.submitOptionList[0]);
+    }
+    else if(this.state.queryMethod === 'MDLIntention'){
+        this.queryLayerByMDLIntention(this.state.pageInfo,this.submitOptionList);
+        // this.queryLayerByLayerVision(this.state.pageInfo,this.submitOptionList[0]);
     }
 
 }
@@ -844,16 +876,16 @@ class LayerSearch extends React.Component<Props,State> {
       }
   }
 
-  public async queryLayerByTemplate(pagePar:object,layerList:ILayer[]) {
+  public async queryLayerByLayerVision(pagePar:object,layerList:ILayer[]) {
       this.hoverList=[]  // TODO: POST MOUSE DATA TO BACK END
       const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
       let url: string = baseUrl + '&templateId=';
-      this.submitOptionList=JSON.parse(JSON.stringify(layerList))
+      this.submitOptionList[0]=JSON.parse(JSON.stringify(layerList))
       // if (!this.state.queryState.paginate) {
       //     // deep copy
       //     this.submitOptionList = JSON.parse(JSON.stringify(this.state.positiveList))
       // }
-      for (const each of this.submitOptionList) {
+      for (const each of this.submitOptionList[0]) {
           if (each.id < 0) {
               continue;
           }
@@ -879,6 +911,48 @@ class LayerSearch extends React.Component<Props,State> {
               loading: false,
               queryMethod: 'layerVision',
               time: requestTime * 0.01,
+          })
+      } catch (e) {
+          alert(e.message)
+      }
+  }
+
+  public async queryLayerByMDLIntention(pagePar:object,layerList:ILayer[][]){
+      const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
+      let url: string = baseUrl + '&templateId=';
+      this.submitOptionList=JSON.parse(JSON.stringify(layerList))
+      // if (!this.state.queryState.paginate) {
+      //     // deep copy
+      //     this.submitOptionList = JSON.parse(JSON.stringify(this.state.positiveList))
+      // }
+      for (const each of this.submitOptionList[0]) {
+          if (each.id < 0) {
+              continue;
+          }
+          url += each.id.toString() + ','
+      }
+      url = url.substring(0, url.length - 1)
+      // const url:string = 'http://132.232.98.213:8081/search/querylayerbytemplate?templateId=1,2&pageNum=1&pageSize=40';
+
+      let requestTime: number = 0;  // record request time
+      console.log(url)
+      try {
+          const timer = setInterval(() => {
+              ++requestTime
+          }, 10)
+          const res: any = await $req(url, {})
+          clearInterval(timer);
+          const resBody: any = JSON.parse(res)
+          this.setState({
+              currentSize: resBody.currentLayerNum,
+              dataList: resBody.data,
+              listTotal: resBody.totalLayerNum,
+              isUpdate: true,
+              loading: false,
+              queryMethod: 'MDLIntention',
+              time: requestTime * 0.01,
+
+              rSideCollapsed: false
           })
       } catch (e) {
           alert(e.message)
