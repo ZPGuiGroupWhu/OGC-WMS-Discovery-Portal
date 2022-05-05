@@ -295,24 +295,22 @@
 // export default IntentionExp;
 
 import * as React from 'react';
-import '../../style/_rightSider.scss';
-import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, EditFilled} from '@ant-design/icons';
-import {Layout, Tag, Card, Tooltip, Tree, Progress, Tabs, Button, Select, Input, message,} from 'antd';
-// import { MapContainer, Popup, Marker, TileLayer } from 'react-leaflet'
-
+import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined, EditOutlined} from '@ant-design/icons';
+import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, Input, message, Card} from 'antd';
 import { ISubIntent } from '../../util/interface'
 import rawData from "../../assets/data/intentionResult2022.2.23.json";
+import '../../style/_rightSider.scss';
 
-// import res from "../../assets/data/intentionResult2022.2.23.json";
-const { Option } = Select;
+// import { MapContainer, Popup, Marker, TileLayer } from 'react-leaflet'
 // import "node_modules/leaflet/dist/leaflet.css"
 // import "node_modules/leaflet/dist/leaflet.js"
 declare const require: any;
 const { Sider } = Layout;
+const { Option } = Select;
 
 
 const Topic = ["Agriculture", "Biodiversity", "Climate", "Disaster", "Ecosystem", "Energy", "Geology", "Health", "Water", "Weather"];
-const Style=["Point symbol method","Line symbol method","Area method","Quality base method","Choloplethic method","Others"]
+const Style=["Point Symbol Method","Line Symbol Method","Area Method","Quality Base Method","Choloplethic Method","Others"]
 const styleImg = Style.map((item: string) => require("../../assets/img/style/" + item + ".png"));
 const MyIcon = createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1728748_42yz4wxteli.js', // use some icon from iconfont
@@ -327,31 +325,15 @@ interface Props {
 }
 
 interface State {
-    setintent1: {
-        colors: string[];
-        Map: string;
-        style: string[];
-        topic: string[];
-    };
-    setintent2: {
-        colors: string[];
-        Map: string;
-        style: string[];
-        topic: string[];
-    };
-    collapsed: boolean;
-    color: string;
-    pickerVisible: boolean;
-
     activeTabKey: string;
-
-
     advancedPanel: boolean;
     intent: ISubIntent[];
+    collapsed: boolean;
     confidence: number[];
     isTopicEdit: boolean,
     isStyleEdit: boolean,
     isContentEdit: boolean,
+    isLocationEdit: boolean,
 }
 
 class Node{
@@ -505,38 +487,19 @@ class IntentionExp extends React.Component<Props, State> {
         selfConfidence.push(rawData.result[0].confidence)
 
         this.state = {
-            setintent1: {
-                colors: ['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3'],
-                style: ['Line'],
-                Map: 'Soil Map',
-                topic: ['Water'],
-            },
-            setintent2: {
-                colors: ['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3'],
-                style: ['Line'],
-                Map: 'Water Map',
-                topic: ['Water'],
-            },
-            collapsed: this.props.collapsed,
-            color: '',
-            pickerVisible: false,
             activeTabKey: "0-0",
-
-
-
             advancedPanel: false,
             intent: rawData.result[0].intention,
+            collapsed: this.props.collapsed,
             confidence: selfConfidence,
             isTopicEdit: false,
             isStyleEdit: false,
             isContentEdit: false,
-
+            isLocationEdit: false,
         };
     }
 
-    public componentDidMount() {
-        this.SetVal(0, 1)
-    }
+
 
     public render() {
         return (
@@ -588,11 +551,10 @@ class IntentionExp extends React.Component<Props, State> {
                                           percent={Math.round(this.state.confidence[this.state.confidence.length-1]*100)}
                                          />
                             </div>
-                            {/*{this.renderIntentionTree()}*/}
                         </Tabs.TabPane>
-                        {/*{this.state.intent.map((item, index) => {*/}
-                        {/*    return this.renderSubIntention(item, index)*/}
-                        {/*})}*/}
+                        {this.state.intent.map((item, index) => {
+                            return this.renderSubIntention(item, index)
+                        })}
 
                     </Tabs>
                     <Button className="advanced_Btn" type="primary" size="large" shape="round"
@@ -640,105 +602,53 @@ class IntentionExp extends React.Component<Props, State> {
         message.info(`${e.node.class}: ${e.node.title.props.children}`)
     }
 
-
-    // public renderIntentionTree() {
-    //
-    //     const onSelect = (selectedKeys: React.Key[]) => {
-    //
-    //         if (selectedKeys[0] === "0-0-0" || selectedKeys[0] === "0-0-1") {
-    //             this.setState({ activeTabKey: selectedKeys[0].toString() });
-    //         }
-    //     };
-    //
-    //
-    //     return (
-    //
-    //         <>
-    //             <div className='main_container_rightsider_body'>
-    //                 <Tree
-    //                     showLine={false}
-    //                     showIcon={true}
-    //                     switcherIcon={<DownOutlined />}
-    //                     defaultExpandAll={true}
-    //                     onSelect={onSelect}
-    //                     treeData={buildTreeData()}
-    //
-    //                 />
-    //             </div>
-    //
-    //             <div className='main_container_rightsider_body_list' >
-    //
-    //                 <span className='span'> Discription:</span> <br />
-    //             </div>
-    //             <div className='main_container_rightsider_body'>
-    //                 {this.state.intent.map((val:ISubIntent,index:number)=>{
-    //                     return this.generateIntentDes(val,index)
-    //                 })}
-    //
-    //                 {/*<Tag className="tag" color="purple"> {(this.state.intent[0].content || ' ').split("/")[4]} Map </Tag>*/}
-    //                 {/*<span> in </span>*/}
-    //                 {/*<Tag className='tag' color='blue'> {this.state.intent[0].location} </Tag>*/}
-    //                 {/*<span> with </span>*/}
-    //                 {/*<Tag className='tag' color='orange'> {this.state.intent[0].topic} </Tag>*/}
-    //                 {/*<span>Theme drew by </span>*/}
-    //                 {/*<Tag className='tag' color='green'> {this.state.intent[0].style} </Tag>*/}
-    //                 {/*<span> or </span>*/}
-    //                 {/*<Tag className='tag' color='purple'> {(this.state.intent[1].content || ' ').split("/")[4]} Map </Tag>*/}
-    //                 {/*<span> with </span>*/}
-    //                 {/*<Tag className='tag' color='orange'> {this.state.intent[1].topic} </Tag>*/}
-    //                 {/*<span>Theme drew by </span>*/}
-    //                 {/*<Tag className='tag' color='green'> {this.state.intent[1].style} </Tag>*/}
-    //
-    //             </div>
-    //             <div className='main_container_rightsider_body_list' >
-    //                 <span className='span'>Confidence:
-    //                     {(this.state.confidence[this.state.confidence.length-1]).toFixed(2)}
-    //                 </span><br />
-    //                 <Progress percent={100 * this.state.confidence[this.state.confidence.length-1]}
-    //                           status='active' showInfo={true} />
-    //             </div>
-    //         </>
-    //     );
-    // }
-
     public renderSubIntention=(item:ISubIntent,index:number)=>{
 
         const key='0-0-'+index.toString()
-        const mapContent=(item.content==='null'?'No Intention in the Content Dimension':
-            item.content.slice(item.content.lastIndexOf('/')+1,item.content.length)+'Map')
+        const mapContent=(item.content==='null'?'null':
+            item.content.slice(item.content.lastIndexOf('/')+1,item.content.length))
         // const mapLocation=(item.location==='null'?'No Intention in the Location Dimension':item.location+' Map')
-        const mapTopic=(item.topic==='null'?'No Intention in the Topic Dimension':item.topic)
-        const mapStyle=(item.style==='null'?'No Intention in the Style Dimension':item.style)
+        const mapTopic=(item.topic==='null'?'null':item.topic)
+        const mapStyle=(item.style==='null'?'null':item.style)
         return(
             <Tabs.TabPane tab="Sub-intention" key={key} >
-                <div className="rightSider_subIntention_content">
-                    <span className="span">Map Element:</span>
-                    <Tooltip title='Edit'>
-                        <Button className="okBtn" size="large" type="text" icon={<EditFilled/>}
-                                onClick={() => this.setState({isContentEdit: !this.state.isContentEdit})}/>
-                    </Tooltip>
-                    <div>
+                <div className="rightSider_subIntention_dim">
+                    <div className="title">
+                        <span >Map Element:</span>
+                        <Tooltip title='Edit'>
+                            <Button className="Btn" size="large" type="text"
+                                    icon={this.state.isContentEdit?<SaveOutlined />:<EditOutlined />}
+                                    onClick={()=>this.onElementChange(index)}/>
+                        </Tooltip>
+                    </div>
+
+                    <div className="body">
                         {
                             this.state.isContentEdit ?
-                                <Input style={{width: '100%'}} defaultValue={mapContent}
-                                       onChange={(value) => this.onElementChange(value,index)}/>
+                                <Input id='content_input' style={{width: '90%'}} placeholder="Input Value on Content"/>
                                 :
-                                <Tag className="tag" color='blue'> {mapContent} </Tag>
+                                <Tag style={{fontSize: '16px'}} color='#1890ff' >
+                                    {mapContent==='null'?'No Intention on Content ': mapContent}
+                                </Tag>
                         }
                     </div>
                 </div>
 
-                <div className="rightSider_subIntention_topic">
-                    <span className="span">Topic:</span>
-                    <Tooltip title='Edit'>
-                        <Button className="okBtn" size="large" type="text" icon={<EditFilled />}
-                                onClick={() => this.setState({ isTopicEdit: !this.state.isTopicEdit })} />
-                    </Tooltip>
-                    <div >
+                <div className="rightSider_subIntention_dim">
+                    <div className="title">
+                        <span >Topic:</span>
+                        <Tooltip title='Edit'>
+                            <Button className="Btn" size="large" type="text"
+                                    icon={this.state.isTopicEdit ? <SaveOutlined/> : <EditOutlined/>}
+                                    onClick={() => this.setState({isTopicEdit: !this.state.isTopicEdit})}/>
+                        </Tooltip>
+                    </div>
+                    <div className="body">
                         {this.state.isTopicEdit?
-                            <Select className="select" defaultValue={this.state.setintent1.topic}
-                                    optionLabelProp="label"
-                                    showArrow={true} onChange={this.onTopicChange1} style={{width: '80%'}}>
+                            <Select id="topic_selector" className="select" defaultValue={item.topic}
+                                    onChange={(val)=>this.onTopicChange(val,index)}
+                                    // optionLabelProp="label"
+                                    showArrow={true}  style={{width: '80%'}}>
                                 {Topic.map((item: string) => {
                                     return (
                                         <Option key={item} label={<MyIcon style={{fontSize: 20, marginRight: 3}}
@@ -749,299 +659,100 @@ class IntentionExp extends React.Component<Props, State> {
                                 })}
                             </Select>
                             :
-                            mapTopic === 'No Intention in the Topic Dimension' ?
-                                mapTopic :
+                            mapTopic === 'null' ?
+                                <Tag style={{fontSize: '16px'}} color='#1890ff' >No Intention on Topic</Tag>
+                                :
                                 <Tooltip title={mapTopic}>
-                                    <MyIcon className="myIcon" type={"icon-" + mapTopic}/>
+                                    <MyIcon style={{fontSize: 28}} className="myIcon" type={"icon-" + mapTopic}/>
                                 </Tooltip>
                         }
-                        {/*{*/}
-                        {/*    this.state.isTopicEdit ?*/}
-                        {/*        <div className="iconList">*/}
-                        {/*            {this.state.setintent1.topic.length === 0 ?*/}
-                        {/*                 'No Intention in the Topic Dimension' :*/}
-                        {/*                this.state.setintent1.topic.map((item: string) => {*/}
-                        {/*                    return (*/}
-                        {/*                        <Tooltip key={item} title={item}>*/}
-                        {/*                            <MyIcon className="myIcon" type={"icon-" + item} />*/}
-                        {/*                        </Tooltip>*/}
-                        {/*                    )*/}
-                        {/*                })}*/}
-                        {/*        </div> :*/}
-                        {/*        <Select  className="select" defaultValue={this.state.setintent1.topic} optionLabelProp="label"*/}
-                        {/*                 showArrow={true} onChange={this.onTopicChange1} style={{ width: '80%' }}>*/}
-                        {/*            {Topic.map((item: string) => {*/}
-                        {/*                return (*/}
-                        {/*                    <Option key={item} label={<MyIcon style={{ fontSize: 20, marginRight: 3 }} type={"icon-" + item} />} value={item} style={{ fontSize: 16 }}>*/}
-                        {/*                        <MyIcon style={{ fontSize: 25, marginRight: 5 }} type={"icon-" + item} />{item}*/}
-                        {/*                    </Option>)*/}
-                        {/*            })}*/}
-                        {/*        </Select>*/}
-                        {/*}*/}
                     </div>
                 </div>
 
-                <div className="rightSider_subIntention_style">
-                    <span className="span">Style:</span>
-                    <Tooltip title='Edit'>
-                        <Button className="okBtn" size="large" type="text" icon={<EditFilled />}
-                                onClick={() => this.setState({ isStyleEdit: !this.state.isStyleEdit })} />
-                    </Tooltip>
-                    <div >
+                <div className="rightSider_subIntention_dim">
+                    <div className="title">
+                        <span>Style:</span>
+                        <Tooltip title='Edit'>
+                            <Button className="Btn" size="large" type="text"
+                                    icon={this.state.isStyleEdit ? <SaveOutlined/> : <EditOutlined/>}
+                                    onClick={() => this.setState({isStyleEdit: !this.state.isStyleEdit})}/>
+                        </Tooltip>
+                    </div>
+                    <div className="body" style={{marginLeft: '1rem'}}>
                         {
                             this.state.isStyleEdit?
-                                <Select className="select" defaultValue={this.state.setintent1.style} optionLabelProp="label"
+                                <Select  defaultValue={item.style} optionLabelProp="label"
                                         showArrow={true}
-                                        onChange={(value)=>this.onStyleChange1} style={{ width: '100%' }}>
+                                        onChange={(val)=>this.onStyleChange(val,index)} style={{ width: '90%' }}>
                                     {Style.map((item: string) => {
                                         return (
-                                            <Option key={item} label={<Tag color="#1890ff" > {item} </Tag>} value={item} style={{ fontSize: 16 }}>
-                                                <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}
-                                                      bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />{item}
+                                            <Option key={item} label={<Tag color="#1890ff" > {item} </Tag>} value={item}
+                                                    style={{ fontSize: 16}}>
+                                                <img src={styleImg[Style.indexOf(item)]} style={{float: 'left',width: '100px',height: '60px'}}/>
+                                                <div style={{textAlign:'center', padding: '10px 0',whiteSpace:'pre-wrap'}}>{item}</div>
                                             </Option>)
                                     })}
                                 </Select>
                                 :
-                                mapStyle === 'No Intention in the Topic Dimension' ?
-                                    mapStyle :
-                                    <Tooltip title={mapStyle}>
-                                        <Card className="card"  cover={<img src={styleImg[Style.indexOf(mapStyle)]} />}
-                                              bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />
-                                    </Tooltip>
-
+                                mapStyle === 'null' ?
+                                    <Tag style={{fontSize: '16px'}} color='#1890ff'>No Intention on Style</Tag> :
+                                    <Card className="card" cover={<img src={styleImg[Style.indexOf(mapStyle)]}/>}
+                                          bodyStyle={{fontSize: 15, textAlign: "center", padding: 2}} style={{width: '90%'}}>
+                                        {mapStyle}
+                                    </Card>
                         }
-
-                        {/*{*/}
-                        {/*    this.state.isStyleEdit ?*/}
-                        {/*        this.state.setintent1.style.length === 0 ?*/}
-                        {/*            <Tag className="tag" color="#1890ff">No Style</Tag> :*/}
-                        {/*            this.state.setintent1.style.map((item: string) => {*/}
-                        {/*                return (*/}
-                        {/*                    <Tooltip key={item} title={item}>*/}
-                        {/*                        <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}*/}
-                        {/*                              bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />*/}
-                        {/*                    </Tooltip>*/}
-                        {/*                )*/}
-                        {/*            })*/}
-                        {/*        :*/}
-                        {/*        <Select className="select" defaultValue={this.state.setintent1.style} optionLabelProp="label"*/}
-                        {/*                showArrow={true} onChange={this.onStyleChange1} style={{ width: '100%' }}>*/}
-                        {/*            {Style.map((item: string) => {*/}
-                        {/*                return (*/}
-                        {/*                    <Option key={item} label={<Tag color="#1890ff" > {item} </Tag>} value={item} style={{ fontSize: 16 }}>*/}
-                        {/*                        <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}*/}
-                        {/*                              bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />{item}*/}
-                        {/*                    </Option>)*/}
-                        {/*            })}*/}
-                        {/*        </Select>*/}
-                        {/*}*/}
                     </div>
                 </div>
-                <div className="rightSider_subIntention_location">
-                    <span className="span">Location: </span><br />
 
+                <div className="rightSider_subIntention_dim">
+                    <div className="title">
+                        <span>Location: </span>
+                        <Tooltip title='Edit'>
+                            <Button className="Btn" type="text" size="large"
+                                    icon={this.state.isLocationEdit ? <SaveOutlined/> : <EditOutlined/>}
+                                    onClick={() => this.setState({isLocationEdit: !this.state.isLocationEdit})}/>
+                        </Tooltip>
+                    </div>
                 </div >
             </Tabs.TabPane>
         )
     }
 
-    // public rightsiderBody = () => {
-    //
-    //     return (
-    //         <div className="main_container_rightsider_body">
-    //
-    //             <div className='main_container_rightsider_head'>
-    //                 <BarChartOutlined className="icon" />
-    //                 <span className="title">Retrieval Intention</span>
-    //             </div>
-    //             <Tabs defaultActiveKey="1" size='small' activeKey={this.state.activeTabKey} onChange={(activeKey) => { this.setState({ activeTabKey: activeKey }) }}>
-    //                 <Tabs.TabPane tab="Intention" key="0-0">
-    //                     {this.Intention_Demo()}
-    //                 </Tabs.TabPane>
-    //                 {this.state.intent.map((item,index)=>{
-    //                     return this.renderSubIntention(item,index)
-    //                 })}
-    //                 {/*<Tabs.TabPane tab="Sub-intention" key="0-0-0" >*/}
-    //                 {/*    <div className="main_container_rightsider_body_list" >*/}
-    //
-    //                 {/*        <span className="span">Map Element:</span>*/}
-    //                 {/*        <Tooltip title='Edit'>*/}
-    //                 {/*            <Button className="okBtn" size="large" type="text" icon={<EditFilled />} onClick={() => this.setState({ iselementChange: !this.state.iselementChange })} />*/}
-    //                 {/*        </Tooltip>*/}
-    //                 {/*        <div className='main_container_rightsider_body_list'>*/}
-    //                 {/*            {*/}
-    //                 {/*                this.state.iselementChange ?*/}
-    //                 {/*                    <Tag className="tag" color='blue'> {this.state.setintent1.Map} Map </Tag>*/}
-    //                 {/*                    :*/}
-    //                 {/*                    <Input style={{ width: 'calc(100% - 200px)' }} defaultValue={this.state.setintent1.Map} onChange={(value) => this.onElementChange1(value)} />*/}
-    //                 {/*            }*/}
-    //                 {/*        </div>*/}
-    //
-    //                 {/*    </div>*/}
-    //
-    //                 {/*    <div className="main_container_rightsider_body_list">*/}
-    //                 {/*        <span className="span">Topic:</span>*/}
-    //                 {/*        <Tooltip title='Edit'>*/}
-    //                 {/*            <Button className="okBtn" size="large" type="text" icon={<EditFilled />} onClick={() => this.setState({ istopicChange: !this.state.istopicChange })} />*/}
-    //                 {/*        </Tooltip>*/}
-    //                 {/*        <div className='main_container_rightsider_body_list'>*/}
-    //                 {/*            {*/}
-    //                 {/*                this.state.istopicChange ?*/}
-    //                 {/*                    <div className="iconList">*/}
-    //                 {/*                        {this.state.setintent1.topic.length === 0 ?*/}
-    //                 {/*                            <Tag className="tag" color="#1890ff">No Topic</Tag> :*/}
-    //                 {/*                            this.state.setintent1.topic.map((item: string) => {*/}
-    //                 {/*                                return (*/}
-    //                 {/*                                    <Tooltip key={item} title={item}>*/}
-    //                 {/*                                        <MyIcon className="myIcon" type={"icon-" + item} />*/}
-    //                 {/*                                    </Tooltip>*/}
-    //                 {/*                                )*/}
-    //                 {/*                            })}*/}
-    //                 {/*                    </div> :*/}
-    //                 {/*                    <Select mode="multiple" className="select" defaultValue={this.state.setintent1.topic} optionLabelProp="label"*/}
-    //                 {/*                            showArrow={true} onChange={this.onTopicChange1} style={{ width: '80%' }}>*/}
-    //                 {/*                        {Topic.map((item: string) => {*/}
-    //                 {/*                            return (*/}
-    //                 {/*                                <Option key={item} label={<MyIcon style={{ fontSize: 20, marginRight: 3 }} type={"icon-" + item} />} value={item} style={{ fontSize: 16 }}>*/}
-    //                 {/*                                    <MyIcon style={{ fontSize: 25, marginRight: 5 }} type={"icon-" + item} />{item}*/}
-    //                 {/*                                </Option>)*/}
-    //                 {/*                        })}*/}
-    //                 {/*                    </Select>*/}
-    //                 {/*            }*/}
-    //                 {/*        </div>*/}
-    //                 {/*    </div>*/}
-    //
-    //                 {/*    <div className="main_container_rightsider_body_list">*/}
-    //                 {/*        <span className="span">Style:</span>*/}
-    //                 {/*        <Tooltip title='Edit'>*/}
-    //                 {/*            <Button className="okBtn" size="large" type="text" icon={<EditFilled />} onClick={() => this.setState({ isstyleChange: !this.state.isstyleChange })} />*/}
-    //                 {/*        </Tooltip>*/}
-    //                 {/*        <div className='main_container_rightsider_body_list'>*/}
-    //                 {/*            {*/}
-    //                 {/*                this.state.isstyleChange ?*/}
-    //                 {/*                    this.state.setintent1.style.length === 0 ?*/}
-    //                 {/*                        <Tag className="tag" color="#1890ff">No Style</Tag> :*/}
-    //                 {/*                        this.state.setintent1.style.map((item: string) => {*/}
-    //                 {/*                            return (*/}
-    //                 {/*                                <Tooltip key={item} title={item}>*/}
-    //                 {/*                                    <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}*/}
-    //                 {/*                                          bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />*/}
-    //                 {/*                                </Tooltip>*/}
-    //                 {/*                            )*/}
-    //                 {/*                        })*/}
-    //                 {/*                    :*/}
-    //                 {/*                    <Select mode="tags" className="select" defaultValue={this.state.setintent1.style} optionLabelProp="label"*/}
-    //                 {/*                            showArrow={true} onChange={this.onStyleChange1} style={{ width: '100%' }}>*/}
-    //                 {/*                        {Style.map((item: string) => {*/}
-    //                 {/*                            return (*/}
-    //                 {/*                                <Option key={item} label={<Tag color="#1890ff" > {item} </Tag>} value={item} style={{ fontSize: 16 }}>*/}
-    //                 {/*                                    <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}*/}
-    //                 {/*                                          bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />{item}*/}
-    //                 {/*                                </Option>)*/}
-    //                 {/*                        })}*/}
-    //                 {/*                    </Select>*/}
-    //                 {/*            }*/}
-    //                 {/*        </div>*/}
-    //                 {/*    </div>*/}
-    //                 {/*    <div className="main_container_rightsider_body_list">*/}
-    //                 {/*        <span className="span">Location: </span><br />*/}
-    //
-    //                 {/*    </div >*/}
-    //                 {/*</Tabs.TabPane>*/}
-    //                 {/*<Tabs.TabPane tab="Sub-intention Ⅱ" key="0-0-1">*/}
-    //                 {/*    <div className="main_container_rightsider_body_list" >*/}
-    //
-    //                 {/*        <span className="span">Map Element:</span>*/}
-    //                 {/*        <Tooltip title='Edit'>*/}
-    //                 {/*            <Button className="okBtn" size="large" type="text" icon={<EditFilled />}onClick={()=>this.setState({iselementChange:!this.state.iselementChange})}/>*/}
-    //                 {/*        </Tooltip>*/}
-    //                 {/*        <div className='main_container_rightsider_body_list'>*/}
-    //                 {/*            {*/}
-    //                 {/*                this.state.iselementChange ?*/}
-    //                 {/*                    <Tag className="tag" color='blue'> {this.state.setintent2.Map} Map </Tag>*/}
-    //                 {/*                    :*/}
-    //                 {/*                    <Input style={{ width: 'calc(100% - 200px)' }} defaultValue={this.state.setintent2.Map} onChange={(value) => this.onElementChange2(value)} />*/}
-    //                 {/*            }*/}
-    //                 {/*        </div>*/}
-    //                 {/*    </div>*/}
-    //
-    //                 {/*    <div className="main_container_rightsider_body_list">*/}
-    //
-    //                 {/*        <span className="span">Topic:  </span>*/}
-    //                 {/*        <Tooltip title='Edit'>*/}
-    //
-    //                 {/*            <Button className="okBtn" size="large" type="text" icon={<EditFilled />} onClick={() => this.setState({ istopicChange: !this.state.istopicChange })} />*/}
-    //                 {/*        </Tooltip>*/}
-    //                 {/*        <div className='main_container_rightsider_body_list'>*/}
-    //                 {/*            {*/}
-    //                 {/*                this.state.istopicChange ?*/}
-    //                 {/*                    <div className="iconList">*/}
-    //                 {/*                        {this.state.setintent2.topic.length === 0 ?*/}
-    //                 {/*                            <Tag className="tag" color="#1890ff">No Topic</Tag> :*/}
-    //                 {/*                            this.state.setintent2.topic.map((item: string) => {*/}
-    //                 {/*                                return (*/}
-    //                 {/*                                    <Tooltip key={item} title={item}>*/}
-    //                 {/*                                        <MyIcon className="myIcon" type={"icon-" + item} />*/}
-    //                 {/*                                    </Tooltip>*/}
-    //                 {/*                                )*/}
-    //                 {/*                            })}*/}
-    //                 {/*                    </div> :*/}
-    //                 {/*                    <Select mode="multiple" className="select" defaultValue={this.state.setintent2.topic} optionLabelProp="label"*/}
-    //                 {/*                            placeholder="Select a Topic" onChange={this.onTopicChange2} style={{ width: '80%' }}>*/}
-    //                 {/*                        {Topic.map((item: string) => {*/}
-    //                 {/*                            return (*/}
-    //                 {/*                                <Option key={item} label={<MyIcon style={{ fontSize: 20, marginRight: 3 }} type={"icon-" + item} />} value={item} style={{ fontSize: 16 }}>*/}
-    //                 {/*                                    <MyIcon style={{ fontSize: 25, marginRight: 5 }} type={"icon-" + item} />{item}*/}
-    //                 {/*                                </Option>)*/}
-    //                 {/*                        })}*/}
-    //                 {/*                    </Select>*/}
-    //                 {/*            }*/}
-    //                 {/*        </div>*/}
-    //                 {/*    </div>*/}
-    //
-    //                 {/*    <div className="main_container_rightsider_body_list">*/}
-    //                 {/*        <span className="span">Style:</span>*/}
-    //                 {/*        <Tooltip title='Edit'>*/}
-    //                 {/*            <Button className="okBtn" size="large" type="text" icon={<EditFilled />} onClick={() => this.setState({ isstyleChange: !this.state.isstyleChange })} />*/}
-    //                 {/*        </Tooltip>*/}
-    //                 {/*        <div className='main_container_rightsider_body_list'>*/}
-    //                 {/*            {*/}
-    //                 {/*                this.state.isstyleChange ?*/}
-    //                 {/*                    this.state.setintent2.style.length === 0 ?*/}
-    //                 {/*                        <Tag className="tag" color="#1890ff">No Style</Tag> :*/}
-    //                 {/*                        this.state.setintent2.style.map((item: string) => {*/}
-    //                 {/*                            return (*/}
-    //                 {/*                                <Tooltip key={item} title={item}>*/}
-    //                 {/*                                    <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}*/}
-    //                 {/*                                          bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />*/}
-    //                 {/*                                </Tooltip>*/}
-    //                 {/*                            )*/}
-    //                 {/*                        })*/}
-    //                 {/*                    :*/}
-    //                 {/*                    <Select mode="tags" className="select" defaultValue={this.state.setintent2.style} optionLabelProp="label"*/}
-    //                 {/*                            placeholder="Select a Style" onChange={this.onStyleChange2} style={{ width: '100%' }}>*/}
-    //                 {/*                        {Style.map((item: string) => {*/}
-    //                 {/*                            return (*/}
-    //                 {/*                                <Option key={item} label={<Tag color="#1890ff" > {item} </Tag>} value={item} style={{ fontSize: 16 }}>*/}
-    //                 {/*                                    <Card className="card" key={item} cover={<img src={styleImg[Style.indexOf(item)]} />}*/}
-    //                 {/*                                          bodyStyle={{ fontSize: 15, textAlign: "center", padding: 2 }} />{item}*/}
-    //                 {/*                                </Option>)*/}
-    //                 {/*                        })}*/}
-    //                 {/*                    </Select>*/}
-    //                 {/*            }*/}
-    //                 {/*        </div>*/}
-    //
-    //                 {/*    </div>*/}
-    //                 {/*    <div className="main_container_rightsider_body_list">*/}
-    //                 {/*        <span className="span">Location: </span><br />*/}
-    //                 {/*        /!* {this.makemap()} *!/*/}
-    //                 {/*    </div >*/}
-    //                 {/*</Tabs.TabPane>*/}
-    //             </Tabs>
-    //
-    //         </div>
-    //     )
-    // }
+
+
+    public onElementChange=(index:number)=>{
+        const el=document.getElementById('content_input')
+        const val=(el===null?'null':el.getAttribute('value'))
+        const selfIntent=this.state.intent
+        if(typeof val === "string" && val.length>0){
+            selfIntent[index]['content'] = val
+        }else{
+            selfIntent[index]['content']='null'
+        }
+
+        this.setState({
+            intent:selfIntent,
+            isContentEdit: !this.state.isContentEdit,
+        })
+    }
+
+    // handle change of topic selection
+    public onTopicChange=(value:any,index:number)=>{
+        const self=this.state.intent
+        self[index]['topic']=value
+        this.setState({
+            intent:self
+        })
+    }
+
+    // handle change of style selection
+    public onStyleChange=(value:any,index:number)=>{
+        const self=this.state.intent
+        self[index]['style']=value
+        this.setState({
+            intent:self
+        })
+    }
 
     // public makemap() {
 
@@ -1059,101 +770,6 @@ class IntentionExp extends React.Component<Props, State> {
     //     </MapContainer>
     //   )
     // }
-    // close color tag
-
-    public SetVal = (key1: any, key2: any) => {
-        const self = this.state.setintent1;
-        const self2 = this.state.setintent2;
-        self.colors = ['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3'];
-        self.Map = (this.state.intent[key1].content || ' ').split("/")[4];
-        self.style = [this.state.intent[key1].style];
-        self.topic = [this.state.intent[key1].topic];
-        self2.colors = ['#FF6900', '#FCB900', '#7BDCB5', '#00D084', '#8ED1FC', '#0693E3'];
-        self2.Map = (this.state.intent[key2].content || ' ').split("/")[4];
-        self2.style = [this.state.intent[key2].style];
-        self2.topic = [this.state.intent[key2].topic];
-        this.setState(
-            {
-                setintent1: self,
-                setintent2: self2,
-            }
-        )
-    }
-
-    public onElementChange=(value:any,index:number)=>{
-        console.log(value)
-        const selfIntent=this.state.intent
-        selfIntent[index]['content']=value
-        this.setState({
-            intent:selfIntent
-        })
-    }
-
-    public onElementChange1 = (value: any) => {
-        const self = this.state.setintent1;
-        self.Map = value;
-        this.setState({
-            setintent1: self,
-        })
-    }
-
-    public onElementChange2 = (value: any) => {
-        const self = this.state.setintent2;
-        self.Map = value;
-        this.setState({
-            setintent1: self,
-        })
-    }
-
-    // handle change of topic selection
-    public onTopicChange=(value:any,index:number)=>{
-        const self=this.state.intent
-        self[index]['topic']=value
-        this.setState({
-            intent:self
-        })
-    }
-
-    public onTopicChange1 = (value: string[]) => {
-        const self = this.state.setintent1;
-        self.topic = value;
-        this.setState({
-            setintent1: self,
-        })
-    }
-
-    public onTopicChange2 = (value: string[]) => {
-        const self = this.state.setintent2;
-        self.topic = value;
-        this.setState({
-            setintent2: self,
-        })
-    }
-
-    // handle change of style selection
-    public onStyleChange=(value:any,index:number)=>{
-        const self=this.state.intent
-        self[index]['style']=value
-        this.setState({
-            intent:self
-        })
-    }
-
-    public onStyleChange1 = (value: string[]) => {
-        const self = this.state.setintent1;
-        self.style = value;
-        this.setState({
-            setintent1: self,
-        })
-    }
-    public onStyleChange2 = (value: string[]) => {
-        const self = this.state.setintent2;
-        self.style = value;
-        this.setState({
-            setintent2: self,
-        })
-    }
-
 }
 
 export default IntentionExp;

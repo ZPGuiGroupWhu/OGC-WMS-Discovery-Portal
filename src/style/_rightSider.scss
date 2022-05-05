@@ -74,6 +74,35 @@
     }
   }
 
+  &_subIntention{
+
+
+    &_dim{
+      margin: 0.2rem 0;
+      .title{
+        font-size: $nav_font_size;
+        font-weight: bold;
+        // padding-bottom: 0.2rem;
+        margin: 0.2rem 0;
+        position: relative;
+      }
+      .Btn{
+        position: absolute;
+        right: 0;
+        top: -0.5rem;
+      }
+      .body{
+        margin-left: 3rem;
+        font-size: 16px;
+        .card{
+          width: 90%;
+          border-radius: 10px;
+          border: 2px solid #e8e8e8;
+        }
+      }
+    }
+  }
+
   &_body{
     padding: $bound_padding;
     &_list{
