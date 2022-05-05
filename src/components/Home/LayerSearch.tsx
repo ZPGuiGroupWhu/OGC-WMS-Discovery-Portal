@@ -72,7 +72,7 @@ interface State {
   negativeList: ILayer[];
   pageInfo: IPageInfo;
   queryPar: IQueryPar;
-  queryType: string;
+  queryMethod: string;  // 'metaData', 'MDLIntention', 'layerVision'
   rSideCollapsed: boolean;
   showAdvIntentPanel: boolean;
   submitVisible: boolean;
@@ -135,7 +135,7 @@ class LayerSearch extends React.Component<Props,State> {
                 organization_type: '',
                 topic: '',
             },
-            queryType: 'byMetadata',
+            queryMethod: 'metaData',
             rSideCollapsed: true,
             showAdvIntentPanel: false,
             submitVisible: false,
@@ -772,7 +772,7 @@ class LayerSearch extends React.Component<Props,State> {
           pageNum: 1,
           pageSize: 40,
       },
-      queryType: 'submitByTemplate',
+      queryMethod:'layerVision',
     },()=>{this.queryLayerByTemplate(this.state.pageInfo,this.state.positiveList)})
   }
 
@@ -799,11 +799,11 @@ class LayerSearch extends React.Component<Props,State> {
         loading: true,
         
     })
-    if (this.state.queryType === 'byMetadata'){
+    if (this.state.queryMethod === 'metaData'){
       this.queryLayerList(this.state.pageInfo,this.props.queryPar);
     }
-    if (this.state.queryType === 'paginateByTemplate'){
-      this.queryLayerByTemplate(this.state.pageInfo,this.state.positiveList);
+    if (this.state.queryMethod === 'layerVision'){
+      this.queryLayerByTemplate(this.state.pageInfo,this.submitOptionList);
     }
 
 }
@@ -836,7 +836,7 @@ class LayerSearch extends React.Component<Props,State> {
               listTotal: resBody.totalLayerNum,
               isUpdate: true,
               loading: false,
-              queryType: 'byMetadata',
+              queryMethod: 'metaData',
               time: requestTime * 0.01,
           })
       } catch (e) {
@@ -844,16 +844,15 @@ class LayerSearch extends React.Component<Props,State> {
       }
   }
 
-  public async queryLayerByTemplate(pagePar:object,positiveList:ILayer[]) {
+  public async queryLayerByTemplate(pagePar:object,layerList:ILayer[]) {
       this.hoverList=[]  // TODO: POST MOUSE DATA TO BACK END
       const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
       let url: string = baseUrl + '&templateId=';
-      // if(this.state.queryType === 'paginateByTemplate'){
+      this.submitOptionList=JSON.parse(JSON.stringify(layerList))
+      // if (!this.state.queryState.paginate) {
+      //     // deep copy
+      //     this.submitOptionList = JSON.parse(JSON.stringify(this.state.positiveList))
       // }
-      if (this.state.queryType === 'submitByTemplate') {
-          // deep copy
-          this.submitOptionList = JSON.parse(JSON.stringify(this.state.positiveList))
-      }
       for (const each of this.submitOptionList) {
           if (each.id < 0) {
               continue;
@@ -878,7 +877,7 @@ class LayerSearch extends React.Component<Props,State> {
               listTotal: resBody.totalLayerNum,
               isUpdate: true,
               loading: false,
-              queryType: 'paginateByTemplate',
+              queryMethod: 'layerVision',
               time: requestTime * 0.01,
           })
       } catch (e) {
