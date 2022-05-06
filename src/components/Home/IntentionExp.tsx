@@ -296,7 +296,7 @@
 
 import * as React from 'react';
 import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined, EditOutlined} from '@ant-design/icons';
-import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, Input, message, Card} from 'antd';
+import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card} from 'antd';
 import { ISubIntent } from '../../util/interface'
 import rawData from "../../assets/data/intentionResult2022.2.23.json";
 import '../../style/_rightSider.scss';
@@ -369,35 +369,37 @@ const buildTreeData=()=>{
         subIntent.title=<Tag className='label' color={labelColor[1]}>{'Sub-Intention-'+i.toString()}</Tag>
         subIntent.icon=<MyIcon className='myIcon' type={'icon-subIntent'} style={{background:iconColor[1]}}/>
         let j=0
-        for (const key in intent[i]){
-            if(intent[i][key]!=='null' && key!=='confidence'){
-                const tmp=new Node()
-                tmp.key=subIntent.key+'-'+j.toString()
+        for (const key of Object.keys(intent[i])){
+            for(const val of intent[i][key]){
+                if(key!=='confidence'){
+                    const tmp=new Node()
+                    tmp.key=subIntent.key+'-'+j.toString()
 
-                if(key==='content') {
-                    tmp.class='Content'
-                    tmp.icon=<MyIcon className='myIcon' type={'icon-content'} style={{background:iconColor[2]}}/>
-                    tmp.title=<Tag className='label' color={labelColor[2]}>
-                        {intent[i][key].slice(intent[i][key].lastIndexOf('/')+1,intent[i][key].length)}
-                    </Tag>
+                    if(key==='content') {
+                        tmp.class='Content'
+                        tmp.icon=<MyIcon className='myIcon' type={'icon-content'} style={{background:iconColor[2]}}/>
+                        tmp.title=<Tag className='label' color={labelColor[2]}>
+                            {val.slice(val.lastIndexOf('/')+1,val.length)}
+                        </Tag>
+                    }
+                    else if(key==='location') {
+                        tmp.class='Location'
+                        tmp.icon=<MyIcon className='myIcon' type={'icon-location'} style={{background: iconColor[3]}}/>
+                        tmp.title=<Tag className='label' color={labelColor[3]}>{val}</Tag>
+                    }
+                    else if(key==='style') {
+                        tmp.class='Style'
+                        tmp.icon=<MyIcon className='myIcon' type={'icon-style'} style={{background: iconColor[4]}}/>
+                        tmp.title=<Tag className='label' color={labelColor[4]}>{val}</Tag>
+                    }
+                    else if(key==='topic') {
+                        tmp.class='Topic'
+                        tmp.icon=<MyIcon className='myIcon' type={'icon-topic'} style={{background: iconColor[5]}}/>
+                        tmp.title=<Tag className='label' color={labelColor[5]}>{val}</Tag>
+                    }
+                    j++
+                    subIntent.children.push(tmp)
                 }
-                else if(key==='location') {
-                    tmp.class='Location'
-                    tmp.icon=<MyIcon className='myIcon' type={'icon-location'} style={{background: iconColor[3]}}/>
-                    tmp.title=<Tag className='label' color={labelColor[3]}>{intent[i][key]}</Tag>
-                }
-                else if(key==='style') {
-                    tmp.class='Style'
-                    tmp.icon=<MyIcon className='myIcon' type={'icon-style'} style={{background: iconColor[4]}}/>
-                    tmp.title=<Tag className='label' color={labelColor[4]}>{intent[i][key]}</Tag>
-                }
-                else if(key==='topic') {
-                    tmp.class='Topic'
-                    tmp.icon=<MyIcon className='myIcon' type={'icon-topic'} style={{background: iconColor[5]}}/>
-                    tmp.title=<Tag className='label' color={labelColor[5]}>{intent[i][key]}</Tag>
-                }
-                j++
-                subIntent.children.push(tmp)
             }
         }
         treeDate[0].children.push(subIntent)
@@ -586,16 +588,31 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     public generateIntentDes=(val:ISubIntent,index:number)=>{
+        let mapContent= ''
+        let mapLocation=''
+        let mapTopic=''
+        let mapStyle=''
+        val.content.map((item:string)=>{
+            mapContent+=item.slice(item.lastIndexOf('/') + 1, item.length)+','
+        })
+        val.location.map((item:string)=>{mapLocation+=item+', '})
+        val.topic.map((item:string)=>{mapTopic+=item+', '})
+        val.style.map((item:string)=>{mapStyle+=item+', '})
+        mapContent=mapContent.slice(0,mapContent.length-2)
+        mapLocation=mapLocation.slice(0,mapLocation.length-2)
+        mapTopic=mapTopic.slice(0,mapTopic.length-2)
+        mapStyle=mapStyle.slice(0,mapStyle.length-2)
+
         return(
             <div key={index} style={{margin: '5px 0px'}}>
-                A {val.content === 'null' ? '' :
-                <span className="tag" style={{background: "#9BC1E1"}}>{val.content.slice(val.content.lastIndexOf('/') + 1, val.content.length)}</span>}
-                 Map {val.location === 'null' ? '' :
-                <span>  in <span className="tag" style={{background: "#C39EE2"}}> {val.location}</span></span>}
-                {val.topic === 'null' ? '' :
-                    <span>  with <span className="tag" style={{background: "#F0A573"}}>{val.topic}</span> theme </span>}
-                {val.style === 'null' ? '' :
-                    <span>  drew by <span className="tag" style={{background: "#A9D18E"}}>{val.style}</span></span>}
+                A {val.content.length === 0 ? '' :
+                <span className="tag" style={{background: "#9BC1E1"}}>{mapContent}</span>}
+                 Map {val.location.length === 0 ? '' :
+                <span>  in <span className="tag" style={{background: "#C39EE2"}}> {mapLocation}</span></span>}
+                {val.topic.length === 0 ? '' :
+                    <span>  with <span className="tag" style={{background: "#F0A573"}}>{mapTopic}</span> theme </span>}
+                {val.style.length === 0 ? '' :
+                    <span>  drew by <span className="tag" style={{background: "#A9D18E"}}>{mapStyle}</span></span>}
                 {index === this.state.intent.length - 1 ? '.' :
                     <span style={{fontWeight: "bold"}}> OR </span>}
             </div>
@@ -609,14 +626,9 @@ class IntentionExp extends React.Component<Props, State> {
         message.info(`${e.node.class}: ${e.node.title.props.children}`)
     }
 
-    public renderSubIntention=(item:ISubIntent,index:number)=>{
-
+    public renderSubIntention=(val:ISubIntent,index:number)=>{
         const key='0-0-'+index.toString()
-        const mapContent=(item.content==='null'?'null':
-            item.content.slice(item.content.lastIndexOf('/')+1,item.content.length))
-        // const mapLocation=(item.location==='null'?'No Intention in the Location Dimension':item.location+' Map')
-        const mapTopic=(item.topic==='null'?'null':item.topic)
-        const mapStyle=(item.style==='null'?'null':item.style)
+
         return(
             <Tabs.TabPane tab="Sub-intention" key={key} >
                 <div className="rightSider_subIntention_dim">
@@ -625,20 +637,32 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isContentEdit?<SaveOutlined />:<EditOutlined />}
-                                    onClick={()=>this.onElementChange(index)}/>
+                                    onClick={()=>{this.setState({isContentEdit: !this.state.isContentEdit})}}/>
                         </Tooltip>
                     </div>
 
                     <div className="body">
                         {
                             this.state.isContentEdit ?
-                                <Input id='content_input' style={{width: '90%'}} placeholder="Input Value on Content"/>
+                                <Select className="select"  mode="tags" placeholder="Input Value on Content"
+                                        onChange={(val) => this.onElementChange(val, index)}
+                                        // defaultValue={val.content.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
+                                        value={val.content.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
+                                        showArrow={true} style={{width: '80%'}} />
                                 :
-                                <Tag style={{fontSize: '16px'}} color='#1890ff' >
-                                    {mapContent==='null'?'No Intention on Content ': mapContent}
-                                </Tag>
+                                val.content.length === 0 ?
+                                    'No Intention on Content '
+                                    :
+                                    val.content.map((item: string) => {
+                                        return (
+                                            <Tag key={item} style={{fontSize: '16px'}} color='#1890ff'>
+                                                {item.slice(item.lastIndexOf('/') + 1, item.length)}
+                                            </Tag>
+                                        )
+                                    })
                         }
                     </div>
+
                 </div>
 
                 <div className="rightSider_subIntention_dim">
@@ -651,11 +675,11 @@ class IntentionExp extends React.Component<Props, State> {
                         </Tooltip>
                     </div>
                     <div className="body">
-                        {this.state.isTopicEdit?
-                            <Select id="topic_selector" className="select" defaultValue={item.topic}
-                                    onChange={(val)=>this.onTopicChange(val,index)}
-                                    // optionLabelProp="label"
-                                    showArrow={true}  style={{width: '80%'}}>
+                        {this.state.isTopicEdit ?
+                            <Select className="select" defaultValue={val.topic} mode="multiple"
+                                    onChange={(val:string[]) => this.onTopicChange(val, index)}
+                                    optionLabelProp="label"
+                                    showArrow={true} style={{width: '80%'}}>
                                 {Topic.map((item: string) => {
                                     return (
                                         <Option key={item} label={<MyIcon style={{fontSize: 20, marginRight: 3}}
@@ -666,12 +690,16 @@ class IntentionExp extends React.Component<Props, State> {
                                 })}
                             </Select>
                             :
-                            mapTopic === 'null' ?
-                                <Tag style={{fontSize: '16px'}} color='#1890ff' >No Intention on Topic</Tag>
+                            val.topic.length === 0 ?
+                                'No Intention on Topic '
                                 :
-                                <Tooltip title={mapTopic}>
-                                    <MyIcon style={{fontSize: 28}} className="myIcon" type={"icon-" + mapTopic}/>
-                                </Tooltip>
+                                val.topic.map((item: string) => {
+                                    return (
+                                        <Tooltip key={item} title={item}>
+                                            <MyIcon style={{fontSize: 28}} className="myIcon" type={"icon-" + item}/>
+                                        </Tooltip>
+                                    )
+                                })
                         }
                     </div>
                 </div>
@@ -688,12 +716,11 @@ class IntentionExp extends React.Component<Props, State> {
                     <div className="body" style={{marginLeft: '1rem'}}>
                         {
                             this.state.isStyleEdit?
-                                <Select  defaultValue={item.style} optionLabelProp="label"
-                                        showArrow={true}
-                                        onChange={(val)=>this.onStyleChange(val,index)} style={{ width: '90%' }}>
+                                <Select mode="multiple" defaultValue={val.style} optionLabelProp="label" showArrow={true}
+                                        onChange={(val:string[])=>this.onStyleChange(val,index)} style={{ width: '85%' }}>
                                     {Style.map((item: string) => {
                                         return (
-                                            <Option key={item} label={<Tag color="#1890ff" > {item} </Tag>} value={item}
+                                            <Option key={item} label={item} value={item}
                                                     style={{ fontSize: 16}}>
                                                 <img src={styleImg[Style.indexOf(item)]} style={{float: 'left',width: '100px',height: '60px'}}/>
                                                 <div style={{textAlign:'center', padding: '10px 0',whiteSpace:'pre-wrap'}}>{item}</div>
@@ -701,12 +728,20 @@ class IntentionExp extends React.Component<Props, State> {
                                     })}
                                 </Select>
                                 :
-                                mapStyle === 'null' ?
-                                    <Tag style={{fontSize: '16px'}} color='#1890ff'>No Intention on Style</Tag> :
-                                    <Card className="card" cover={<img src={styleImg[Style.indexOf(mapStyle)]}/>}
-                                          bodyStyle={{fontSize: 15, textAlign: "center", padding: 2}} style={{width: '90%'}}>
-                                        {mapStyle}
-                                    </Card>
+                                val.style.length === 0 ?
+                                    <div style={{marginLeft: '2rem'}}>No Intention on Style</div>
+                                    :
+                                    val.style.map((item: string) => {
+                                        return (
+                                            <Card className="card" key={item}
+                                                  cover={<img src={styleImg[Style.indexOf(item)]}/>}
+                                                  bodyStyle={{fontSize: 15, textAlign: "center", padding: 2}}
+                                                  style={{width: '90%'}}>
+                                                {item}
+                                            </Card>
+                                        )
+                                    })
+
                         }
                     </div>
                 </div>
@@ -725,26 +760,16 @@ class IntentionExp extends React.Component<Props, State> {
         )
     }
 
-
-
-    public onElementChange=(index:number)=>{
-        const el=document.getElementById('content_input')
-        const val=(el===null?'null':el.getAttribute('value'))
-        const selfIntent=this.state.intent
-        if(typeof val === "string" && val.length>0){
-            selfIntent[index]['content'] = val
-        }else{
-            selfIntent[index]['content']='null'
-        }
-
+    public onElementChange=(value:any[],index:number)=>{
+        const self=this.state.intent
+        self[index]['content']=value
         this.setState({
-            intent:selfIntent,
-            isContentEdit: !this.state.isContentEdit,
+            intent:self
         })
     }
 
     // handle change of topic selection
-    public onTopicChange=(value:any,index:number)=>{
+    public onTopicChange=(value:string[],index:number)=>{
         const self=this.state.intent
         self[index]['topic']=value
         this.setState({
@@ -753,7 +778,7 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     // handle change of style selection
-    public onStyleChange=(value:any,index:number)=>{
+    public onStyleChange=(value:string[],index:number)=>{
         const self=this.state.intent
         self[index]['style']=value
         this.setState({

@@ -48,21 +48,23 @@ const buildTreeData=()=>{
         subIntent.class='Sub-Intention'
         subIntent.label='Sub-Intention-'+i.toString()
         let j=0
-        for (const key in intent[i]){
-             if(intent[i][key]!=='null' && key!=='confidence'){
-                 const tmp=new Node()
-                 tmp.id=subIntent.id+'-'+j.toString()
-                 tmp.label=intent[i][key]
-                 if(key==='content') {
-                     tmp.class='Content';
-                     tmp.label=intent[i][key].slice(intent[i][key].lastIndexOf('/')+1,intent[i][key].length)
-                 }
-                 else if(key==='location') {tmp.class='Location'}
-                 else if(key==='style') {tmp.class='Style'}
-                 else if(key==='topic') {tmp.class='Topic'}
-                 j++
-                 subIntent.children.push(tmp)
-             }
+        for (const key of Object.keys(intent[i])){
+            for(const val of intent[i][key]){
+                if(key!=='confidence'){
+                    const tmp=new Node()
+                    tmp.id=subIntent.id+'-'+j.toString()
+                    tmp.label=val
+                    if(key==='content') {
+                        tmp.class='Content';
+                        tmp.label=val.slice(val.lastIndexOf('/')+1,val.length)
+                    }
+                    else if(key==='location') {tmp.class='Location'}
+                    else if(key==='style') {tmp.class='Style'}
+                    else if(key==='topic') {tmp.class='Topic'}
+                    j++
+                    subIntent.children.push(tmp)
+                }
+            }
         }
         treeDate.children.push(subIntent)
     }

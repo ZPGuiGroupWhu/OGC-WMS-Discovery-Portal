@@ -70,17 +70,31 @@ class AdvIntentionPanel extends React.Component<Props,State>{
 
 
     public generateIntentDes=(val:ISubIntent,index:number)=>{
+        let mapContent= ''
+        let mapLocation=''
+        let mapTopic=''
+        let mapStyle=''
+        val.content.map((item:string)=>{
+            mapContent+=item.slice(item.lastIndexOf('/') + 1, item.length)+','
+        })
+        val.location.map((item:string)=>{mapLocation+=item+', '})
+        val.topic.map((item:string)=>{mapTopic+=item+', '})
+        val.style.map((item:string)=>{mapStyle+=item+', '})
+        mapContent=mapContent.slice(0,mapContent.length-2)
+        mapLocation=mapLocation.slice(0,mapLocation.length-2)
+        mapTopic=mapTopic.slice(0,mapTopic.length-2)
+        mapStyle=mapStyle.slice(0,mapStyle.length-2)
 
         return(
             <div key={index} style={{margin: '5px 0px'}}>
-                A {val.content === 'null' ? '' :
-                <span className="tag" style={{background: "#9BC1E1"}}>{val.content.slice(val.content.lastIndexOf('/') + 1, val.content.length)}</span>}
-                Map {val.location === 'null' ? '' :
-                <span>  in <span className="tag" style={{background: "#C39EE2"}}> {val.location}</span></span>}
-                {val.topic === 'null' ? '' :
-                    <span>  with <span className="tag" style={{background: "#F0A573"}}>{val.topic}</span> theme </span>}
-                {val.style === 'null' ? '' :
-                    <span>  drew by <span className="tag" style={{background: "#A9D18E"}}>{val.style}</span></span>}
+                A {val.content.length === 0 ? '' :
+                <span className="tag" style={{background: "#9BC1E1"}}>{mapContent}</span>}
+                Map {val.location.length === 0 ? '' :
+                <span>  in <span className="tag" style={{background: "#C39EE2"}}> {mapLocation}</span></span>}
+                {val.topic.length === 0 ? '' :
+                    <span>  with <span className="tag" style={{background: "#F0A573"}}>{mapTopic}</span> theme </span>}
+                {val.style.length === 0 ? '' :
+                    <span>  drew by <span className="tag" style={{background: "#A9D18E"}}>{mapStyle}</span></span>}
                 {index === this.state.intent.length - 1 ? '.' :
                     <span style={{fontWeight: "bold"}}> OR </span>}
             </div>
@@ -91,14 +105,14 @@ class AdvIntentionPanel extends React.Component<Props,State>{
     public renderEncodingLen = (len:number, index: number, arr:number[])=>{
         const totalWidth=580
         const label=['①','②','③','③','④','⑤','⑥']
-        const iterator=['first', 'second', 'third', 'fourth', 'fourth', 'sixth']
+        const iterator=['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth']
         return(
             <div key={index}>
                 <h3>
                     {label[index]}
                     <span id={'column'+(index+1).toString()}  className="column"
                           style={{width: len/Math.max(...arr)*totalWidth}}>
-                        The {iterator[index]} time: {Math.round(arr[index])}
+                        The {iterator[index]}: {Math.round(arr[index])}
                     </span>
                 </h3>
             </div>

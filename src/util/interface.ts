@@ -85,10 +85,10 @@ export interface IHover{
 // Record subIntention and the whole intention
 export interface ISubIntent{
     "confidence": number,
-    "content": string,
-    "location": string,
-    "style": string,
-    "topic": string
+    "content": string[],
+    "location": string[],
+    "style": string[],
+    "topic": string[]
 }
 
 // export interface IIntent{

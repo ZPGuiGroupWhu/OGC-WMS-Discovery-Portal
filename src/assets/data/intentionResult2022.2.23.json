@@ -18,17 +18,17 @@
       "intention": [
         {
           "confidence": 0.6717939188150325,
-          "content": "http://sweetontology.net/matrSediment/Soil",
-          "location": "Florida",
-          "style": "Quality Base Method",
-          "topic": "Agriculture"
+          "content": ["http://sweetontology.net/matrSediment/Soil"],
+          "location": ["Florida"],
+          "style": ["Quality Base Method"],
+          "topic": ["Agriculture"]
         },
         {
           "confidence": 0.17300834976752788,
-          "content": "http://sweetontology.net/realmHydroBody/River",
-          "location": "Wisconsin",
-          "style": "null",
-          "topic": "Water"
+          "content": ["http://sweetontology.net/realmHydroBody/River"],
+          "location": ["Wisconsin"],
+          "style": [],
+          "topic": ["Water"]
         }
       ]
     }
