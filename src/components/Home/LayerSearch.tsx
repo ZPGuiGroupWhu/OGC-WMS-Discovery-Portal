@@ -39,19 +39,21 @@ import {
     Space,
 } from 'antd';
 import $req from '../../util/fetch';
-import {IQueryPar, IPageInfo, ILayer, IHover} from "../../util/interface";
+import {IQueryPar, IPageInfo, ILayer, IHover, ISubIntent} from "../../util/interface";
 import { reqUrl, delEmptyKey, smoothscroll } from '../../util/util';
 import LeftSider from './LeftSider';
 import IntensionExp from './IntentionExp';
 import {connect} from 'react-redux';
-import {conveyLayerID,conveyQueryPar} from '../../redux/action';
+import {conveyIntentData, conveyLayerID, conveyQueryPar} from '../../redux/action';
 import AdvIntentionPanel from "./AdvIntentionPanel";
+import rawData from "../../assets/data/intentionResult2022.2.23.json";
 
 // @ts-ignore
 // import hm from 'heatmap.js'
 
 const { Content} = Layout;
 const { TabPane } = Tabs;
+
 
 interface Props { 
   queryPar: IQueryPar;
@@ -326,12 +328,12 @@ class LayerSearch extends React.Component<Props,State> {
                 </div>
                 <Divider />
                 <div className="main_container_content_markCollection">
-                  <Tabs defaultActiveKey="1" tabBarExtraContent={createTabsExtraContent()}
+                  <Tabs defaultActiveKey="positive" tabBarExtraContent={createTabsExtraContent()}
                         onTabClick={(activeKey:string)=>{
-                            this.setState({isPositiveTab: activeKey==="1"?true: false,isDelete:false,})
+                            this.setState({isPositiveTab: activeKey==="positive"?true: false,isDelete:false,})
                         }}
                   >
-                      <TabPane  key="1"
+                      <TabPane  key="positive"
                           tab={
                               <div className="main_container_content_markCollection_head">
                                       <HeartOutlined className="icon"/>
@@ -339,12 +341,13 @@ class LayerSearch extends React.Component<Props,State> {
                               </div>
                           }
                       >
-                      <div  className="main_container_content_markCollection_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
-                          {this.renderMarkCollection()}
-                      </div>
+                          <div key="positive_body" className="main_container_content_markCollection_body"
+                               style={{display: this.state.bSideCollapsed ? "none" : "block"}}>
+                              {this.renderMarkCollection()}
+                          </div>
                       </TabPane>
 
-                      <TabPane  key="2"
+                      <TabPane  key="negative"
                           tab={
                               <div className="main_container_content_markCollection_head">
                                       <FrownOutlined className="icon"/>
@@ -352,7 +355,7 @@ class LayerSearch extends React.Component<Props,State> {
                               </div>
                           }
                       >
-                          <div  className="main_container_content_markCollection_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
+                          <div key="negative_body" className="main_container_content_markCollection_body" style={{display:this.state.bSideCollapsed?"none":"block"}}>
                               {this.renderMarkCollection()}
                           </div>
                       </TabPane>
@@ -957,6 +960,21 @@ class LayerSearch extends React.Component<Props,State> {
       } catch (e) {
           alert(e.message)
       }
+
+      // 将静态的意图数据存放在redux中
+      const selfConfidence:number[]=[]
+      rawData.result[0].intention.map((val:ISubIntent)=>{
+          selfConfidence.push(val.confidence)
+      })
+      selfConfidence.push(rawData.result[0].confidence)
+      const res={
+          confidence: selfConfidence,
+          encodingLen: rawData.parameter.encodingLength,
+          filtration: rawData.parameter.filtrationCoefficient,
+          intent: rawData.result[0].intention,
+          mergeNum: rawData.parameter.mergeNum
+      }
+      this.props.dispatch(conveyIntentData(res))
   }
 }
 

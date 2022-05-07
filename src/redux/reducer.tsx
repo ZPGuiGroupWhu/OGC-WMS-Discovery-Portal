@@ -5,6 +5,7 @@ import {
     CONVEY_LOGIN_VISIBLE,
     CONVEY_REGISTER_VISIBLE,
     CONVEY_IS_LOGIN, CONVEY_FORGOT_PASSWORD_VISIBLE,
+    CONVEY_INTENT
 } from '../redux/action'
 import {combineReducers} from 'redux'
 
@@ -30,6 +31,14 @@ const initialVisible={
     registerVisible: false,
     forgotPasswordVisible: false,
     isLogin: false,
+}
+
+const initialIntent={
+    confidence: [],
+    encodingLen: [],
+    filtration: 0,
+    intent: [],
+    mergeNum: 0
 }
 
 function conveyIDReducer (state=initialStateID,action:any) {
@@ -95,10 +104,22 @@ function conveyVisibleReducer(state=initialVisible,action:any){
     }
 }
 
+function conveyIntentDataReducer(state=initialIntent,action:any){
+    switch (action.type) {
+        case CONVEY_INTENT:
+            return JSON.parse(JSON.stringify(
+                action.intentData
+            ))
+        default:
+            return state
+    }
+}
+
 const rootReducer=combineReducers({
     conveyIDReducer,
     conveyQueryParReducer,
-    conveyVisibleReducer
+    conveyVisibleReducer,
+    conveyIntentDataReducer
 })
 
 export default rootReducer

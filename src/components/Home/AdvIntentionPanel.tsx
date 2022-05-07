@@ -1,20 +1,23 @@
 import * as React from 'react';
 
 import {ISubIntent} from '../../util/interface'
-import res from '../../assets/data/intentionResult2022.2.23.json'
 import {QuestionCircleOutlined, CheckCircleOutlined, FrownOutlined, DownCircleOutlined, UpCircleOutlined} from '@ant-design/icons';
-import {Button, InputNumber,Layout, message, Popconfirm, Progress, Slider, Spin, Tooltip} from "antd";
+import {Button, InputNumber,Layout, message, Popconfirm, Progress, Slider, Tooltip} from "antd";
 import '../../style/_intention.scss'
 import HeatMap from "../../assets/charts/HeatMap";
 import BoxPlot from "../../assets/charts/BoxPlot";
 import * as Iprocess from "../../assets/img/Intention Retrieval Process.png"
 import IntentionTree from "../../assets/charts/IntentionTree";
+import { connect } from 'react-redux';
+import {conveyIntentData} from "../../redux/action";
 
 // import WordCloud from 'src/assets/charts/WordCloud';
 
 // tslint:disable-next-line:no-empty-interface
 interface Props{
-   callback:(advancedPanel:boolean)=>void
+    intentData: object
+    callback:(advancedPanel:boolean)=>void
+    dispatch: (action:any)=>void
 }
 
 interface State{
@@ -22,15 +25,36 @@ interface State{
     encodingLen: number[];
     filtration: number;
     intent: ISubIntent[];
-    isLoading: boolean;
     isSatisfy: number;   // describe user's satisfaction for the intention result.
                          // -1 means unknown, 0 means dissatisfaction, 1 means satisfaction
     isShowBoxplot: boolean;
     isShowHeatmap: boolean;
     mergeNum: number;
+    storeFiltration:number;
+    storeMergeNum:number;
 }
 
 class AdvIntentionPanel extends React.Component<Props,State>{
+    public static  getDerivedStateFromProps(nextProps:any,preState:any){
+        if(nextProps.intentData.filtration!==preState.storeFiltration ||
+            nextProps.intentData.mergeNum!==preState.storeMergeNum ||
+            nextProps.intentData.intent!==preState.intent){
+
+            // console.log(nextProps.intentData.intent,preState.intent)
+            return{
+                confidence: nextProps.intentData.confidence,
+                encodingLen: nextProps.intentData.encodingLen,
+                filtration: nextProps.intentData.filtration,
+                intent: nextProps.intentData.intent,
+                mergeNum: nextProps.intentData.mergeNum,
+
+                storeFiltration: nextProps.intentData.filtration,
+                storeMergeNum:nextProps.intentData.mergeNum
+            }
+        }
+        return null
+    }
+
     constructor(props:Props) {
         super(props);
         this.state={
@@ -38,34 +62,15 @@ class AdvIntentionPanel extends React.Component<Props,State>{
             encodingLen: [],
             filtration: 0,
             intent:[],
-            isLoading: true,
             isSatisfy: -1,
             isShowBoxplot: true,
             isShowHeatmap: true,
             mergeNum: 0,
+            storeFiltration:0,     // 将state中Filtration和store中的Filtration分离，实现组件位置异步的dispatch
+            storeMergeNum:0,       // 将state中MergeNum和store中的MergeNum分离，实现组件位置异步的dispatch
+
 
         }
-    }
-
-
-    public componentDidMount() {
-        const selfConfidence:number[]=[]
-        res.result[0].intention.map((val:ISubIntent)=>{
-            selfConfidence.push(val.confidence)
-        })
-        selfConfidence.push(res.result[0].confidence)
-
-        setTimeout(()=>{
-            this.setState({
-                confidence: selfConfidence,
-                encodingLen: res.parameter.encodingLength,
-                filtration: res.parameter.filtrationCoefficient,
-                intent: res.result[0].intention,
-                isLoading: false,
-                mergeNum: res.parameter.mergeNum
-            })
-        }, 100)
-
     }
 
 
@@ -123,9 +128,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
     public render(){
         return(
             <Layout.Content className="main_container_content">
-                {this.state.isLoading?
-                    <Spin className="advanced_intent_spin" spinning={this.state.isLoading} size="large" tip="Loading"/>:
-                    <div className="advanced_intent_panel">
+                <div className="advanced_intent_panel">
                         <div className="advanced_intent_panel_header">
                             <h2>Retrieval Intention Extracted By MDL</h2>
                         </div>
@@ -242,7 +245,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                                              else if(val<50) {fixValue=50}
                                              else{ fixValue=Math.round(val/5)*5}
                                              this.setState({mergeNum: fixValue})}}/>
-                            <Slider step={5} min={50} max={100}
+                            <Slider step={5} min={50} max={100} value={this.state.mergeNum}
                                     onChange={(val:number)=>{this.setState({mergeNum: val})}}
                                     marks={{
                                         50: '50',
@@ -269,7 +272,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                         </div>
                         <div className="advanced_intent_panel_btn">
                             <Popconfirm title="Are you sure to save these change" okText="Yes" cancelText="No"
-                                        onConfirm={()=>{this.props.callback(false)}}
+                                        onConfirm={()=>{this.saveModification()}}
                                         onCancel={()=>{this.props.callback(false)}}
                              >
                                 <Button type="primary" shape="round" size="large"
@@ -280,14 +283,29 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                            </Popconfirm>
                         </div>
 
-                    </div>}
+                    </div>
             </Layout.Content>
         )
     }
 
-
+    // save change and dispatch to store by redux
+    public saveModification=()=>{
+        const {dispatch,callback}=this.props
+        dispatch(conveyIntentData({
+            ...this.props.intentData,
+            filtration: this.state.filtration,
+            mergeNum:this.state.mergeNum
+        }))
+        callback(false)
+    }
 
 
 }
 
-export default AdvIntentionPanel
+const mapStateToProps=(state:any)=>{
+    return {
+        intentData: state.conveyIntentDataReducer
+    }
+}
+
+export default connect(mapStateToProps)(AdvIntentionPanel)

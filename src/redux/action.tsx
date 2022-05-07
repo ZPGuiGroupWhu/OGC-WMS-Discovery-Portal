@@ -8,6 +8,7 @@ export const CONVEY_LOGIN_VISIBLE='CONVEY_LOGIN_VISIBLE'
 export const CONVEY_REGISTER_VISIBLE='CONVEY_REGISTER_VISIBLE'
 export const CONVEY_FORGOT_PASSWORD_VISIBLE='CONVEY_FORGOT_PASSWORD_VISIBLE'
 export const CONVEY_IS_LOGIN='CONVEY_IS_LOGIN'
+export const CONVEY_INTENT='CONVEY_INTENT'
 
 // action function
 export function conveyLayerID(layerID:number){
@@ -56,5 +57,12 @@ export function conveyIsLogin(isLogin: boolean){
     return{
         type: CONVEY_IS_LOGIN,
         isLogin
+    }
+}
+
+export function conveyIntentData(intentData:object){
+    return {
+        type: CONVEY_INTENT,
+        intentData
     }
 }
