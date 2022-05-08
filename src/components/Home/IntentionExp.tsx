@@ -298,8 +298,9 @@ import * as React from 'react';
 import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined, EditOutlined} from '@ant-design/icons';
 import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card} from 'antd';
 import { ISubIntent } from '../../util/interface'
-import rawData from "../../assets/data/intentionResult2022.2.23.json";
 import '../../style/_rightSider.scss';
+import { connect } from 'react-redux';
+import {conveyIntentData} from "../../redux/action";
 
 // import { MapContainer, Popup, Marker, TileLayer } from 'react-leaflet'
 // import "node_modules/leaflet/dist/leaflet.css"
@@ -322,6 +323,8 @@ const MyIcon = createFromIconfontCN({
 interface Props {
     collapsed: boolean;
     advancedPanelCallback: (advancedPanel:boolean)=>void;
+    dispatch:(action:any)=>void;
+    intentData: object
     rSideCallback:(rSideCollapse:boolean)=>void
 }
 
@@ -331,10 +334,11 @@ interface State {
     intent: ISubIntent[];
     collapsed: boolean;
     confidence: number[];
-    isTopicEdit: boolean,
-    isStyleEdit: boolean,
-    isContentEdit: boolean,
-    isLocationEdit: boolean,
+    isTopicEdit: boolean;
+    isStyleEdit: boolean;
+    isContentEdit: boolean;
+    isLocationEdit: boolean;
+    newIntent: ISubIntent[];      // 临时存储用户修正的意图维度
 }
 
 class Node{
@@ -349,63 +353,11 @@ class Node{
         this.key='0-0';
         this.title=<Tag className='label' color={'#D9D9D9'}>{'Intention'}</Tag>;
         this.children=[]
-
     }
 
 }
 
-const buildTreeData=()=>{
-    const labelColor=['#D9D9D9','#FFF2CC','#C4D9EE','#D7CAE4','#C5E0B2','#F2C2A5']
-    const iconColor=['#B0B0B0', '#F4CA5E', '#9BC1E1', '#C39EE2','#A9D18E' ,'#F0A573']
-    const intent=rawData.result[0].intention
 
-    const intentLen=intent.length
-    const treeDate: Node[]=[];
-    treeDate[0]= new Node();
-    for(let i=0;i<intentLen;i++){
-        const subIntent=new Node()
-        subIntent.class='Sub-Intention'
-        subIntent.key='0-0-'+i.toString()
-        subIntent.title=<Tag className='label' color={labelColor[1]}>{'Sub-Intention-'+i.toString()}</Tag>
-        subIntent.icon=<MyIcon className='myIcon' type={'icon-subIntent'} style={{background:iconColor[1]}}/>
-        let j=0
-        for (const key of Object.keys(intent[i])){
-            for(const val of intent[i][key]){
-                if(key!=='confidence'){
-                    const tmp=new Node()
-                    tmp.key=subIntent.key+'-'+j.toString()
-
-                    if(key==='content') {
-                        tmp.class='Content'
-                        tmp.icon=<MyIcon className='myIcon' type={'icon-content'} style={{background:iconColor[2]}}/>
-                        tmp.title=<Tag className='label' color={labelColor[2]}>
-                            {val.slice(val.lastIndexOf('/')+1,val.length)}
-                        </Tag>
-                    }
-                    else if(key==='location') {
-                        tmp.class='Location'
-                        tmp.icon=<MyIcon className='myIcon' type={'icon-location'} style={{background: iconColor[3]}}/>
-                        tmp.title=<Tag className='label' color={labelColor[3]}>{val}</Tag>
-                    }
-                    else if(key==='style') {
-                        tmp.class='Style'
-                        tmp.icon=<MyIcon className='myIcon' type={'icon-style'} style={{background: iconColor[4]}}/>
-                        tmp.title=<Tag className='label' color={labelColor[4]}>{val}</Tag>
-                    }
-                    else if(key==='topic') {
-                        tmp.class='Topic'
-                        tmp.icon=<MyIcon className='myIcon' type={'icon-topic'} style={{background: iconColor[5]}}/>
-                        tmp.title=<Tag className='label' color={labelColor[5]}>{val}</Tag>
-                    }
-                    j++
-                    subIntent.children.push(tmp)
-                }
-            }
-        }
-        treeDate[0].children.push(subIntent)
-    }
-    return treeDate
-}
 
 // treeData example
 // const tree = [
@@ -480,100 +432,157 @@ const buildTreeData=()=>{
 // tslint:disable-next-line:max-classes-per-file
 class IntentionExp extends React.Component<Props, State> {
     public static getDerivedStateFromProps(nextProps:any,preState: any){
-        return{
-            collapsed: nextProps.collapsed
+        if(nextProps.collapsed!==preState.collapsed ||
+            nextProps.intentData.intent!==preState.intent ||
+            nextProps.intentData.confidence!==preState.confidence){
+            return{
+                collapsed: nextProps.collapsed,
+                confidence: nextProps.intentData.confidence,
+                intent: nextProps.intentData.intent,
+                newIntent: nextProps.intentData.intent
+            }
         }
+            return null
     }
+
 
     constructor(props: Props) {
         super(props);
-
-        const selfConfidence:number[]=[]
-        rawData.result[0].intention.map((val:ISubIntent)=>{
-            selfConfidence.push(val.confidence)
-        })
-        selfConfidence.push(rawData.result[0].confidence)
-
         this.state = {
             activeTabKey: "0-0",
             advancedPanel: false,
-            intent: rawData.result[0].intention,
+            intent: [],
             collapsed: this.props.collapsed,
-            confidence: selfConfidence,
+            confidence: [],
             isTopicEdit: false,
             isStyleEdit: false,
             isContentEdit: false,
             isLocationEdit: false,
+            newIntent:[]   // 临时存储用户修正的意图维度
         };
     }
 
 
-
     public render() {
+        const buildTreeData=()=>{
+            const labelColor=['#D9D9D9','#FFF2CC','#C4D9EE','#D7CAE4','#C5E0B2','#F2C2A5']
+            const iconColor=['#B0B0B0', '#F4CA5E', '#9BC1E1', '#C39EE2','#A9D18E' ,'#F0A573']
+            const intent=this.state.intent
+
+            const intentLen=intent.length
+            const treeData: Node[]=[];
+            treeData[0]= new Node();
+            for(let i=0;i<intentLen;i++){
+                const subIntent=new Node()
+                subIntent.class='Sub-Intention'
+                subIntent.key='0-0-'+i.toString()
+                subIntent.title=<Tag className='label' color={labelColor[1]}>{'Sub-Intention-'+i.toString()}</Tag>
+                subIntent.icon=<MyIcon className='myIcon' type={'icon-subIntent'} style={{background:iconColor[1]}}/>
+                let j=0
+                for (const key of Object.keys(intent[i])){
+                    for(const val of intent[i][key]){
+                        if(key!=='confidence'){
+                            const tmp=new Node()
+                            tmp.key=subIntent.key+'-'+j.toString()
+
+                            if(key==='content') {
+                                tmp.class='Content'
+                                tmp.icon=<MyIcon className='myIcon' type={'icon-content'} style={{background:iconColor[2]}}/>
+                                tmp.title=<Tag className='label' color={labelColor[2]}>
+                                    {val.slice(val.lastIndexOf('/')+1,val.length)}
+                                </Tag>
+                            }
+                            else if(key==='location') {
+                                tmp.class='Location'
+                                tmp.icon=<MyIcon className='myIcon' type={'icon-location'} style={{background: iconColor[3]}}/>
+                                tmp.title=<Tag className='label' color={labelColor[3]}>{val}</Tag>
+                            }
+                            else if(key==='style') {
+                                tmp.class='Style'
+                                tmp.icon=<MyIcon className='myIcon' type={'icon-style'} style={{background: iconColor[4]}}/>
+                                tmp.title=<Tag className='label' color={labelColor[4]}>{val}</Tag>
+                            }
+                            else if(key==='topic') {
+                                tmp.class='Topic'
+                                tmp.icon=<MyIcon className='myIcon' type={'icon-topic'} style={{background: iconColor[5]}}/>
+                                tmp.title=<Tag className='label' color={labelColor[5]}>{val}</Tag>
+                            }
+                            j++
+                            subIntent.children.push(tmp)
+                        }
+                    }
+                }
+                treeData[0].children.push(subIntent)
+            }
+            return treeData
+        }
+
         return (
             <Sider collapsible={true} collapsed={this.state.collapsed} collapsedWidth={10} reverseArrow={true}
                    trigger={null} style={{ backgroundColor: 'white',borderLeft: '1px solid #e8e8e8'}}
                    width={'300'}>
                 <div style={{display: this.state.collapsed ? 'none' : 'inline'}}>
                     <div className="rightSider">
-                    <div className='rightSider_head'>
-                        <BarChartOutlined className="icon"/>
-                        <span className="title">Retrieval Intention</span>
-                    </div>
-                    <Tabs defaultActiveKey="1" size='small' activeKey={this.state.activeTabKey}
-                          onChange={(activeKey) => {
-                              this.setState({activeTabKey: activeKey})
-                          }}>
-                        <Tabs.TabPane tab="Intention" key="0-0" >
-                            <div className='rightSider_tree'>
-                                <div className='rightSider_tree_title'>
-                                    Intention Tree:
-                                </div>
-                                <Tree
-                                    showLine={false}
-                                    showIcon={true}
-                                    switcherIcon={<DownOutlined />}
-                                    defaultExpandAll={true}
-                                    onSelect={this.onTreeSelect}
-                                    treeData={buildTreeData()}
-                                />
-                            </div>
+                        <div className='rightSider_head'>
+                            <BarChartOutlined className="icon"/>
+                            <span className="title">Retrieval Intention</span>
+                        </div>
+                        <div style={{display: this.state.intent.length === 0 ? 'none' : 'block'}}>
+                            <Tabs defaultActiveKey="1" size='small' activeKey={this.state.activeTabKey}
+                                  onChange={(activeKey) => {
+                                      this.setState({activeTabKey: activeKey})
+                                  }}>
+                                <Tabs.TabPane tab="Intention" key="0-0">
+                                    <div className='rightSider_tree'>
+                                        <div className='rightSider_tree_title'>
+                                            Intention Tree:
+                                        </div>
+                                        <Tree
+                                            showLine={false}
+                                            showIcon={true}
+                                            switcherIcon={<DownOutlined/>}
+                                            defaultExpandAll={true}
+                                            onSelect={this.onTreeSelect}
+                                            treeData={buildTreeData()}
+                                        />
+                                    </div>
 
-                            <div className='rightSider_description'>
-                                <div className='rightSider_description_title'>
-                                    Description:
-                                </div>
-                                <div className="rightSider_description_body">
-                                    {this.state.intent.map((val: ISubIntent, index: number) => {
-                                        return this.generateIntentDes(val, index)
-                                    })}
-                                </div>
-                            </div>
+                                    <div className='rightSider_description'>
+                                        <div className='rightSider_description_title'>
+                                            Description:
+                                        </div>
+                                        <div className="rightSider_description_body">
+                                            {this.state.intent.map((val: ISubIntent, index: number) => {
+                                                return this.generateIntentDes(val, index)
+                                            })}
+                                        </div>
+                                    </div>
 
-                            <div className='rightSider_confidence'>
-                                <div className='rightSider_confidence_title'>
-                                    Confidence:&nbsp;&nbsp;
-                                    {(this.state.confidence[this.state.confidence.length-1]).toFixed(2)}
-                                </div>
-                                <Progress className="progress"  status='active' showInfo={true}
-                                          percent={Math.round(this.state.confidence[this.state.confidence.length-1]*100)}
-                                         />
-                            </div>
-                        </Tabs.TabPane>
-                        {this.state.intent.map((item, index) => {
-                            return this.renderSubIntention(item, index)
-                        })}
+                                    <div className='rightSider_confidence'>
+                                        <div className='rightSider_confidence_title'>
+                                            Confidence:&nbsp;&nbsp;
+                                            {Math.round((this.state.confidence[this.state.confidence.length - 1])*100)/100}
+                                        </div>
+                                        <Progress className="progress" status='active' showInfo={true}
+                                                  percent={Math.round(this.state.confidence[this.state.confidence.length - 1] * 100)}
+                                        />
+                                    </div>
+                                </Tabs.TabPane>
+                                {this.state.newIntent.map((item, index) => {
+                                    return this.renderSubIntention(item, index)
+                                })}
 
-                    </Tabs>
-                    <Button className="advanced_Btn" type="primary" size="large" shape="round"
-                            style={{position: 'relative', width: '60%', left: '20%', margin: '10px'}}
-                            onClick={() => {
-                                this.props.advancedPanelCallback(true)
-                                this.setState({advancedPanel: true})
-                            }}
-                    >
-                        &lt;&lt;&nbsp;Advanced
-                    </Button>
+                            </Tabs>
+                            <Button className="advanced_Btn" type="primary" size="large" shape="round"
+                                    style={{position: 'relative', width: '60%', left: '20%', margin: '10px'}}
+                                    onClick={() => {
+                                        this.props.advancedPanelCallback(true)
+                                        this.setState({advancedPanel: true})
+                                    }}
+                            >
+                                &lt;&lt;&nbsp;Advanced
+                            </Button>
+                        </div>
                     </div>
                 </div>
 
@@ -627,17 +636,18 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     public renderSubIntention=(val:ISubIntent,index:number)=>{
+
         const key='0-0-'+index.toString()
 
         return(
-            <Tabs.TabPane tab="Sub-intention" key={key} >
+            <Tabs.TabPane tab={"Sub-intention-"+index.toString()} key={key} >
                 <div className="rightSider_subIntention_dim">
                     <div className="title">
                         <span >Map Element:</span>
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isContentEdit?<SaveOutlined />:<EditOutlined />}
-                                    onClick={()=>{this.setState({isContentEdit: !this.state.isContentEdit})}}/>
+                                    onClick={()=>this.handleContentChange(index)}/>
                         </Tooltip>
                     </div>
 
@@ -645,9 +655,15 @@ class IntentionExp extends React.Component<Props, State> {
                         {
                             this.state.isContentEdit ?
                                 <Select className="select"  mode="tags" placeholder="Input Value on Content"
-                                        onChange={(val) => this.onElementChange(val, index)}
-                                        // defaultValue={val.content.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
-                                        value={val.content.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
+                                        onChange={(val) => {
+                                            const self=this.state.newIntent
+                                            self[index]['content']=val
+                                            this.setState({
+                                                newIntent: self
+                                            })
+                                        }}
+                                        defaultValue={val.content.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
+                                        // value={this.tmpContent.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
                                         showArrow={true} style={{width: '80%'}} />
                                 :
                                 val.content.length === 0 ?
@@ -662,7 +678,6 @@ class IntentionExp extends React.Component<Props, State> {
                                     })
                         }
                     </div>
-
                 </div>
 
                 <div className="rightSider_subIntention_dim">
@@ -671,13 +686,19 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isTopicEdit ? <SaveOutlined/> : <EditOutlined/>}
-                                    onClick={() => this.setState({isTopicEdit: !this.state.isTopicEdit})}/>
+                                    onClick={() => this.handleTopicChange(index)}/>
                         </Tooltip>
                     </div>
                     <div className="body">
                         {this.state.isTopicEdit ?
                             <Select className="select" defaultValue={val.topic} mode="multiple"
-                                    onChange={(val:string[]) => this.onTopicChange(val, index)}
+                                    onChange={(val:string[]) => {
+                                        const self=this.state.newIntent
+                                        self[index]['topic']=val
+                                        this.setState({
+                                            newIntent: self
+                                        })
+                                    }}
                                     optionLabelProp="label"
                                     showArrow={true} style={{width: '80%'}}>
                                 {Topic.map((item: string) => {
@@ -710,14 +731,20 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isStyleEdit ? <SaveOutlined/> : <EditOutlined/>}
-                                    onClick={() => this.setState({isStyleEdit: !this.state.isStyleEdit})}/>
+                                    onClick={() => this.handleStyleChange(index)}/>
                         </Tooltip>
                     </div>
                     <div className="body" style={{marginLeft: '1rem'}}>
                         {
                             this.state.isStyleEdit?
                                 <Select mode="multiple" defaultValue={val.style} optionLabelProp="label" showArrow={true}
-                                        onChange={(val:string[])=>this.onStyleChange(val,index)} style={{ width: '85%' }}>
+                                        onChange={(val:string[])=> {
+                                            const self=this.state.newIntent
+                                            self[index]['style']=val
+                                            this.setState({
+                                                newIntent: self
+                                            })
+                                        }} style={{ width: '85%' }}>
                                     {Style.map((item: string) => {
                                         return (
                                             <Option key={item} label={item} value={item}
@@ -760,29 +787,45 @@ class IntentionExp extends React.Component<Props, State> {
         )
     }
 
-    public onElementChange=(value:any[],index:number)=>{
-        const self=this.state.intent
-        self[index]['content']=value
+    // handle content change
+    public handleContentChange=(index:number)=>{
+        if(this.state.isContentEdit){
+            this.props.dispatch(conveyIntentData({
+                ...this.props.intentData,
+                intent:this.state.newIntent
+            }))
+        }
+
         this.setState({
-            intent:self
+            isContentEdit: !this.state.isContentEdit
         })
     }
 
-    // handle change of topic selection
-    public onTopicChange=(value:string[],index:number)=>{
-        const self=this.state.intent
-        self[index]['topic']=value
+    // handle topic change
+    public handleTopicChange=(index:number)=>{
+        if(this.state.isTopicEdit){
+            this.props.dispatch(conveyIntentData({
+                ...this.props.intentData,
+                intent:this.state.newIntent
+            }))
+        }
+
         this.setState({
-            intent:self
+            isTopicEdit: !this.state.isTopicEdit
         })
     }
 
-    // handle change of style selection
-    public onStyleChange=(value:string[],index:number)=>{
-        const self=this.state.intent
-        self[index]['style']=value
+    // handle style change
+    public handleStyleChange=(index:number)=>{
+        if(this.state.isStyleEdit){
+            this.props.dispatch(conveyIntentData({
+                ...this.props.intentData,
+                intent:this.state.newIntent
+            }))
+        }
+
         this.setState({
-            intent:self
+            isStyleEdit: !this.state.isStyleEdit
         })
     }
 
@@ -803,5 +846,9 @@ class IntentionExp extends React.Component<Props, State> {
     //   )
     // }
 }
-
-export default IntentionExp;
+const mapStateToProps=(state:any)=>{
+    return {
+        intentData: state.conveyIntentDataReducer
+    }
+}
+export default connect(mapStateToProps)(IntentionExp);
