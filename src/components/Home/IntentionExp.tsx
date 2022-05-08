@@ -296,7 +296,7 @@
 
 import * as React from 'react';
 import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined, EditOutlined} from '@ant-design/icons';
-import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card} from 'antd';
+import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card, Alert} from 'antd';
 import { ISubIntent } from '../../util/interface'
 import '../../style/_rightSider.scss';
 import { connect } from 'react-redux';
@@ -527,62 +527,68 @@ class IntentionExp extends React.Component<Props, State> {
                             <BarChartOutlined className="icon"/>
                             <span className="title">Retrieval Intention</span>
                         </div>
-                        <div style={{display: this.state.intent.length === 0 ? 'none' : 'block'}}>
-                            <Tabs defaultActiveKey="1" size='small' activeKey={this.state.activeTabKey}
-                                  onChange={(activeKey) => {
-                                      this.setState({activeTabKey: activeKey})
-                                  }}>
-                                <Tabs.TabPane tab="Intention" key="0-0">
-                                    <div className='rightSider_tree'>
-                                        <div className='rightSider_tree_title'>
-                                            Intention Tree:
+                        {this.state.intent.length===0?
+                            <Alert message='Error' type='error' showIcon={true} closable={true}
+                                   description='This part is inaccessible until you submit interesting and annoying layer collections'/>
+                            :
+                            <div >
+                                <Tabs defaultActiveKey="1" size='small' activeKey={this.state.activeTabKey}
+                                      onChange={(activeKey) => {
+                                          this.setState({activeTabKey: activeKey})
+                                      }}>
+                                    <Tabs.TabPane tab="Intention" key="0-0">
+                                        <div className='rightSider_tree'>
+                                            <div className='rightSider_tree_title'>
+                                                Intention Tree:
+                                            </div>
+                                            <Tree
+                                                showLine={false}
+                                                showIcon={true}
+                                                switcherIcon={<DownOutlined/>}
+                                                defaultExpandAll={true}
+                                                onSelect={this.onTreeSelect}
+                                                treeData={buildTreeData()}
+                                            />
                                         </div>
-                                        <Tree
-                                            showLine={false}
-                                            showIcon={true}
-                                            switcherIcon={<DownOutlined/>}
-                                            defaultExpandAll={true}
-                                            onSelect={this.onTreeSelect}
-                                            treeData={buildTreeData()}
-                                        />
-                                    </div>
 
-                                    <div className='rightSider_description'>
-                                        <div className='rightSider_description_title'>
-                                            Description:
+                                        <div className='rightSider_description'>
+                                            <div className='rightSider_description_title'>
+                                                Description:
+                                            </div>
+                                            <div className="rightSider_description_body">
+                                                {this.state.intent.map((val: ISubIntent, index: number) => {
+                                                    return this.generateIntentDes(val, index)
+                                                })}
+                                            </div>
                                         </div>
-                                        <div className="rightSider_description_body">
-                                            {this.state.intent.map((val: ISubIntent, index: number) => {
-                                                return this.generateIntentDes(val, index)
-                                            })}
-                                        </div>
-                                    </div>
 
-                                    <div className='rightSider_confidence'>
-                                        <div className='rightSider_confidence_title'>
-                                            Confidence:&nbsp;&nbsp;
-                                            {Math.round((this.state.confidence[this.state.confidence.length - 1])*100)/100}
+                                        <div className='rightSider_confidence'>
+                                            <div className='rightSider_confidence_title'>
+                                                Confidence:&nbsp;&nbsp;
+                                                {Math.round((this.state.confidence[this.state.confidence.length - 1])*100)/100}
+                                            </div>
+                                            <Progress className="progress" status='active' showInfo={true}
+                                                      percent={Math.round(this.state.confidence[this.state.confidence.length - 1] * 100)}
+                                            />
                                         </div>
-                                        <Progress className="progress" status='active' showInfo={true}
-                                                  percent={Math.round(this.state.confidence[this.state.confidence.length - 1] * 100)}
-                                        />
-                                    </div>
-                                </Tabs.TabPane>
-                                {this.state.newIntent.map((item, index) => {
-                                    return this.renderSubIntention(item, index)
-                                })}
+                                    </Tabs.TabPane>
+                                    {this.state.newIntent.map((item, index) => {
+                                        return this.renderSubIntention(item, index)
+                                    })}
 
-                            </Tabs>
-                            <Button className="advanced_Btn" type="primary" size="large" shape="round"
-                                    style={{position: 'relative', width: '60%', left: '20%', margin: '10px'}}
-                                    onClick={() => {
-                                        this.props.advancedPanelCallback(true)
-                                        this.setState({advancedPanel: true})
-                                    }}
-                            >
-                                &lt;&lt;&nbsp;Advanced
-                            </Button>
-                        </div>
+                                </Tabs>
+                                <Button className="advanced_Btn" type="primary" size="large" shape="round"
+                                        style={{position: 'relative', width: '60%', left: '20%', margin: '10px'}}
+                                        onClick={() => {
+                                            this.props.advancedPanelCallback(true)
+                                            this.setState({advancedPanel: true})
+                                        }}
+                                >
+                                    &lt;&lt;&nbsp;Advanced
+                                </Button>
+                            </div>
+                        }
+
                     </div>
                 </div>
 
