@@ -435,6 +435,8 @@ class IntentionExp extends React.Component<Props, State> {
         if(nextProps.collapsed!==preState.collapsed ||
             nextProps.intentData.intent!==preState.intent ||
             nextProps.intentData.confidence!==preState.confidence){
+            // console.log(nextProps.intentData)
+
             return{
                 collapsed: nextProps.collapsed,
                 confidence: nextProps.intentData.confidence,
@@ -608,7 +610,7 @@ class IntentionExp extends React.Component<Props, State> {
         let mapTopic=''
         let mapStyle=''
         val.content.map((item:string)=>{
-            mapContent+=item.slice(item.lastIndexOf('/') + 1, item.length)+','
+            mapContent+=item.slice(item.lastIndexOf('/') + 1, item.length)+', '
         })
         val.location.map((item:string)=>{mapLocation+=item+', '})
         val.topic.map((item:string)=>{mapTopic+=item+', '})

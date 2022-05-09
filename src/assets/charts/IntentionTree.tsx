@@ -7,13 +7,15 @@ import { Toolbar } from '@antv/graphin-components';
 import {Menu, message, Drawer, Input, Select, Space, Button, Tooltip} from "antd";
 import {
     EditOutlined, DeleteOutlined, PlusCircleOutlined, EyeOutlined, DownloadOutlined, AimOutlined,
-    EyeInvisibleOutlined, UndoOutlined, RedoOutlined, createFromIconfontCN
+    EyeInvisibleOutlined, UndoOutlined, RedoOutlined, createFromIconfontCN, SaveOutlined
 } from '@ant-design/icons';
 import '../../style/_intention.scss'
 
 import * as React from "react";
-import rawData from "../data/intentionResult2022.2.23.json";
-import {useEffect} from "react";
+import {useEffect, useImperativeHandle,forwardRef} from "react";
+import {useDispatch, useSelector, shallowEqual} from 'react-redux'
+import {ISubIntent} from "../../util/interface";
+import {conveyIntentData} from "../../redux/action";
 
 declare const require:any;
 
@@ -37,8 +39,8 @@ class Node{
 }
 
 // generate data dynamically
-const buildTreeData=()=>{
-    const intent=rawData.result[0].intention
+const buildTreeData=(intent:ISubIntent[])=>{
+    // const intent=rawData.result[0].intention
     const intentLen=intent.length
     let treeDate: Node;
     treeDate = new Node();
@@ -353,19 +355,27 @@ const dimension=['Content','Topic','Style','Location']
 const style=["Point symbol method","Line symbol method","Area method","Quality base method","Choloplethic method","Others"]
 const topic=["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"]
 
-const historyUndoList:any[]=[]
+let historyUndoList:any[]=[]
 let historyRedoList:any[]=[]
 
 
 // render intention tree
-const IntentionTree = () => {
-    const [treeData,setTreeData]=React.useState(buildTreeData())
+const IntentionTree = (props:any,ref:React.RefObject<unknown>) => {
+    // @ts-ignore
+    const store=useSelector(state=> state.conveyIntentDataReducer,shallowEqual)
+    const dispatch=useDispatch()
+
+    const [treeData,setTreeData]=React.useState(buildTreeData(store.intent))
     const [visible,setVisible]=React.useState({drawerVisible: false, fishEyeVisible: false})
     const [modifyData,setModifyData]=React.useState({dimValue:'Content',labelValue: ''})
     const [modifyAction,setModifyAction]=React.useState({type:'EDIT', id: ''})
 
     useEffect(()=>{historyUndoList.push(treeData)},[]) // init historyUndoList
-    
+
+    useEffect(()=>setTreeData(buildTreeData(store.intent)),[store.intent])
+
+    useImperativeHandle(ref,()=>({saveIntentData}))
+
     const handleOpenFishEye=()=>{
         setVisible({...visible,fishEyeVisible: true})
     }
@@ -405,7 +415,7 @@ const IntentionTree = () => {
             for (const node of arr) {
                 if (node.id === key) {
                     const endNode=node.children[node.children.length-1]
-                    const nodeNum=parseInt(endNode.id.slice(endNode.id.lastIndexOf('-')+1,endNode.id.length),10) // 获取该层最大的id数
+                    const nodeNum=endNode?parseInt(endNode.id.slice(endNode.id.lastIndexOf('-')+1,endNode.id.length),10):0 // 获取该层最大的id数
                     const nNode = new Node()
                     nNode.id=node.id+'-'+(nodeNum+1).toString()
                     nNode.class=dimValue
@@ -533,7 +543,7 @@ const IntentionTree = () => {
         const openFishEye=()=>{
             handleOpenFishEye()
             value.onClose()
-            buildTreeData()
+            buildTreeData(store.intent)
         }
 
         return (
@@ -610,11 +620,17 @@ const IntentionTree = () => {
                     historyUndoList.push(historyRedoList.pop())
                     setTreeData(historyUndoList[historyUndoList.length-1])
                 }
+            },
+            {
+                key: 'save',
+                name: <SaveOutlined/>,
+                description: 'save',
+                action:()=>saveIntentData()
             }
         ]
 
         return (
-            <Toolbar  direction="vertical" style={{position: 'absolute', bottom: 168, left: 28}}>
+            <Toolbar  direction="vertical" style={{position: 'absolute', bottom: 148, left: 28}}>
                 <Space className="toolbar" direction="vertical" size={0}>
                     {options.map((item) => {
                         return (
@@ -681,6 +697,47 @@ const IntentionTree = () => {
         setVisible({...visible, drawerVisible: false})
     }
 
+    const saveIntentData=()=>{
+        // init newIntentData
+        const newIntentData=Array.from(new Array(treeData.children.length),item=>new Object ({
+            confidence: 0,
+            content: [],
+            location: [],
+            style: [],
+            topic: []
+        }))
+
+        treeData.children.map((item,index)=>{
+            for(const node of item.children){
+                if(node.class==='Content'){
+                    newIntentData[index]['content'].push(node.label)
+                }else if(node.class==='Location'){
+                    newIntentData[index]['location'].push(node.label)
+                }else if(node.class==='Topic'){
+                    newIntentData[index]['topic'].push(node.label)
+                }else if(node.class==='Style'){
+                    newIntentData[index]['style'].push(node.label)
+                }
+            }
+            // 判断newIntent中的元素（子意图）是否和原始数据storeIntent中的元素（子意图）相同，若相同需要复制置信度confidence，否则新置信度为0
+            store.intent.map((item:any)=>{
+                if(item['content']===newIntentData[index]['content'] && item['location']===newIntentData[index]['location']
+                && item['style']===newIntentData[index]['style'] && item['topic']===newIntentData[index]['topic']){
+                    newIntentData[index]['confidence']=item['confidence']
+                }
+            })
+
+        })
+
+        historyUndoList=[treeData]
+        historyRedoList=[]
+
+        dispatch(conveyIntentData({
+            ...store,
+            intent: newIntentData
+        }))
+    }
+
 
     return (
         <Graphin id="graphin" width={600} height={400} fitView={true} animate={true} data={treeData} enabledStack={true}
@@ -739,4 +796,4 @@ const IntentionTree = () => {
     )
 }
 
-export default IntentionTree
+export default forwardRef(IntentionTree)

@@ -55,8 +55,11 @@ class AdvIntentionPanel extends React.Component<Props,State>{
         return null
     }
 
+    private readonly treeRef: React.RefObject<any>;
+
     constructor(props:Props) {
         super(props);
+        this.treeRef=React.createRef()
         this.state={
             confidence: [],
             encodingLen: [],
@@ -69,7 +72,6 @@ class AdvIntentionPanel extends React.Component<Props,State>{
             storeFiltration:0,     // 将state中Filtration和store中的Filtration分离，实现组件位置异步的dispatch
             storeMergeNum:0,       // 将state中MergeNum和store中的MergeNum分离，实现组件位置异步的dispatch
 
-
         }
     }
 
@@ -80,7 +82,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
         let mapTopic=''
         let mapStyle=''
         val.content.map((item:string)=>{
-            mapContent+=item.slice(item.lastIndexOf('/') + 1, item.length)+','
+            mapContent+=item.slice(item.lastIndexOf('/') + 1, item.length)+', '
         })
         val.location.map((item:string)=>{mapLocation+=item+', '})
         val.topic.map((item:string)=>{mapTopic+=item+', '})
@@ -175,7 +177,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                         <div className="advanced_intent_panel_intent_result">
                             <h3>Intention Result:</h3>
                             <div className="advanced_intent_panel_intent_result_body" >
-                                <IntentionTree />
+                                <IntentionTree ref={this.treeRef}/>
                             </div>
                         </div>
 
@@ -294,8 +296,9 @@ class AdvIntentionPanel extends React.Component<Props,State>{
         dispatch(conveyIntentData({
             ...this.props.intentData,
             filtration: this.state.filtration,
-            mergeNum:this.state.mergeNum
+            mergeNum: this.state.mergeNum,
         }))
+        this.treeRef.current.saveIntentData()
         callback(false)
     }
 
