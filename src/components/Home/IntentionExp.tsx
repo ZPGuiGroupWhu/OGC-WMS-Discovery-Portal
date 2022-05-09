@@ -295,8 +295,9 @@
 // export default IntentionExp;
 
 import * as React from 'react';
-import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined, EditOutlined} from '@ant-design/icons';
-import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card, Alert} from 'antd';
+import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined,
+    EditOutlined, InfoCircleOutlined} from '@ant-design/icons';
+import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card, Alert, Space} from 'antd';
 import { ISubIntent } from '../../util/interface'
 import '../../style/_rightSider.scss';
 import { connect } from 'react-redux';
@@ -579,15 +580,19 @@ class IntentionExp extends React.Component<Props, State> {
                                     })}
 
                                 </Tabs>
-                                <Button className="advanced_Btn" type="primary" size="large" shape="round"
-                                        style={{position: 'relative', width: '60%', left: '20%', margin: '10px'}}
-                                        onClick={() => {
-                                            this.props.advancedPanelCallback(true)
-                                            this.setState({advancedPanel: true})
-                                        }}
-                                >
-                                    &lt;&lt;&nbsp;Advanced
-                                </Button>
+                                <Space style={{margin:'20px 10px'}} size={36}>
+                                    <Button className="advanced_Btn" type="primary"  shape="round"
+                                            onClick={() => {
+                                                this.props.advancedPanelCallback(true)
+                                                this.setState({advancedPanel: true})
+                                            }}
+                                    >
+                                        &lt;&lt;&nbsp;Advanced
+                                    </Button>
+                                    <Button className="advanced_Btn"  shape="round" disabled={true}>
+                                        Feedback&nbsp;&gt;&gt;
+                                    </Button>
+                                </Space>
                             </div>
                         }
 
@@ -655,7 +660,7 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isContentEdit?<SaveOutlined />:<EditOutlined />}
-                                    onClick={()=>this.handleContentChange(index)}/>
+                                    onClick={this.handleContentChange}/>
                         </Tooltip>
                     </div>
 
@@ -666,6 +671,7 @@ class IntentionExp extends React.Component<Props, State> {
                                         onChange={(val) => {
                                             const self=this.state.newIntent
                                             self[index]['content']=val
+                                            self[index]['confidence']=100
                                             this.setState({
                                                 newIntent: self
                                             })
@@ -694,7 +700,7 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isTopicEdit ? <SaveOutlined/> : <EditOutlined/>}
-                                    onClick={() => this.handleTopicChange(index)}/>
+                                    onClick={this.handleTopicChange}/>
                         </Tooltip>
                     </div>
                     <div className="body">
@@ -703,6 +709,7 @@ class IntentionExp extends React.Component<Props, State> {
                                     onChange={(val:string[]) => {
                                         const self=this.state.newIntent
                                         self[index]['topic']=val
+                                        self[index]['confidence']=100
                                         this.setState({
                                             newIntent: self
                                         })
@@ -739,7 +746,7 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" size="large" type="text"
                                     icon={this.state.isStyleEdit ? <SaveOutlined/> : <EditOutlined/>}
-                                    onClick={() => this.handleStyleChange(index)}/>
+                                    onClick={this.handleStyleChange}/>
                         </Tooltip>
                     </div>
                     <div className="body" style={{marginLeft: '1rem'}}>
@@ -749,6 +756,7 @@ class IntentionExp extends React.Component<Props, State> {
                                         onChange={(val:string[])=> {
                                             const self=this.state.newIntent
                                             self[index]['style']=val
+                                            self[index]['confidence']=100
                                             this.setState({
                                                 newIntent: self
                                             })
@@ -787,16 +795,68 @@ class IntentionExp extends React.Component<Props, State> {
                         <Tooltip title='Edit'>
                             <Button className="Btn" type="text" size="large"
                                     icon={this.state.isLocationEdit ? <SaveOutlined/> : <EditOutlined/>}
-                                    onClick={() => this.setState({isLocationEdit: !this.state.isLocationEdit})}/>
+                                    onClick={this.handleLocationChange}/>
                         </Tooltip>
                     </div>
+                    <div className="body">
+                    {
+                        this.state.isLocationEdit ?
+                            <Select className="select"  mode="tags" placeholder="Input Value on Location"
+                                    onChange={(val) => {
+                                        const self=this.state.newIntent
+                                        self[index]['location']=val
+                                        self[index]['confidence']=100
+                                        this.setState({
+                                            newIntent: self
+                                        })
+                                    }}
+                                    defaultValue={val.location}
+                                // value={this.tmpContent.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
+                                    showArrow={true} style={{width: '80%'}} />
+                            :
+                            val.location.length === 0 ?
+                                'No Intention on Location '
+                                :
+                                val.location.map((item: string) => {
+                                    return (
+                                        <Tag key={item} style={{fontSize: '16px'}} color='#1890ff'>
+                                            {item}
+                                        </Tag>
+                                    )
+                                })
+                    }
+                    </div>
                 </div >
+
+                <div className="rightSider_subIntention_dim">
+                    <div className="title">
+                        <span>
+                        Sub-Intention Confidence&nbsp;&nbsp;
+                        {Math.round((this.state.confidence[index])*100)/100}
+                        </span>
+                        {this.state.intent[index]['confidence']===this.state.confidence[index]?
+                            null
+                            :
+                            <Tooltip title='Confidence may be wrong because some dimensions has been changed in this sub-Intention!'
+                                     placement="left">
+                                <Button className="Btn" type="text" size="large"
+                                        icon={<InfoCircleOutlined />}
+                                />
+                            </Tooltip>
+                        }
+                    </div>
+                    <div className="body" style={{marginLeft:0}}>
+                        <Progress className="progress" status='active' showInfo={true}
+                                  percent={Math.round(this.state.confidence[index] * 100)}
+                        />
+                    </div>
+                </div>
             </Tabs.TabPane>
         )
     }
 
     // handle content change
-    public handleContentChange=(index:number)=>{
+    public handleContentChange=()=>{
         if(this.state.isContentEdit){
             this.props.dispatch(conveyIntentData({
                 ...this.props.intentData,
@@ -810,7 +870,7 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     // handle topic change
-    public handleTopicChange=(index:number)=>{
+    public handleTopicChange=()=>{
         if(this.state.isTopicEdit){
             this.props.dispatch(conveyIntentData({
                 ...this.props.intentData,
@@ -824,7 +884,7 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     // handle style change
-    public handleStyleChange=(index:number)=>{
+    public handleStyleChange=()=>{
         if(this.state.isStyleEdit){
             this.props.dispatch(conveyIntentData({
                 ...this.props.intentData,
@@ -834,6 +894,20 @@ class IntentionExp extends React.Component<Props, State> {
 
         this.setState({
             isStyleEdit: !this.state.isStyleEdit
+        })
+    }
+
+    // handle location change
+    public handleLocationChange=()=>{
+        if(this.state.isLocationEdit){
+            this.props.dispatch(conveyIntentData({
+                ...this.props.intentData,
+                intent:this.state.newIntent
+            }))
+        }
+
+        this.setState({
+            isLocationEdit: !this.state.isLocationEdit
         })
     }
 

@@ -700,7 +700,7 @@ const IntentionTree = (props:any,ref:React.RefObject<unknown>) => {
     const saveIntentData=()=>{
         // init newIntentData
         const newIntentData=Array.from(new Array(treeData.children.length),item=>new Object ({
-            confidence: 0,
+            confidence: 100,
             content: [],
             location: [],
             style: [],
@@ -719,13 +719,16 @@ const IntentionTree = (props:any,ref:React.RefObject<unknown>) => {
                     newIntentData[index]['style'].push(node.label)
                 }
             }
-            // 判断newIntent中的元素（子意图）是否和原始数据storeIntent中的元素（子意图）相同，若相同需要复制置信度confidence，否则新置信度为0
-            store.intent.map((item:any)=>{
-                if(item['content']===newIntentData[index]['content'] && item['location']===newIntentData[index]['location']
-                && item['style']===newIntentData[index]['style'] && item['topic']===newIntentData[index]['topic']){
-                    newIntentData[index]['confidence']=item['confidence']
-                }
-            })
+
+            // TODO:判断newIntent中的元素（子意图）是否和原始数据storeIntent中的元素（子意图）相同，若相同需要复制置信度confidence，否则新置信度为0
+            // store.intent.map((item:any)=>{
+            //     if (item['content'].sort().toString() === newIntentData[index]['content'].sort().toString()
+            //         && item['location'].sort().toString() === newIntentData[index]['location'].sort().toString()
+            //         && item['style'].sort().toString() === newIntentData[index]['style'].sort().toString()
+            //         && item['topic'].sort().toString() === newIntentData[index]['topic'].sort().toString()) {
+            //         newIntentData[index]['confidence'] = item['confidence']
+            //     }
+            // })
 
         })
 
