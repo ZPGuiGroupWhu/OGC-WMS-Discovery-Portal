@@ -110,7 +110,7 @@ public interface LayerMapper {
 
 	@Select("<script>" +
 			"SELECT l.ID as id, l.ServiceID as serviceId, l.Abstract as abstr, l.Attribution as attribution, l.Keywords as keywords, " +
-			"l.`Name` as name, l.Title as title, l.URL as url, l.BoundingBox as boundingbox, l.Topic as topic, p.Image as photo " +
+			"l.`Name` as name, l.Title as title, l.URL as url, l.BoundingBox as boundingbox, l.Topic as topic, l.ImagePath as imagePath, p.Image as photo " +
 			"from layerlist l inner join photos p on l.ID = p.LayerID " +
 			"<if test='keywordsNew!=null and  keywordsNew != \"\" ' >" +
 			" AND MATCH ( Title, Abstract, `Name`, Attribution, Keywords, URL ) AGAINST ( +#{keywordsNew} )"  + "</if>  " +

@@ -83,8 +83,9 @@ def query_layer_by_uploaded_template_test():
     for tmp_key in result:
         print(tmp_key, result[tmp_key])
 
+
 def testsearchByIntentionID():
-    url = "http://127.0.0.1:8081/search/searchByIntentionLayerIds"
+    url = "http://127.0.0.1:8081/search/queryLayerByMDL"
     headers = {"Content-Type": "application/json"}
 
     data = {
@@ -100,17 +101,16 @@ def testsearchByIntentionID():
 
 
 def testsearchByIntention():
-    url = "http://127.0.0.1:8081/search/searchByIntention"
+    url = "http://127.0.0.1:8081/search/queryLayerByIntention"
     headers = {"Content-Type": "application/json"}
-    file_object = open(r"G://1文档//intension2022.1.30.json")
-    all_the_text = file_object.read()
-
-    arr = json.loads(all_the_text)
-    file_object.close()
+    # file_object = open(r"G:\1文档\地图检索意图识别\系统开发\intentionResult2022.2.23.json")
+    # all_the_text = file_object.read()
+    # arr = json.loads(all_the_text)
+    # file_object.close()
 
     data = {
         'sessionID': '',
-        'intention': all_the_text,
+        'intention': "[{\"confidence\":0.8356528776658346,\"content\":[],\"location\":[\"Florida\"],\"style\":[],\"topic\":[]},{\"confidence\":0.44851355434289175,\"content\":[\"http://sweetontology.net/matr/SolidSubstance\"],\"location\":[],\"style\":[],\"topic\":[]}]",
         'pageNum': 1,
         'pageSize': 10,
         'photoType': ' '}
@@ -123,5 +123,6 @@ def testsearchByIntention():
 if __name__ == '__main__':
     # image_base64_decode_test()
     # get_hashcodes_test()
-    #query_layer_by_uploaded_template_test()
+    # query_layer_by_uploaded_template_test()
     testsearchByIntention()
+# testsearchByIntentionID()

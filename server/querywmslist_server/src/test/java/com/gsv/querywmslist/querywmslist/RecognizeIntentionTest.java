@@ -35,7 +35,7 @@ public class RecognizeIntentionTest {
         //System.out.println(positive);
         Integer[][] b= new Integer[2][];
         b[0]=positive.toArray(new Integer[]{});
-        b[1]= negative.toArray(new Integer[]{});
+        b[1]=negative.toArray(new Integer[]{});
 
 
 
@@ -78,20 +78,34 @@ public class RecognizeIntentionTest {
 
                 JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
                 String content= (String) jsonIntention.get("content");
-                String location= (String) jsonIntention.get("location");
-                String style= (String) jsonIntention.get("style");
-                String topic= (String) jsonIntention.get("topic");
-                String temSubIntention="";
+                JSONArray contentArray=jsonIntention.getJSONArray("content");
+                JSONArray locationArray=jsonIntention.getJSONArray("location");
+                JSONArray styleArray=jsonIntention.getJSONArray("style");
+                JSONArray topicArray=jsonIntention.getJSONArray("topic");
 
-                if (content.equals("null")==false){temSubIntention+=content.substring(content.lastIndexOf("/")+1)+' ';}
-                if (location.equals("null")==false){temSubIntention+=location+' ';}
-                if (style.equals("null")==false){temSubIntention+=style+' ';}
-                if (topic.equals("null")==false){temSubIntention+=topic;}
+                String temSubIntention="";
+                for(int i = 0; i < contentArray.size(); i++) {
+                    String content = contentArray.get(i).toString();
+                    temSubIntention+=content.substring(content.lastIndexOf("/")+1)+" ";
+                }
+                for(int i = 0; i < locationArray.size(); i++) {
+                    String location=locationArray.get(i).toString();
+                    String temp=locationArray.get(i).toString()+temSubIntention+" ";
+                    temSubIntention+=temp;
+                }
+                for(int i = 0; i < styleArray.size(); i++) {
+                    temSubIntention+=styleArray.get(i).toString()+" ";
+
+                }
+                for(int i = 0; i < topicArray.size(); i++) {
+                    temSubIntention+=topicArray.get(i).toString()+" ";
+                }
 
                 intention.subIntention.add(temSubIntention);
-                //System.out.println(temSubIntention);
+                System.out.println(temSubIntention);
             });
 
+            JSONArray negative=jsonObject.getJSONArray("negative samples");
 
         } else {
             throw new IOException("Unexpected code " + response);

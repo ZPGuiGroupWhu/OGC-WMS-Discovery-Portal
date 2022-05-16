@@ -82,6 +82,23 @@
   			<artifactId>okhttp</artifactId>
   			<version>3.14.9</version>
 		</dependency>
+
+        <!--引入第三方本地的依赖包-->
+        <dependency>
+            <groupId>com.gsv.queryWMSList</groupId>
+            <artifactId>javabuilder</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/javabuilder.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.gsv.queryWMSList</groupId>
+            <artifactId>MCPkg</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/MCPkg.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -89,9 +106,13 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
 
             </plugin>
         </plugins>
+
     </build>
 	
 </project>

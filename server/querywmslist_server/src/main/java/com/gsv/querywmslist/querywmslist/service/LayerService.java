@@ -309,6 +309,7 @@ public class LayerService {
     	
     }
 
+	// 根据样本集查询意图（输入样本为静态数据）, 对应queryByMDL接口
 	public String getIntentionByLayerIds(Integer[][] layerIds) throws IOException {
 		//根据正负反馈样本图层编号查询正负样本集
 		//samples的正负样本集的key分别relevance和irrelevance
@@ -323,7 +324,7 @@ public class LayerService {
 	}
 
 
-
+	// 封装通过图层id查询图层的结果，对应queryByMDL接口
 	public SearchLayerByTempleteResult getLayerListByIntentionLayerIds(String sessionID,Integer[][] layerIds, Integer pageNum, Integer pageSize, PhotoTransportType photoType) throws IOException {
 		//根据正负反馈样本图层编号查询正负样本集
 		//samples的正负样本集的key分别relevance和irrelevance
@@ -382,6 +383,71 @@ public class LayerService {
 		return result;
 	}
 
+
+
+	// 根据样本集查询意图（输入样本为静态数据）, 对应queryByMDL接口
+	private Intention queryIntention(List<Layer> relevance, List<Layer> irrelevance) throws IOException {
+		OkHttpClient client = new OkHttpClient();
+		Intention intention =new Intention();
+		intention.subIntention=new ArrayList<>();
+//		IntentionUtils utils=new IntentionUtils();
+//		String Str =utils.getIntentionJson(relevance,irrelevance);
+		URL resource = this.getClass().getClassLoader().getResource("json.json");
+		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.openStream()));
+		String jsonStr = new String();
+		String line;
+		while ((line = bufferedReader.readLine()) != null) {
+			jsonStr+=line;
+		}
+		RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
+		Request request = new Request.Builder()
+				.url("http://127.0.0.1:5000/process/recognizeIntention")
+				.post(body)
+				.build();
+		Response response = client.newCall(request).execute();
+		if (response.isSuccessful()) {
+			String Str = response.body().string();
+			JSONObject jsonObject = JSON.parseObject(Str);
+			JSONArray result = jsonObject.getJSONArray("result");
+			//JSONArray  jsintention  = jsonObject.getJSONArray("intention");
+			JSONArray jsintention = result.getJSONObject(0).getJSONArray("intention");
+//			System.out.println(jsintention);
+			intention.subIntentionNum=jsintention.size();
+			jsintention.stream().forEach(subIntention -> {
+				JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
+				JSONArray contentArray=jsonIntention.getJSONArray("content");
+				JSONArray locationArray=jsonIntention.getJSONArray("location");
+				JSONArray styleArray=jsonIntention.getJSONArray("style");
+				JSONArray topicArray=jsonIntention.getJSONArray("topic");
+
+				String temSubIntention="";
+				for(int i = 0; i < contentArray.size(); i++) {
+					String content = contentArray.get(i).toString();
+					temSubIntention+=content.substring(content.lastIndexOf("/")+1)+" ";
+				}
+				for(int i = 0; i < locationArray.size(); i++) {
+					String location=locationArray.get(i).toString();
+					String temp=locationArray.get(i).toString()+temSubIntention+" ";
+					temSubIntention+=temp;
+				}
+				for(int i = 0; i < styleArray.size(); i++) {
+					temSubIntention+=styleArray.get(i).toString()+" ";
+
+				}
+				for(int i = 0; i < topicArray.size(); i++) {
+					temSubIntention+=topicArray.get(i).toString()+" ";
+				}
+
+				intention.subIntention.add(temSubIntention);
+//				System.out.println(temSubIntention);
+			});
+		} else {
+			throw new IOException("Unexpected code " + response);
+		}
+		return intention;
+	}
+
+	// 封装通过意图检索对应图层的结果， 对应queryByIntention接口
 	public SearchLayerByTempleteResult getLayerListByIntention(String sessionID,Intention intention, Integer pageNum, Integer pageSize, PhotoTransportType photoType) throws IOException {
 		//根据意图查询正负样本集
 		List<Layer>totalLayers=new ArrayList<>();
@@ -414,56 +480,7 @@ public class LayerService {
 		return result;
 	}
 
-	private Intention queryIntention(List<Layer> relevance, List<Layer> irrelevance) throws IOException {
-		OkHttpClient client = new OkHttpClient();
-		Intention intention =new Intention();
-		intention.subIntention=new ArrayList<>();
-//		IntentionUtils utils=new IntentionUtils();
-//		String Str =utils.getIntentionJson(relevance,irrelevance);
-		URL resource = this.getClass().getClassLoader().getResource("json.json");
-		BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(resource.openStream()));
-		String jsonStr = new String();
-		String line;
-		while ((line = bufferedReader.readLine()) != null) {
-			jsonStr+=line;
-		}
-		RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
-		Request request = new Request.Builder()
-				.url("http://127.0.0.1:5000/process/recognizeIntention")
-				.post(body)
-				.build();
-		Response response = client.newCall(request).execute();
-		if (response.isSuccessful()) {
-			String Str = response.body().string();
-			JSONObject jsonObject = JSON.parseObject(Str);
-			JSONArray result = jsonObject.getJSONArray("result");
-			//JSONArray  jsintention  = jsonObject.getJSONArray("intention");
-			JSONArray jsintention = result.getJSONObject(0).getJSONArray("intention");
-			System.out.println(jsintention);
-			intention.subIntentionNum=jsintention.size();
-			jsintention.stream().forEach(subIntention -> {
-				JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
-				String content= (String) jsonIntention.get("content");
-				String location= (String) jsonIntention.get("location");
-				String style= (String) jsonIntention.get("style");
-				String topic= (String) jsonIntention.get("topic");
-				String temSubIntention="";
-
-				if (content.equals("null")==false){temSubIntention+=content.substring(content.lastIndexOf("/")+1)+' ';}
-				if (location.equals("null")==false){temSubIntention+=location+' ';}
-				if (style.equals("null")==false){temSubIntention+=style+' ';}
-				if (topic.equals("null")==false){temSubIntention+=topic;}
-
-				intention.subIntention.add(temSubIntention);
-				System.out.println(temSubIntention);
-			});
-		} else {
-			throw new IOException("Unexpected code " + response);
-		}
-		return intention;
-	}
-
-
+    // 通过意图检索对应的图层
 	public List<Layer> getLayersByIntention(Intention intention) {
 		List<Layer>resultLayers=new ArrayList<>();
 

@@ -43,7 +43,6 @@ def ParTrans(samples,clientPar):
         par["mergeNum"] = 50
         par["filtrationCoefficient"] = 0.3
 
-
     intention, min_encoding_length, init_min_encoding_length, method_log = method_result  # 方法运行结果包含四项内容
     intention_transformed = Run_MDL_RM.rules_to_intention_frontend(intention)  # 将意图结果转化为前端需要的格式
     intention_transformed = IntentionTrans(intention_transformed)
@@ -57,28 +56,35 @@ def ParTrans(samples,clientPar):
     par["initMinEncodingLength"] = init_min_encoding_length
     par["minEncodingLength"] = min_encoding_length
 
-
     return result,par
-
 
 def IntentionTrans(intention):
 
     intention['confidence'] = random.random()
     for one in intention['intention']:
+
         one['content'] = one.pop('MapContent')
         one['style'] = one.pop('MapMethod')
         one['topic'] = one.pop('Theme')
         one['location'] = one.pop('Spatial')
-        one['confidence'] = random.random()
+
         if one['content'] == 'Thing':
-            one['content'] = 'null'
+            one['content'] = []
+        else:one['content'] = [one['content']]
+
         if one['style'] == 'MapMethodRoot':
-            one['style'] = 'null'
+            one['style'] = []
+        else:one['style'] = [one['style']]
+
         if one['topic'] == 'ThemeRoot':
-            one['topic'] = 'null'
+            one['topic'] = []
+        else:one['topic'] = [one['topic'] ]
+
         if one['location'] == 'America':
-            one['location'] = 'null'
+            one['location'] = []
+        else:one['location'] = [one['location']]
+
+        one['confidence'] = random.random()
 
     return intention
-
 

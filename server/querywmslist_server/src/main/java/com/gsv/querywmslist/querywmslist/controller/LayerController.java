@@ -10,13 +10,7 @@ import com.gsv.querywmslist.querywmslist.commons.IntentionUtils;
 import com.gsv.querywmslist.querywmslist.dao.Intention;
 import com.gsv.querywmslist.querywmslist.vo.MultiLayersIntentionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.gsv.querywmslist.querywmslist.commons.PhotoTransportType;
 import com.gsv.querywmslist.querywmslist.dto.LayerWithFloatBBox;
@@ -117,13 +111,13 @@ public class LayerController {
     @RequestMapping(value = "/search/queryLayerByUploadedTemplate", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "根据用户上传的样例图片查询")
-    @ApiImplicitParams({
-    		@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
-            @ApiImplicitParam(name = "images",value = "使用Base64编码的多张样例图片",required = true),
-            @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-            @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
-    })
+//    @ApiImplicitParams({
+//    		@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
+//            @ApiImplicitParam(name = "images",value = "使用Base64编码的多张样例图片",required = true),
+//            @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
+//            @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
+//            @ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+//    })
     public String getLayerList(@RequestBody Map<String, Object> data){
     	
 		// MultiLayersResponse
@@ -196,17 +190,10 @@ public class LayerController {
     	return result;
     }
 
-	@CrossOrigin
-	@RequestMapping(value = "/search/searchByIntentionLayerIds", method = RequestMethod.POST)
-	@ResponseBody
-	@ApiOperation(value = "根据意图样本ID进行查询")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
-			@ApiImplicitParam(name = "layerIds",value = "正负反馈样本图层编号",required = true),
-			@ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-			@ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-			@ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
-	})
+@CrossOrigin
+@ResponseBody
+@PostMapping("/search/queryLayerByMDL")
+@ApiOperation(value = "根据意图样本ID进行查询")
 	public String getIntentionLayerIdsLayerList(@RequestBody Map<String, Object> data) {
 
 
@@ -220,10 +207,10 @@ public class LayerController {
 			}
 			JSONObject jsonObject = JSON.parseObject((String) data.get("layerIds"));
 			String sessionID = String.valueOf(data.get("sessionID"));
-			System.out.println(jsonObject);
+//			System.out.println(jsonObject);
 			JSONArray positive=jsonObject.getJSONArray("positive samples");
 			JSONArray negative=jsonObject.getJSONArray("negative samples");
-			System.out.println(positive);
+//			System.out.println(positive);
 			Integer[][] layerIds= new Integer[2][];
 			layerIds[0]= positive.toArray(new Integer[]{});
 			layerIds[1]= negative.toArray(new Integer[]{});
@@ -233,7 +220,7 @@ public class LayerController {
 
 			List<LayerWithFloatBBox> layersWithFloatBBox = searchResult.getLayers();
 			String intentionStr= layerService.getIntentionByLayerIds(layerIds);
-			System.out.println(intentionStr);
+//			System.out.println(intentionStr);
 			response.setSessionID(searchResult.getSessionID());
 			response.setErrCode(0);
 			response.setTotalLayerNum(searchResult.getTotalLayerNum());
@@ -252,16 +239,16 @@ public class LayerController {
 
 
 	@CrossOrigin
-	@RequestMapping(value = "/search/searchByIntention", method = RequestMethod.POST)
+	@RequestMapping(value = "/search/queryLayerByIntention", method = RequestMethod.POST)
 	@ResponseBody
 	@ApiOperation(value = "根据意图进行查询")
-	@ApiImplicitParams({
-			@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
-			@ApiImplicitParam(name = "intention",value = "意图和参数信息",required = true),
-			@ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-			@ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-			@ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
-	})
+//	@ApiImplicitParams({
+//			@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = true),
+//			@ApiImplicitParam(name = "intention",value = "意图和参数信息",required = true),
+//			@ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
+//			@ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
+//			@ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+//	})
 	public String getIntentionLayerList(@RequestBody Map<String, Object> data) {
 		// MultiLayersResponse
 
@@ -275,9 +262,10 @@ public class LayerController {
 				photoTransportType = PhotoTransportType.BASE64_STRING;
 			}
 			String strIntention = String.valueOf(data.get("intention"));
-			System.out.println(strIntention);
-			Intention intention =new Intention();
-			intention= IntentionUtils.JSONArrayToIntention(strIntention);
+//			System.out.println(strIntention);
+			Intention intention = IntentionUtils.JSONArrayToIntention(strIntention);
+
+
 			String sessionID = String.valueOf(data.get("sessionID"));
 
 			// 根据意图查询图层

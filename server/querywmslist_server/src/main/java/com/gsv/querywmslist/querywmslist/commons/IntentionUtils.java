@@ -10,30 +10,46 @@ import okhttp3.*;
 import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class IntentionUtils {
 
     public static Intention JSONArrayToIntention(String Str){
-        JSONArray jsonArray = JSONObject.parseArray(Str);
         Intention intention =new Intention();
         intention.subIntention=new ArrayList<>();
-        JSONArray jsIntention = jsonArray.getJSONObject(0).getJSONArray("Intention");
-        intention.subIntentionNum=jsIntention.size();
-        for (int i = 0; i < jsIntention.size(); i++) {
-            JSONObject jsonSubIntention = jsIntention.getJSONObject(i);
-            String a=String.valueOf(i+1);
-            JSONArray subIntentionCon=jsonSubIntention.getJSONArray("Sub-Intention-"+a);
-            System.out.println(subIntentionCon);
+//        JSONObject jsonObject = JSON.parseObject(Str);
+//        JSONArray result = jsonObject.getJSONArray("result");
+//
+//        JSONArray jsintention = result.getJSONObject(0).getJSONArray("intention");
+
+        JSONArray jsintention = JSON.parseArray(Str);
+
+        intention.subIntentionNum=jsintention.size();
+        for (int ii = 0; ii < jsintention.size(); ii++) {
             String temSubIntention= new String("");
-            String content= (String) subIntentionCon .getJSONObject(0).get("value");
-            String location= (String) subIntentionCon .getJSONObject(1).get("value");
-            String style= (String) subIntentionCon .getJSONObject(2).get("value");
-            String topic= (String) subIntentionCon .getJSONObject(3).get("value");
-            if (content.equals("Null")==false){temSubIntention+=content.substring(content.lastIndexOf("/")+1)+' ';}
-            if (location.equals("Null")==false){temSubIntention+=location+' ';}
-            if (style.equals("Null")==false){temSubIntention+=style+' ';}
-            if (topic.equals("Null")==false){temSubIntention+=topic;}
+            JSONObject jsonIntention = JSON.parseObject(jsintention.get(ii).toString());
+            JSONArray contentArray=jsonIntention.getJSONArray("content");
+            JSONArray locationArray=jsonIntention.getJSONArray("location");
+            JSONArray styleArray=jsonIntention.getJSONArray("style");
+            JSONArray topicArray=jsonIntention.getJSONArray("topic");
+
+            for(int i = 0; i < contentArray.size(); i++) {
+                String content = contentArray.get(i).toString();
+                temSubIntention+=content.substring(content.lastIndexOf("/")+1)+" ";
+            }
+            for(int i = 0; i < locationArray.size(); i++) {
+                String location=locationArray.get(i).toString();
+                String temp=locationArray.get(i).toString()+temSubIntention+" ";
+                temSubIntention+=temp;
+            }
+            for(int i = 0; i < styleArray.size(); i++) {
+                temSubIntention+=styleArray.get(i).toString()+" ";
+
+            }
+            for(int i = 0; i < topicArray.size(); i++) {
+                temSubIntention+=topicArray.get(i).toString()+" ";
+            }
             intention.subIntention.add(temSubIntention);
             System.out.println(temSubIntention);
         }
