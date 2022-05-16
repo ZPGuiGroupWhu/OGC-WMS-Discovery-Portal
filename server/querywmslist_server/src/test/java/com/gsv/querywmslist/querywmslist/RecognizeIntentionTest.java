@@ -77,7 +77,6 @@ public class RecognizeIntentionTest {
             jsintention.stream().forEach(subIntention -> {
 
                 JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
-                String content= (String) jsonIntention.get("content");
                 JSONArray contentArray=jsonIntention.getJSONArray("content");
                 JSONArray locationArray=jsonIntention.getJSONArray("location");
                 JSONArray styleArray=jsonIntention.getJSONArray("style");
