@@ -582,6 +582,7 @@ class IntentionExp extends React.Component<Props, State> {
                                 </Tabs>
                                 <Space style={{margin:'20px 10px'}} size={36}>
                                     <Button className="advanced_Btn" type="primary"  shape="round"
+                                            disabled={this.state.advancedPanel}
                                             onClick={() => {
                                                 this.props.advancedPanelCallback(true)
                                                 this.setState({advancedPanel: true})
@@ -642,9 +643,21 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     public onTreeSelect=(selectedKeys: React.Key[],e:any)=>{
-        if (selectedKeys[0] === "0-0-0" || selectedKeys[0] === "0-0-1") {
+        // sum the number of hyphen in a string
+        const sumHyphen=(s:string)=>{
+            let hyphenNum=0
+            for(let i=0;i<s.length;i++){
+                if(s.charAt(i)==='-'){
+                    ++hyphenNum
+                }
+            }
+            return hyphenNum
+        }
+        // if the node is a sub-Intention, skip to the descriptive tab
+        if (sumHyphen(selectedKeys[0].toString()) === 2 ) {
             this.setState({ activeTabKey: selectedKeys[0].toString() });
         }
+        // else print information of the node
         message.info(`${e.node.class}: ${e.node.title.props.children}`)
     }
 

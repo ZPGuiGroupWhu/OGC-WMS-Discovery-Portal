@@ -119,7 +119,7 @@ class AdvIntentionPanel extends React.Component<Props,State>{
                     {label[index]}
                     <span id={'column'+(index+1).toString()}  className="column"
                           style={{width: len/Math.max(...arr)*totalWidth}}>
-                        The {iterator[index]}: {Math.round(arr[index])}
+                        The {iterator[index]} Round: {Math.round(arr[index])}
                     </span>
                 </h3>
             </div>
