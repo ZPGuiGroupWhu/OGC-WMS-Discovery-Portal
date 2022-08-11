@@ -54,7 +54,7 @@ class Register extends React.Component<Props, State>{
     // control register modal visible
     public handleCancel =()=>{
         this.props.dispatch(conveyRegisterVisible(false))
-        this.formRef.current.resetFields()
+        this.formRef.current!.resetFields()
     }
 
 
@@ -107,16 +107,16 @@ class Register extends React.Component<Props, State>{
             const resBody: any=JSON.parse(res)
             if (resBody.errCode===0) {
                 message.success("Register successfully.")
-                this.formRef.current.resetFields()
+                this.formRef.current!.resetFields()
                 dispatch(conveyRegisterVisible(false))
             }
             else if (resBody.errCode === 1002){
                 message.error("Service request failed. Please try again later!")
-                this.formRef.current.resetFields(['password','confirm password'])
+                this.formRef.current!.resetFields(['password','confirm password'])
             }
         }catch (e) {
             alert(e.message)
-            this.formRef.current.resetFields(['password','confirm password'])
+            this.formRef.current!.resetFields(['password','confirm password'])
         }
 
         // form.validateFields(async (err, values) => {
@@ -170,7 +170,7 @@ class Register extends React.Component<Props, State>{
                 footer={null}
                 onCancel={this.handleCancel}
                 maskClosable={false}
-                forceRender={true}
+                // forceRender={true}
             >
                 <p>Hello, visitor! Welcome to the OGC WMS Discovery Portal. In order to receive better service,
                     you need to offer necessary information to create a new account.

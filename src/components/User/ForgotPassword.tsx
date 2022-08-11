@@ -69,19 +69,19 @@ class ForgotPassword extends React.Component<Props, State>{
             const resBody: any=JSON.parse(res)
             if (resBody.errCode===0) {
                 message.success("Request successfully.")
-                this.formRef.current.setFieldsValue({password: resBody.resBody})
+                this.formRef.current!.setFieldsValue({password: resBody.resBody})
             }
             else if (resBody.errCode === 1001){
                 message.error("Can not find this identifier in the database.Please input correct account.")
-                this.formRef.current.resetFields()
+                this.formRef.current!.resetFields()
             }
             else if (resBody.errCode === 1002){
                 message.error("Service request failed. Please try again later!")
-                this.formRef.current.resetFields()
+                this.formRef.current!.resetFields()
             }
         } catch (e) {
             alert(e.message)
-            this.formRef.current.resetFields()
+            this.formRef.current!.resetFields()
         }
 
     }
@@ -89,14 +89,14 @@ class ForgotPassword extends React.Component<Props, State>{
     // handle cancel button
     public handleCancel =()=>{
         this.props.dispatch(conveyForgotPasswordVisible(false))
-        this.formRef.current.resetFields()
+        this.formRef.current!.resetFields()
     }
 
     public render (){
         const prefixSelector=(
             <Form.Item id="temp" name="FType" initialValue={this.state.identifier} noStyle={true}>
                 <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
-                        onChange={()=>{this.formRef.current.resetFields(['identity','password'])}}>
+                        onChange={()=>{this.formRef.current!.resetFields(['identity','password'])}}>
                     <Select.Option key='email' value='email'><MailOutlined style={{color: 'rgba(0,0,0,.5)'}} /></Select.Option>
                     <Select.Option key='username' value='username'><UserOutlined style={{color: "rgba(0,0,0,.5)"}} /></Select.Option>
                 </Select>
@@ -109,11 +109,12 @@ class ForgotPassword extends React.Component<Props, State>{
                 footer={null}
                 maskClosable={false}
                 onCancel={this.handleCancel}
-                forceRender={true}
+                // forceRender={true}
             >
                 <p>Forgot your Password?   Ծ‸Ծ </p>
                 <p>Don't worry. Let's help you to retrieve your password by your registered Email or Username   </p>
-                <Form className="forgot_password_form" layout={"vertical"} ref={this.formRef} onFinish={(values:any)=>this.handleFindPassword(values)}>
+                <Form className="forgot_password_form" layout={"vertical"} ref={this.formRef}
+                      onFinish={(values:any)=>this.handleFindPassword(values)}>
                     <Form.Item  name="identity" label={this.state.identifier === 'email' ? "Email" : "Username"}
                                labelAlign="left" validateTrigger="onBlur"
                                rules={[{

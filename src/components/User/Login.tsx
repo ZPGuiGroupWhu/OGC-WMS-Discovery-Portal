@@ -38,8 +38,8 @@ class Login extends React.Component<Props, State>{
         // return null means do nothing on state
         return null
     }
+    public formRef:React.RefObject<any>=React.createRef();
 
-    public formRef:React.RefObject<any>=React.createRef()
 
     constructor(props:Props) {
         super(props);
@@ -83,24 +83,26 @@ class Login extends React.Component<Props, State>{
             const config = {body: postValues, method: "post", 'Content-Type': 'application/json'}
             const res: any = await $req(url, config)
             const resBody: any=JSON.parse(res)
+
             if (resBody.errCode===0) {
                 // should push resBody.resBody(user information) to redux store.
                 message.success("Login successfully.")
-                this.formRef.current.resetFields()
+                // this.formRef.current here will cause memory leakage
+                // this.formRef.current!.resetFields()
                 dispatch(conveyLoginVisible(false))
                 dispatch(conveyIsLogin(true))
             }
             else if (resBody.errCode === 1001){
                 message.error("Identifier and password mismatched.Please input correct account.")
-                this.formRef.current.resetFields(['password'])
+                this.formRef.current!.resetFields(['password'])
             }
             else if (resBody.errCode === 1002){
                 message.error("Service request failed. Please try again later!")
-                this.formRef.current.resetFields(['password'])
+                this.formRef.current!.resetFields(['password'])
             }
         }catch (e){
             alert(e.message)
-            this.formRef.current.resetFields(['password'])
+            this.formRef.current!.resetFields(['password'])
         }
     }
 
@@ -108,81 +110,86 @@ class Login extends React.Component<Props, State>{
     // handle cancel button
     public handleCancel =()=>{
         this.props.dispatch(conveyLoginVisible(false))
-        this.formRef.current.resetFields()
+        // this.formRef.current!.resetFields()
     }
 
-    // destroy async function handleLogin to avoid memory leakage
-    public componentWillUnmount() {
-     // TODO: destroy async function handleLogin to avoid memory leakage
-    }
 
     public render() {
         const prefixSelector=(
             <Form.Item name="loginType" initialValue={this.state.identifier} noStyle={true}>
                 <Select onSelect={(value:string)=>{this.setState({identifier: value})}}
-                        onChange={()=>{this.formRef.current.resetFields(['identity','password'])}}>
+                        onChange={()=>{this.formRef.current!.resetFields(['identity','password'])}}>
                     <Select.Option key='email'><MailOutlined style={{color: 'rgba(0,0,0,.5)'}} /></Select.Option>
                     <Select.Option key='username'><UserOutlined style={{color: "rgba(0,0,0,.5)"}} /></Select.Option>
                 </Select>
             </Form.Item>)
 
         return (
-            <Modal
-                visible={this.state.loginVisible}
-                title="Welcome to OGC WMS Discovery Portal"
-                footer={null}
-                onCancel={this.handleCancel}
-                maskClosable={false}
-                forceRender={true}
-            >
-                <div className="login_logo">
-                    <img src={logo} className="login_logo_img" alt="logo" />
-                </div>
-                <Form  className="login_form" onFinish={(values:any)=>this.handleLogin(values)} layout={"vertical"} ref={this.formRef}>
-                    <Form.Item name="identity" label={this.state.identifier=== 'email'? 'Email':'Username'} labelAlign="left"
-                               validateTrigger={"onBlur"}
-                               rules={[{required:true, message: 'Please input your ' + this.state.identifier + "!"},
-                                   this.state.identifier === 'email' ?
-                                       {type: "email", message: "The input is not valid Email!"} : {}]}
-                        >
-                        <Input  id="LGIdentity" placeholder={this.state.identifier=== 'email'? 'Email':'Username'}
-                                addonBefore={prefixSelector} />
-                    </Form.Item>
-                    <Form.Item name="password" rules={[{required:true, message: 'Please input your password!'}]}
-                        label="Password" labelAlign="left">
-                        <Input.Password id="LGPassword" prefix={<LockOutlined style={{color: "rgba(0,0,0,.5)"}} />}
-                                      placeholder="Password" />
-                    </Form.Item>
-                    <Form.Item >
-                        <Form.Item name="remember" valuePropName="check" noStyle={true}>
-                            <Checkbox>Remember me</Checkbox>
+            <div style={{display: 'none'}}>
+                <Modal
+                    visible={this.state.loginVisible}
+                    title="Welcome to OGC WMS Discovery Portal"
+                    footer={null}
+                    onCancel={this.handleCancel}
+                    maskClosable={false}
+                    destroyOnClose={true}
+                    // forceRender={true}
+                >
+                    <div className="login_logo">
+                        <img src={logo} className="login_logo_img" alt="logo" />
+                    </div>
+                    <Form  className="login_form"
+                           onFinish={(values:any)=>this.handleLogin(values)}
+                           layout={"vertical"}
+                           ref={this.formRef}
+                           initialValues={{'identity': '', 'password': ''}}
+                    >
+                        <Form.Item name="identity" label={this.state.identifier=== 'email'? 'Email':'Username'} labelAlign="left"
+                                   validateTrigger={"onBlur"}
+                                   rules={[{required:true, message: 'Please input your ' + this.state.identifier + "!"},
+                                       this.state.identifier === 'email' ?
+                                           {type: "email", message: "The input is not valid Email!"} : {}]}
+                            >
+                            <Input  id="LGIdentity" placeholder={this.state.identifier=== 'email'? 'Email':'Username'}
+                                    addonBefore={prefixSelector} />
                         </Form.Item>
+                        <Form.Item name="password" rules={[{required:true, message: 'Please input your password!'}]}
+                            label="Password" labelAlign="left">
+                            <Input.Password id="LGPassword" prefix={<LockOutlined style={{color: "rgba(0,0,0,.5)"}} />}
+                                          placeholder="Password" />
+                        </Form.Item>
+                        <Form.Item >
+                            <Form.Item name="remember" valuePropName="check" noStyle={true}>
+                                <Checkbox>Remember me</Checkbox>
+                            </Form.Item>
 
-                        <a className="login_form_forgot" onClick={this.handleForgotPassword}>Forgot password</a>
-                        <ForgotPassword />
-                    </Form.Item>
-                    <Form.Item>
-                        <Button type="primary" htmlType="submit" className="login_form_button" >
-                            Log in
-                        </Button>
-                        Or <a onClick={this.handleRegister}>register now!</a>
-                    </Form.Item>
-                </Form>
+                            <a className="login_form_forgot" onClick={this.handleForgotPassword}>Forgot password</a>
+
+                        </Form.Item>
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" className="login_form_button" >
+                                Log in
+                            </Button>
+                            Or <a onClick={this.handleRegister}>register now!</a>
+                        </Form.Item>
+                    </Form>
+                </Modal>
+                <ForgotPassword />
                 <Register />
-            </Modal>
+            </div>
         );
     }
 
     // Dispatch registerVisible to render register modal.
     public handleRegister =()=>{
         this.props.dispatch(conveyRegisterVisible(true))
-        this.formRef.current.resetFields()
+        // this.formRef.current.resetFields()
     }
 
     // Dispatch forgotPasswordVisible to render find password modal.
     public handleForgotPassword =()=>{
         this.props.dispatch(conveyForgotPasswordVisible(true))
-        this.formRef.current.resetFields()
+        // this.formRef.current.resetFields()
     }
 
 }
