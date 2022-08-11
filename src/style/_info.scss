@@ -1,0 +1,120 @@
+// style for the service detailed info page
+@import '_common-style.scss';
+
+
+._info{
+  font-size: $nav_font_size;
+  header{
+    margin-top: $bound_padding;
+    a{
+      margin-left: $bound_padding * 0.5;
+    }
+  }
+  &_container{
+    background-color: $white;
+    margin-top: $bound_padding;
+    padding: $bound_padding;
+    &_header{
+      font-size: $nav_font_size + 5px;
+    }
+    &_section{
+      margin-bottom: $bound_padding;
+      &_photo{
+        float: right;
+        margin-right: 6%;
+      }
+      &_header{
+        font-size: $nav_font_size;
+      }
+      &_content{
+        margin-top: $bound_padding;
+        .icon{
+          margin-right:  $bound_padding * 0.5;
+        }
+        .span{
+          margin-left: $bound_padding;
+        }
+        span,p{
+          word-wrap:break-word;
+          word-break:break-all;
+        }
+        p{
+          padding: 0;
+          margin-top: $bound_padding;
+          margin-bottom:0;
+        }
+        span.tag{
+          margin-left: $bound_padding;
+          border:2px solid Silver ;
+          border-radius:5px;
+          text-align: center;
+          padding: 2px 8px;
+          text-decoration: none;
+          display: inline-block;
+          margin: 2px 2px;
+        }
+        span.tagnull{
+          margin-left: $bound_padding;
+          background: MintCream ;
+          border:2px solid Silver ;
+          border-radius:5px;
+          text-align: center;
+          padding: 2px 8px;
+          text-decoration: none;
+          display: inline-block;
+          margin: 2px 2px;
+        }
+        span.double{
+          margin-left: $bound_padding;
+          margin-right: $bound_padding*10;
+        }
+        div.img {
+          border: 1px solid #ccc;
+        }
+
+        div.img:hover {
+          box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+
+        div.img img {
+          width: 100%;
+          height: auto;
+        }
+
+        div.desc {
+          padding: 15px;
+          text-align: center;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
+        .responsive {
+          padding: 20px 80px;
+          float: left;
+          width: 49.99999%;
+        }
+
+        @media only screen and (max-width: 700px){
+          .responsive {
+            width: 49.99999%;
+            margin: 6px 0;
+          }
+        }
+
+        @media only screen and (max-width: 500px){
+          .responsive {
+            width: 100%;
+          }
+        }
+
+        .clearfix:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+      }
+    }
+  }
+}

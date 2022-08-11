@@ -1,6 +1,6 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
-import '../../style/_home.scss';
+import '../../style/_info.scss';
 
 import {
     BulbOutlined,

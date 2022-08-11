@@ -1,6 +1,6 @@
 import * as React from 'react';
 import 'antd/dist/antd.css';
-import '../../style/_home.scss';
+import '../../style/_info.scss';
 
 import {
     BankOutlined,
@@ -130,7 +130,7 @@ class LayerInfo extends React.Component<Props,State>{
                         <span className='span'><ContainerOutlined className="icon" /><b>Abstract: </b>{this.state.layerInfoData.abstr}</span><br/>
                         <span className='span'><PushpinOutlined className="icon" /><b>Attribution: </b>{attribution}</span><br/>
                         <span className='span'><EnvironmentOutlined className="icon" /><b>BoundingBox(using {this.state.layerInfoData.projection}): </b>
-                            ({this.state.layerInfoData.bbox[0][0]}, {this.state.layerInfoData.bbox[0][1]}); ({this.state.layerInfoData.bbox[1][0]}, {this.state.layerInfoData.bbox[1][1]})</span><br/>
+                            ({this.state.layerInfoData.bbox[0][0]}, {this.state.layerInfoData.bbox[0][1]}), ({this.state.layerInfoData.bbox[1][0]}, {this.state.layerInfoData.bbox[1][1]})</span><br/>
                         <span className='span'><LinkOutlined className="icon" /><b>Layer link：</b><a id="layerInfoUrl" href={this.state.layerInfoData.url}>{this.state.layerInfoData.url}</a></span><br/>
                         </Content>
                     </Content>
@@ -169,7 +169,7 @@ class LayerInfo extends React.Component<Props,State>{
                     </Content>
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_content">
-                            <b>Title:</b><span>{this.state.layerInfoData.service["title"]}.</span><br/>
+                            <b>Title: </b><span>{this.state.layerInfoData.service["title"]}.</span><br/>
                         </Content>
                     </Content>
                     <Content className="_info_container_section">
