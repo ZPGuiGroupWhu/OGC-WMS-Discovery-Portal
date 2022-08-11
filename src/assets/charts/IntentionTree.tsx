@@ -355,8 +355,8 @@ const dimension=['Content','Topic','Style','Location']
 const style=["Point symbol method","Line symbol method","Area method","Quality base method","Choloplethic method","Others"]
 const topic=["Agriculture","Biodiversity","Climate","Disaster","Ecosystem","Energy","Geology","Health","Water","Weather"]
 
-let historyUndoList:any[]=[]
-let historyRedoList:any[]=[]
+let historyUndoList: any[] = []
+let historyRedoList: any[] = []
 
 
 // render intention tree
@@ -372,7 +372,7 @@ const IntentionTree = (props:any,ref:React.RefObject<unknown>) => {
 
     useEffect(()=>{historyUndoList.push(treeData)},[]) // init historyUndoList
 
-    useEffect(()=>setTreeData(buildTreeData(store.intent)),[store.intent])
+    useEffect(()=>setTreeData(buildTreeData(store.intent)), [store.intent])
 
     useImperativeHandle(ref,()=>({saveIntentData}))
 
@@ -401,7 +401,7 @@ const IntentionTree = (props:any,ref:React.RefObject<unknown>) => {
             }
             return
         }
-        helper(tmp,key)
+        helper(tmp, key)
         return resNode
     }
 
@@ -423,8 +423,8 @@ const IntentionTree = (props:any,ref:React.RefObject<unknown>) => {
                     node.children.push(nNode)
                     return
                 }
-                if(node.children.length){
-                    helper(node.children,key)
+                if (node.children.length) {
+                    helper(node.children, key)
                 }
             }
         }

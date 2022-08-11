@@ -63,7 +63,7 @@ class PortalHeader extends React.Component<Props,State>{
                     <Menu.Item key="7"><Link to="/">Service Search</Link></Menu.Item>
                     <Menu.Item key="8"><Link to="/layerSearch">Layer Search</Link></Menu.Item>
                 </Menu.SubMenu>
-                <Menu.SubMenu key="2" className="header_menu_dropdown" title={<span>Theme Map</span>}>
+                <Menu.SubMenu key="2" className="header_menu_dropdown" title={<span>Thematic Map</span>}>
                     <Menu.Item key="9"><Link to="/distribution">Service Distribution</Link></Menu.Item>
                     <Menu.Item key="10"><Link to="/serviceQuality">Service Quality</Link></Menu.Item>
                     <Menu.Item key="11"><Link to="/layerStatis">Layer Statistic</Link></Menu.Item>

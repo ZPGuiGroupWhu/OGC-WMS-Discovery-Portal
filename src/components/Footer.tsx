@@ -8,7 +8,7 @@ class PortalFooter extends React.Component {
     public render() {
       return (
         <Footer className="footer">
-          <span>Geographic Service catalogue Copyright &copy; 2021</span>
+          <span>Geographic Service catalogue Copyright &copy; 2022</span>
           <a href="https://github.com/zpguigroupwhu" rel="noopener noreferrer" target="_blank"> GeoAI & Spatial Visual Analytics Lab (GeoAI&SVAL) @ Wuhan University</a>
       </Footer>
       );

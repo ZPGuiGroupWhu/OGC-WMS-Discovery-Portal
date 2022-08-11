@@ -109,10 +109,10 @@ class LeftSider extends React.Component<Props,State> {
     // init leaflet map, init add leaflet draw control
     public initMap = () => {
         const self = this;
-        const locatioNMap = L.map("location_map",{
-            attributionControl:false,
+        const locatioNMap = L.map("location_map", {
+            attributionControl: false,
             zoomControl: false
-        }).setView([0,0],1);
+        }).setView([0, 0], 1);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(locatioNMap);
         const drawnItems = new L.FeatureGroup();
         locatioNMap.addLayer(drawnItems);
@@ -122,11 +122,11 @@ class LeftSider extends React.Component<Props,State> {
                 edit: false,
                 featureGroup: drawnItems
             },
-            position:'topleft'
+            position: 'topleft'
         });
         locatioNMap.addControl(drawControl);
-        locatioNMap.on(L.Draw.Event.DRAWSTART,(e) => {
-            if (Object.keys(drawnItems["_layers"]).length !== 0){
+        locatioNMap.on(L.Draw.Event.DRAWSTART, (e) => {
+            if (Object.keys(drawnItems["_layers"]).length !== 0) {
                 const layer = drawnItems["_layers"][Object.keys(drawnItems["_layers"])[0]];
                 drawnItems.removeLayer(layer);
             };
@@ -178,16 +178,16 @@ class LeftSider extends React.Component<Props,State> {
     }
 
     // click submenu to choose search parameters
-    public handleMenuClick = (e:any) => {
-        if(this.topicArr.indexOf(e.key) !== -1){
-            this.setConditionPar(e.key,topic);
-        }else if(this.organizationArr.indexOf(e.key) !== -1){
-            this.setConditionPar(e.key,organization);
-        }else if(this.organizationTypeArr.indexOf(e.key) !== -1){
-            this.setConditionPar(e.key,organizationType);
-        }else if(this.continentArr.indexOf(e.key) !== -1){
-            this.setConditionPar(e.key,continent);
-        }else{
+    public handleMenuClick = (e: any) => {
+        if (this.topicArr.indexOf(e.key) !== -1) {
+            this.setConditionPar(e.key, topic);
+        } else if (this.organizationArr.indexOf(e.key) !== -1) {
+            this.setConditionPar(e.key, organization);
+        } else if (this.organizationTypeArr.indexOf(e.key) !== -1) {
+            this.setConditionPar(e.key, organizationType);
+        } else if (this.continentArr.indexOf(e.key) !== -1) {
+            this.setConditionPar(e.key, continent);
+        } else {
             alert('There is something wrong in menu')
         }
         const queryPar = this.state.queryPar;

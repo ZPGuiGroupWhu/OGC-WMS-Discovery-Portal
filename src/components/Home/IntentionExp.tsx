@@ -521,7 +521,7 @@ class IntentionExp extends React.Component<Props, State> {
         }
 
         return (
-            <Sider collapsible={true} collapsed={this.state.collapsed} collapsedWidth={10} reverseArrow={true}
+            <Sider collapsible={true} collapsed={this.state.collapsed} collapsedWidth={20} reverseArrow={true}
                    trigger={null} style={{ backgroundColor: 'white',borderLeft: '1px solid #e8e8e8'}}
                    width={'300'}>
                 <div style={{display: this.state.collapsed ? 'none' : 'inline'}}>
@@ -582,7 +582,7 @@ class IntentionExp extends React.Component<Props, State> {
                                 </Tabs>
                                 <Space style={{margin:'20px 10px'}} size={36}>
                                     <Button className="advanced_Btn" type="primary"  shape="round"
-                                            disabled={this.state.advancedPanel}
+                                            // disabled={this.state.advancedPanel}
                                             onClick={() => {
                                                 this.props.advancedPanelCallback(true)
                                                 this.setState({advancedPanel: true})

@@ -413,8 +413,8 @@ class LayerSearch extends React.Component<Props,State> {
                  hoverCounter=0}}
       >
           <div className="main_container_content_imglist_item_popover_description">
-              <span><TagOutlined className="icon" /><b>Name:</b>{layer.name}</span><br/>
-              <span><ProjectOutlined className="icon" /><b>Title:</b>{layer.title}</span><br/>
+              <span><TagOutlined className="icon" /><b>Name: </b>{layer.name}</span><br/>
+              <span><ProjectOutlined className="icon" /><b>Title: </b>{layer.title}</span><br/>
               <span><PushpinOutlined className="icon" /><b>Attribution: </b>{layer.attribution===""?"No attribution":layer.attribution}</span><br/>
               <span><BulbOutlined className="icon" /><b>Topic: </b>{layer.topic}</span><br/>
               <span><ThunderboltOutlined className="icon" /><b>Keywords: </b>{layer.keywords===""?"No keywords":layer.keywords}</span>
@@ -457,17 +457,17 @@ class LayerSearch extends React.Component<Props,State> {
      let temp:ILayer[][];
 
      temp=[[]];
-     for(let i=0;i<round;++i){
-      temp[i]=[]
-        for(let k=0;k<col;++k){
-          temp[i][k]=(this.state.isPositiveTab?this.state.positiveList:this.state.negativeList)[i*col+k];
-        }
+      for (let i = 0; i < round; ++i) {
+          temp[i] = []
+          for (let k = 0; k < col; ++k) {
+              temp[i][k] = (this.state.isPositiveTab ? this.state.positiveList : this.state.negativeList)[i * col + k];
+          }
       }
-      if (remainder!==0){
-        temp[round]=[]
-        for(let m=0;m<remainder;++m){
-          temp[round][m]=(this.state.isPositiveTab?this.state.positiveList:this.state.negativeList)[round*col+m]
-         }
+      if (remainder !== 0) {
+          temp[round] = []
+          for (let m = 0; m < remainder; ++m) {
+              temp[round][m] = (this.state.isPositiveTab ? this.state.positiveList : this.state.negativeList)[round * col + m]
+          }
       }
 
       return (
