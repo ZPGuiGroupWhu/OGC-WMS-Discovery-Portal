@@ -297,11 +297,14 @@
 import * as React from 'react';
 import {createFromIconfontCN, DoubleLeftOutlined, DoubleRightOutlined,  DownOutlined, BarChartOutlined, SaveOutlined,
     EditOutlined, InfoCircleOutlined} from '@ant-design/icons';
-import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card, Alert, Space} from 'antd';
+import {Layout, Tag, Tooltip, Tree, Progress, Tabs, Button, Select, message, Card, Alert, Space, Modal, Cascader} from 'antd';
 import { ISubIntent } from '../../util/interface'
 import '../../style/_rightSider.scss';
 import { connect } from 'react-redux';
 import {conveyIntentData} from "../../redux/action";
+import * as L from 'leaflet'
+import region from "../../assets/data/region.json";
+import provinceData from "../../assets/data/province.json"
 
 // import { MapContainer, Popup, Marker, TileLayer } from 'react-leaflet'
 // import "node_modules/leaflet/dist/leaflet.css"
@@ -448,7 +451,7 @@ class IntentionExp extends React.Component<Props, State> {
             return null
     }
 
-
+    public map: L.Map
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -465,6 +468,18 @@ class IntentionExp extends React.Component<Props, State> {
         };
     }
 
+
+    public componentDidUpdate() {
+        this.state.newIntent.map((subIntent:ISubIntent) =>{
+            subIntent.location.map((item) => {
+                this.drawCanvas(item, 250 ,200, 10)
+            })
+        })
+
+        if (this.state.isLocationEdit) {
+            this.initMap()
+        }
+    }
 
     public render() {
         const buildTreeData=()=>{
@@ -610,7 +625,7 @@ class IntentionExp extends React.Component<Props, State> {
         );
     }
 
-    public generateIntentDes=(val:ISubIntent,index:number)=>{
+    public generateIntentDes = (val:ISubIntent,index:number)=>{
         let mapContent= ''
         let mapLocation=''
         let mapTopic=''
@@ -792,7 +807,7 @@ class IntentionExp extends React.Component<Props, State> {
                                             <Card className="card" key={item}
                                                   cover={<img src={styleImg[Style.indexOf(item)]}/>}
                                                   bodyStyle={{fontSize: 15, textAlign: "center", padding: 2}}
-                                                  style={{width: '90%'}}>
+                                                  style={{width: '250px'}}>
                                                 {item}
                                             </Card>
                                         )
@@ -811,34 +826,48 @@ class IntentionExp extends React.Component<Props, State> {
                                     onClick={this.handleLocationChange}/>
                         </Tooltip>
                     </div>
-                    <div className="body">
-                    {
-                        this.state.isLocationEdit ?
-                            <Select className="select"  mode="tags" placeholder="Input Value on Location"
-                                    onChange={(val) => {
-                                        const self=this.state.newIntent
-                                        self[index]['location']=val
-                                        self[index]['confidence']=100
-                                        this.setState({
-                                            newIntent: self
-                                        })
-                                    }}
-                                    defaultValue={val.location}
-                                // value={this.tmpContent.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}
-                                    showArrow={true} style={{width: '80%'}} />
-                            :
-                            val.location.length === 0 ?
-                                'No Intention on Location '
-                                :
-                                val.location.map((item: string) => {
+                    <div className = "body" style = {{marginLeft: '1rem'}}>
+                        {
+                            val.location.length === 0 ? 'No Intention on Location' :
+                                val.location.map((item,index) => {
                                     return (
-                                        <Tag key={item} style={{fontSize: '16px'}} color='#1890ff'>
-                                            {item}
-                                        </Tag>
+                                        <canvas className = 'canvas' id = {item} key = {index}
+                                                width={250} height={200}
+                                        >
+                                            Your browser does not support the canvas element.
+                                        </canvas>
                                     )
                                 })
-                    }
+                        }
                     </div>
+                    {/*<div className="body">*/}
+                    {/*{*/}
+                    {/*    this.state.isLocationEdit ?*/}
+                    {/*        <Select className="select"  mode="tags" placeholder="Input Value on Location"*/}
+                    {/*                onChange={(val) => {*/}
+                    {/*                    const self=this.state.newIntent*/}
+                    {/*                    self[index]['location']=val*/}
+                    {/*                    self[index]['confidence']=100*/}
+                    {/*                    this.setState({*/}
+                    {/*                        newIntent: self*/}
+                    {/*                    })*/}
+                    {/*                }}*/}
+                    {/*                defaultValue={val.location}*/}
+                    {/*            // value={this.tmpContent.map((item)=>item.slice(item.lastIndexOf('/') + 1, item.length))}*/}
+                    {/*                showArrow={true} style={{width: '80%'}} />*/}
+                    {/*        :*/}
+                    {/*        val.location.length === 0 ?*/}
+                    {/*            'No Intention on Location '*/}
+                    {/*            :*/}
+                    {/*            val.location.map((item: string) => {*/}
+                    {/*                return (*/}
+                    {/*                    <Tag key={item} style={{fontSize: '16px'}} color='#1890ff'>*/}
+                    {/*                        {item}*/}
+                    {/*                    </Tag>*/}
+                    {/*                )*/}
+                    {/*            })*/}
+                    {/*}*/}
+                    {/*</div>*/}
                 </div >
 
                 <div className="rightSider_subIntention_dim">
@@ -864,8 +893,240 @@ class IntentionExp extends React.Component<Props, State> {
                         />
                     </div>
                 </div>
+
+                <Modal
+                    className = "rightSider_subIntention_modal"
+                    maskClosable = {false}
+                    visible = {this.state.isLocationEdit}
+                    onCancel = {() => {this.setState({isLocationEdit: false})}}
+                    footer = {null}
+                    title = {'Location Edit'}
+                    width = {816}
+                >
+                    <div className = "select_section">
+                        <span className = "span">Value： </span>
+                        <Cascader
+                            className = "cascader"
+                            placeholder = 'Please select a region (support multiple)'
+                            options = {region}
+                            expandTrigger = 'hover'
+                            changeOnSelect = {true}
+                            style={{width: '700px'}}
+                            fieldNames={{'label': 'value', 'value': 'value', 'children': 'children'}}
+                            multiple = {true}
+                            defaultValue = {val.location}
+                            displayRender = { label => label.join('/')}
+                            tagRender = {(props) => {
+                                const backgroundColor:string[] = ['#8e44ad', '#27ae60', '#e67e22', '#3498db']
+                                const index = props.label!.toString().split('/').length - 1
+                                return (
+                                    <Tag closable = {true} color = {backgroundColor[index]}>
+                                        {props.label!.toString()}
+                                    </Tag>)
+                            }}
+                            dropdownMenuColumnStyle = {{width: '150px'}}
+                        />
+                    </div>
+                    <div className = "map" id = "intent_loc_map"/>
+                </Modal>
             </Tabs.TabPane>
         )
+    }
+
+    // draw canvas in the location
+    // Attention: The width and height of canvas are different from css.
+    public drawCanvas = (loc: string ,width: number, height: number, padding: number) =>{
+        const canvas: HTMLCanvasElement = document.getElementById(loc) as HTMLCanvasElement
+
+        if (canvas) {
+            // get geometry
+            const coordinate = [[[1, 5], [3, 7], [2, 2], [1, 5]]]
+            const type = 'Polygon'
+            // const administration = ['world', 'continent', 'country', 'province']
+            // for (let unit in administration) {
+            //     unit.
+            // }
+            const cxt = canvas!.getContext('2d')
+            const dWidth = width - padding
+            const dHeight = height - padding  // add some white space around the geometry
+            const drawPolygon = (polygon: any) =>{
+                for (const points of polygon){
+                    // define xMin, xMax, yMin, yMax, xCentre, yCentre
+                    let xMin = Number.MAX_SAFE_INTEGER
+                    let xMax = Number.MIN_SAFE_INTEGER
+                    let yMin = Number.MAX_SAFE_INTEGER
+                    let yMax = Number.MIN_SAFE_INTEGER
+                    for (const point of points){
+                        xMin = Math.min(point[0], xMin)
+                        xMax = Math.max(point[0], xMax)
+                        yMin = Math.min(point[1], yMin)
+                        yMax = Math.max(point[1], yMax)
+                    }
+                    const xCentre = (xMax + xMin)/2
+                    const yCentre = (yMax + yMin)/2
+
+                    // draw geometry
+                    cxt!.beginPath()
+                    for (let j = 0; j<points.length; j++){
+                        const point = points[j]
+                        const x = Number(point[0])
+                        const y = Number(point[1])
+
+                        // calculate scroll position
+                        const scaleX = (xMax - xMin)/dWidth
+                        const scaleY = (yMax - yMin)/dHeight
+                        const scale = Math.max(scaleX, scaleY)      // Proportional scaling
+                        const xBias = dWidth/2 - (xCentre - xMin)/scale + padding/2
+                        const yBias = dHeight/2 - (yCentre - yMin)/scale + padding/2
+
+                        const l = (x - xMin)/scale                 // left: x position in the canvas
+                        const t = dHeight - (y - yMin)/scale       // top: y position in the canvas
+
+                        // console.log(l, t)
+                        // console.log(l + xBias, t + yBias)
+                        if (j === 0) {
+                            cxt!.moveTo(l + xBias, t + yBias)
+                        } else {
+                            cxt!.lineTo(l + xBias, t + yBias)
+                        }
+                    }
+                    cxt!.closePath()
+                    cxt!.fillStyle = "#dcdde1"
+                    cxt!.strokeStyle = "#7f8fa6"
+                    cxt!.fill()
+                    cxt!.stroke()
+                }
+            }
+
+            // clear canvas before drawing
+            cxt!.clearRect(0, 0, 250, 200)
+            // draw canvas
+            if (type === 'Polygon') {
+                drawPolygon(coordinate)
+            } else if (type === 'multiPolygon') {
+                for (const polygon of coordinate) {
+                    drawPolygon(polygon)
+                }
+            }
+
+            // draw text
+            cxt!.font = '14px Microsoft Yahei'
+            cxt!.textBaseline = 'middle'
+            const text = cxt!.measureText(loc)
+            const rectWidth = text.width + padding
+            cxt!.fillStyle = "#ced6e0"
+            cxt!.fillRect(width - rectWidth, 0, rectWidth, 20)
+            cxt!.fillStyle = "#57606f"
+            cxt!.fillText(loc, width - text.width - padding/2, 10)
+        }
+    }
+
+    // init map in the location editing modal
+    public initMap = () => {
+        if (!this.map){
+            this.map = L.map('intent_loc_map').setView([37.8, -96], 4)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(this.map)
+
+            // distribute color
+            const getColor = (d: number) => {
+                return d > 1000 ? '#800026' :
+                    d > 500  ? '#BD0026' :
+                        d > 200  ? '#E31A1C' :
+                            d > 100  ? '#FC4E2A' :
+                                d > 50   ? '#FD8D3C' :
+                                    d > 20   ? '#FEB24C' :
+                                        d > 10   ? '#FED976' :
+                                            '#FFEDA0';
+            }
+            // define common style of polygon on the map
+            const commonStyle = (feature: any) =>{
+                return {
+                    fillColor: getColor(feature.properties.density),
+                    weight: 2,
+                    opacity: 1,
+                    color: 'white',
+                    dashArray: '3',
+                    fillOpacity: 0.7
+                }
+            }
+            // handle mouseover on the polygon
+            const highlightFeature = (e:any) => {
+                const layer = e.target
+                layer.setStyle({
+                    weight: 5,
+                    color: '#666',
+                    dashArray: '',
+                    fillOpacity: 0.7
+                })
+
+                if(!L.Browser.ie && !L.Browser.opera && !L.Browser.edge){
+                    layer.bringToFront()
+                }
+                info.update(layer.feature.properties)
+            }
+            // handle mouseout on the polygon
+            const resetHighlight = (e:any) => {
+                geojson.resetStyle(e.target)
+                info.update()
+            }
+            // handle click on the polygon
+            const zoomToFeature = (e:any) => {
+                this.map.fitBounds(e.target.getBounds())
+            }
+            // import mouseover, mouseout and click method in the layer
+            const onEachFeature = (feature:any, layer: any) =>{
+                layer.on({
+                    mouseover: highlightFeature,
+                    mouseout: resetHighlight,
+                    click: zoomToFeature
+                })
+            }
+
+            // display info on the upper right corner
+            // @ts-ignore
+            const info = L.control()
+            info.onAdd = (map:any) => {
+                info._div = L.DomUtil.create('div', 'info')
+                info.update();
+                return info._div
+            }
+            info.update = (props:any) => {
+                info._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
+                    '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
+                    : 'Hover over a state');
+            }
+            info.addTo(this.map)
+
+            // display legend on the lower right corner
+            // @ts-ignore
+            const legend = L.control({position: 'bottomright'})
+            legend.onAdd = () => {
+                const div = L.DomUtil.create('div', 'info legend')
+                const grades = [0, 10, 20, 50, 100, 200, 500, 1000]
+
+                // loop through our density intervals and generate a label with a colored square for each interval
+                for (let i = 0; i < grades.length; i++) {
+                    div.innerHTML += '<i style="background:' + getColor(grades[i] + 1) + '"></i>' + grades[i] +
+                        (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+')
+                }
+                return div
+            }
+            legend.addTo(this.map)
+
+            // add geojson in the map
+            const geojson = L.geoJSON(provinceData,{
+                style: commonStyle,
+                onEachFeature
+            }).addTo(this.map)
+
+        } else {
+            const container = this.map.getContainer()
+            console.log(container)
+        }
+
     }
 
     // handle content change
