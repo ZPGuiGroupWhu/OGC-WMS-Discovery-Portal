@@ -305,6 +305,8 @@ import {conveyIntentData} from "../../redux/action";
 import * as L from 'leaflet'
 import region from "../../assets/data/region.json";
 import provinceData from "../../assets/data/province.json"
+import countryData from "../../assets/data/country.json"
+import continentData from "../../assets/data/continent.json"
 
 // import { MapContainer, Popup, Marker, TileLayer } from 'react-leaflet'
 // import "node_modules/leaflet/dist/leaflet.css"
@@ -1024,7 +1026,11 @@ class IntentionExp extends React.Component<Props, State> {
     // init map in the location editing modal
     public initMap = () => {
         if (!this.map){
-            this.map = L.map('intent_loc_map').setView([37.8, -96], 4)
+            this.map = L.map('intent_loc_map',{
+                zoomSnap: 0.5,              // control zoom minimum unit
+                zoomDelta: 0.5,             // control +/- minimum change for zoom
+                wheelPxPerZoomLevel: 120    // control minimum change of mouse wheel for zoom
+            }).setView([0, 0], 1)
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 19,
                 attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -1041,10 +1047,11 @@ class IntentionExp extends React.Component<Props, State> {
                                         d > 10   ? '#FED976' :
                                             '#FFEDA0';
             }
+
             // define common style of polygon on the map
             const commonStyle = (feature: any) =>{
                 return {
-                    fillColor: getColor(feature.properties.density),
+                    fillColor: getColor(feature.properties.layerNum),
                     weight: 2,
                     opacity: 1,
                     color: 'white',
@@ -1052,6 +1059,7 @@ class IntentionExp extends React.Component<Props, State> {
                     fillOpacity: 0.7
                 }
             }
+
             // handle mouseover on the polygon
             const highlightFeature = (e:any) => {
                 const layer = e.target
@@ -1067,15 +1075,18 @@ class IntentionExp extends React.Component<Props, State> {
                 }
                 info.update(layer.feature.properties)
             }
+
             // handle mouseout on the polygon
             const resetHighlight = (e:any) => {
                 geojson.resetStyle(e.target)
                 info.update()
             }
+
             // handle click on the polygon
             const zoomToFeature = (e:any) => {
                 this.map.fitBounds(e.target.getBounds())
             }
+
             // import mouseover, mouseout and click method in the layer
             const onEachFeature = (feature:any, layer: any) =>{
                 layer.on({
@@ -1094,9 +1105,16 @@ class IntentionExp extends React.Component<Props, State> {
                 return info._div
             }
             info.update = (props:any) => {
-                info._div.innerHTML = '<h4>US Population Density</h4>' +  (props ?
-                    '<b>' + props.name + '</b><br />' + props.density + ' people / mi<sup>2</sup>'
-                    : 'Hover over a state');
+                if (props) {
+                    const label = (props.level === 1 ? '<h4>Continent: <b>' + props.name_1 + '</b></h4>' :
+                        props.level === 2 ? '<h4>Continent: <b>' + props.name_1 + '</b></h4><h4>Country: <b>' + props.name_2 + '</b></h4>' :
+                            '<h4>Continent: <b>' + props.name_1 + '</b></h4><h4>Country: <b>' + props.name_2 + '</b></h4><h4>State(Province): <b>' + props.name_3 + '</b></h4>')
+
+                    info._div.innerHTML = label + '<h4>The number of Layers: <b>' + props.layerNum + '</b></h4>'
+                } else {
+                    info._div.innerHTML = 'Hover over a region'
+                }
+
             }
             info.addTo(this.map)
 
@@ -1117,16 +1135,43 @@ class IntentionExp extends React.Component<Props, State> {
             legend.addTo(this.map)
 
             // add geojson in the map
-            const geojson = L.geoJSON(provinceData,{
+            let geojson = L.geoJSON(continentData,{
                 style: commonStyle,
                 onEachFeature
             }).addTo(this.map)
+            let zoomStart = 1
 
-        } else {
-            const container = this.map.getContainer()
-            console.log(container)
+            this.map.on('zoomstart', (e) => {
+                zoomStart = e.target._zoom
+            })
+
+            this.map.on('zoomend',(e) => {
+                if (this.map.getZoom() <= 2 && zoomStart > 2) {
+                    this.map.removeLayer(geojson)
+                    geojson = L.geoJSON(continentData,{
+                        style: commonStyle,
+                        onEachFeature
+                    }).addTo(this.map)
+                } else if (this.map.getZoom() > 2 && this.map.getZoom() <= 3.5 && (zoomStart <= 2 || zoomStart > 3.5 )) {
+                    this.map.removeLayer(geojson)
+                    geojson = L.geoJSON(countryData,{
+                        style: commonStyle,
+                        onEachFeature
+                    }).addTo(this.map)
+                } else if (this.map.getZoom() > 3.5 && zoomStart <= 3.5) {
+                    this.map.removeLayer(geojson)
+                    geojson = L.geoJSON(provinceData,{
+                        style: commonStyle,
+                        onEachFeature
+                    }).addTo(this.map)
+                }
+            })
+
         }
-
+        // else {
+        //     const container = this.map.getContainer()
+        //     console.log(container)
+        // }
     }
 
     // handle content change
