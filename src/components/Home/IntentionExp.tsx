@@ -345,6 +345,8 @@ interface State {
     isContentEdit: boolean;
     isLocationEdit: boolean;
     newIntent: ISubIntent[];      // 临时存储用户修正的意图维度
+
+    // locSelectValue: string[][];
 }
 
 class Node{
@@ -454,6 +456,7 @@ class IntentionExp extends React.Component<Props, State> {
     }
 
     public map: L.Map
+
     constructor(props: Props) {
         super(props);
         this.state = {
@@ -466,7 +469,9 @@ class IntentionExp extends React.Component<Props, State> {
             isStyleEdit: false,
             isContentEdit: false,
             isLocationEdit: false,
-            newIntent:[]   // 临时存储用户修正的意图维度
+            newIntent:[],   // 临时存储用户修正的意图维度
+
+            // locSelectValue: []
         };
     }
 
@@ -912,20 +917,31 @@ class IntentionExp extends React.Component<Props, State> {
                             placeholder = 'Please select a region (support multiple)'
                             options = {region}
                             expandTrigger = 'hover'
-                            changeOnSelect = {true}
+                            // value = {this.state.locSelectValue}
+                            // onChange = {(value:any) => {
+                            //     console.log(value);
+                            //     this.setState({locSelectValue: value})}}
                             style={{width: '700px'}}
                             fieldNames={{'label': 'value', 'value': 'value', 'children': 'children'}}
                             multiple = {true}
                             defaultValue = {val.location}
-                            displayRender = { label => label.join('/')}
-                            tagRender = {(props) => {
+                            displayRender = { (label) => {
                                 const backgroundColor:string[] = ['#8e44ad', '#27ae60', '#e67e22', '#3498db']
-                                const index = props.label!.toString().split('/').length - 1
+                                const labelStr = label.join('/')
+                                const index = labelStr.split('/').length - 1
                                 return (
-                                    <Tag closable = {true} color = {backgroundColor[index]}>
-                                        {props.label!.toString()}
+                                    <Tag color = {backgroundColor[index]} >
+                                        {labelStr}
                                     </Tag>)
-                            }}
+                                }}
+                            // tagRender = {(props) => {
+                            //     const backgroundColor:string[] = ['#8e44ad', '#27ae60', '#e67e22', '#3498db']
+                            //     const index = props.label!.toString().split('/').length - 1
+                            //     return (
+                            //         <Tag closable = {true} color = {backgroundColor[index]} onClose={(e)=>console.log(e.target)}>
+                            //             {props.label!.toString()}
+                            //         </Tag>)
+                            // }}
                             dropdownMenuColumnStyle = {{width: '150px'}}
                         />
                     </div>
@@ -942,28 +958,47 @@ class IntentionExp extends React.Component<Props, State> {
 
         if (canvas) {
             // get geometry
-            const coordinate = [[[1, 5], [3, 7], [2, 2], [1, 5]]]
-            const type = 'Polygon'
-            // const administration = ['world', 'continent', 'country', 'province']
-            // for (let unit in administration) {
-            //     unit.
-            // }
+
+            // const coordinate = [[[1, 5], [3, 7], [2, 2], [1, 5]]]
+            // const type = 'Polygon'
+
+            let xMin = Number.MAX_SAFE_INTEGER
+            let xMax = Number.MIN_SAFE_INTEGER
+            let yMin = Number.MAX_SAFE_INTEGER
+            let yMax = Number.MIN_SAFE_INTEGER
+            let coordinates = []
+            let type = ''
+            const administration = [continentData, countryData, provinceData]  // +globe
+            for (const unit of administration) {
+                for (const feature of unit.features) {
+                    const level = feature.properties.level
+                    if ( loc === feature.properties['name_' + level.toString()]) {
+                        const geometry = feature.geometry
+                        coordinates = geometry.coordinates
+                        type = geometry.type;
+                        [xMin, yMin, xMax, yMax] = feature.bbox
+                        break
+                    }
+                }
+                if (coordinates.length) { break }
+            }
+
             const cxt = canvas!.getContext('2d')
             const dWidth = width - padding
             const dHeight = height - padding  // add some white space around the geometry
             const drawPolygon = (polygon: any) =>{
                 for (const points of polygon){
                     // define xMin, xMax, yMin, yMax, xCentre, yCentre
-                    let xMin = Number.MAX_SAFE_INTEGER
-                    let xMax = Number.MIN_SAFE_INTEGER
-                    let yMin = Number.MAX_SAFE_INTEGER
-                    let yMax = Number.MIN_SAFE_INTEGER
-                    for (const point of points){
-                        xMin = Math.min(point[0], xMin)
-                        xMax = Math.max(point[0], xMax)
-                        yMin = Math.min(point[1], yMin)
-                        yMax = Math.max(point[1], yMax)
-                    }
+                    // let xMin = Number.MAX_SAFE_INTEGER
+                    // let xMax = Number.MIN_SAFE_INTEGER
+                    // let yMin = Number.MAX_SAFE_INTEGER
+                    // let yMax = Number.MIN_SAFE_INTEGER
+                    // for (const point of points){
+                    //     xMin = Math.min(point[0], xMin)
+                    //     xMax = Math.max(point[0], xMax)
+                    //     yMin = Math.min(point[1], yMin)
+                    //     yMax = Math.max(point[1], yMax)
+                    // }
                     const xCentre = (xMax + xMin)/2
                     const yCentre = (yMax + yMin)/2
 
@@ -985,6 +1020,9 @@ class IntentionExp extends React.Component<Props, State> {
                         const t = dHeight - (y - yMin)/scale       // top: y position in the canvas
 
                         // console.log(l, t)
+                        // if (l + xBias < 5 || l + xBias > 245 || t + yBias < 5 || t + yBias > 195){
+                        //     console.log(l + xBias, t + yBias)
+                        // }
                         // console.log(l + xBias, t + yBias)
                         if (j === 0) {
                             cxt!.moveTo(l + xBias, t + yBias)
@@ -1004,9 +1042,9 @@ class IntentionExp extends React.Component<Props, State> {
             cxt!.clearRect(0, 0, 250, 200)
             // draw canvas
             if (type === 'Polygon') {
-                drawPolygon(coordinate)
-            } else if (type === 'multiPolygon') {
-                for (const polygon of coordinate) {
+                drawPolygon(coordinates)
+            } else if (type === 'MultiPolygon') {
+                for (const polygon of coordinates) {
                     drawPolygon(polygon)
                 }
             }
@@ -1084,6 +1122,21 @@ class IntentionExp extends React.Component<Props, State> {
 
             // handle click on the polygon
             const zoomToFeature = (e:any) => {
+                // e.target.feature.properties.level name_
+
+                // const self: string[][] = this.state.locSelectValue
+                // const level: number = e.target.feature.properties.level
+                // const selectedValue: string[] = ['Globe']
+                // for (let i = 1; i <= level; i++){
+                //     selectedValue.push(e.target.feature.properties['name_'+ i.toString()])
+                // }
+                // self.push(selectedValue)
+                // this.setState({
+                //     locSelectValue: self
+                // })
+                //
+                // console.log(this.state.locSelectValue)
+
                 this.map.fitBounds(e.target.getBounds())
             }
 
@@ -1168,10 +1221,10 @@ class IntentionExp extends React.Component<Props, State> {
             })
 
         }
-        // else {
-        //     const container = this.map.getContainer()
-        //     console.log(container)
-        // }
+        else {
+            const container = this.map.getContainer()
+            console.log(container)
+        }
     }
 
     // handle content change

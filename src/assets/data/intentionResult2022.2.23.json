@@ -19,14 +19,14 @@
         {
           "confidence": 0.6717939188150325,
           "content": ["http://sweetontology.net/matrSediment/Soil"],
-          "location": ["Florida"],
+          "location": ["California"],
           "style": ["Quality Base Method"],
           "topic": ["Agriculture"]
         },
         {
           "confidence": 0.17300834976752788,
           "content": ["http://sweetontology.net/realmHydroBody/River"],
-          "location": ["Wisconsin"],
+          "location": ["Florida"],
           "style": [],
           "topic": ["Water"]
         }
