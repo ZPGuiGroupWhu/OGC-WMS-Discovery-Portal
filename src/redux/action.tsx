@@ -9,6 +9,7 @@ export const CONVEY_REGISTER_VISIBLE='CONVEY_REGISTER_VISIBLE'
 export const CONVEY_FORGOT_PASSWORD_VISIBLE='CONVEY_FORGOT_PASSWORD_VISIBLE'
 export const CONVEY_IS_LOGIN='CONVEY_IS_LOGIN'
 export const CONVEY_INTENT='CONVEY_INTENT'
+// export const CONVEY_DATASOURCE='CONVEY_DATASOURCE'
 
 // action function
 export function conveyLayerID(layerID:number){
@@ -66,3 +67,11 @@ export function conveyIntentData(intentData:object){
         intentData
     }
 }
+
+// export function conveyDataSource(dataSource:string) {
+//     return {
+//         type: CONVEY_DATASOURCE,
+//         dataSource
+//     }
+// }
+

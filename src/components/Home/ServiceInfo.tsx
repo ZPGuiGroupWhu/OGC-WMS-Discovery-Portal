@@ -198,7 +198,8 @@ class ServiceInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryWMSInfo';
-        const url:string = reqUrl({id:this.props.serviceID},baseUrl,'8081');
+        const reqPar: object = Object.assign({id:this.props.serviceID}, {photoType: 'Base64Str'})
+        const url:string = reqUrl(reqPar,baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
             // console.log(res)

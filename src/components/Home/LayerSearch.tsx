@@ -2,21 +2,19 @@ import * as React from 'react';
 import '../../style/_home.scss';
 
 import {
-  BulbOutlined,
-  FileSearchOutlined,
-  MoreOutlined,
-  ProjectOutlined,
-  PushpinOutlined,
-  SearchOutlined,
-  SettingOutlined,
-  TagOutlined,
-  ThunderboltOutlined,
-  CloseCircleTwoTone,
-  HeartOutlined,
-  FrownOutlined,
-  HeartTwoTone,
-  UpOutlined,
-  DownOutlined,
+    BulbOutlined,
+    MoreOutlined,
+    ProjectOutlined,
+    PushpinOutlined,
+    SettingOutlined,
+    TagOutlined,
+    ThunderboltOutlined,
+    CloseCircleTwoTone,
+    HeartOutlined,
+    FrownOutlined,
+    HeartTwoTone,
+    UpOutlined,
+    DownOutlined,
 } from '@ant-design/icons';
 
 import {
@@ -46,7 +44,7 @@ import IntensionExp from './IntentionExp';
 import {connect} from 'react-redux';
 import {conveyIntentData, conveyLayerID, conveyQueryPar} from '../../redux/action';
 import AdvIntentionPanel from "./AdvIntentionPanel";
-import rawData from "../../assets/data/intentionResult2022.2.23.json";
+// import rawData from "../../assets/data/intentionResult2022.2.23.json";
 
 // @ts-ignore
 // import hm from 'heatmap.js'
@@ -74,7 +72,7 @@ interface State {
   negativeList: ILayer[];
   pageInfo: IPageInfo;
   queryPar: IQueryPar;
-  queryMethod: string;  // 'metaData', 'MDLIntention', 'layerVision'
+  queryMethod: string;  // 'metaData', 'layerVision', 'MDL', 'intention'
   radioValue: string;
   rSideCollapsed: boolean;
   showAdvIntentPanel: boolean;
@@ -82,6 +80,7 @@ interface State {
   time: number;
   uploadList: FormData;
 
+  intention: ISubIntent[];    // store intent passing from IntentionExp
 
 }
 
@@ -101,10 +100,13 @@ class LayerSearch extends React.Component<Props,State> {
                 showAdvIntentPanel: false
             }
         }
+
         return null
     }
 
   public data: ILayer [][];
+    // store the current positive layers and negative layers when submit
+    // and store the last positive layers and negative layers when paginate
   public submitOptionList: ILayer [][]=new Array(2).fill([]);
 
   // Record time and count when mouse enter the layer
@@ -139,13 +141,17 @@ class LayerSearch extends React.Component<Props,State> {
                 topic: '',
             },
             queryMethod: 'metaData',
-            radioValue: 'MDLIntention',
+            radioValue: 'MDL',
             rSideCollapsed: true,
             showAdvIntentPanel: false,
             submitVisible: false,
             time: 0,
             uploadList: new FormData(),   // uploadList's keys equal layer's ids starting from -1 to -∞, its value store upload File.
+
+            intention: []   // store intent passing from IntentionExp
         };
+
+        window.sessionStorage.setItem('dataSource','all data')
     }
 
   public componentDidMount(){
@@ -194,6 +200,19 @@ class LayerSearch extends React.Component<Props,State> {
     // deliver callback function to IntentionExp to control IntentionExp component visually
     public rSideCallback=(rSide:boolean)=>{
         this.setState({rSideCollapsed: rSide})
+    }
+
+    public intentionCallback = (intention:ISubIntent[], queryMethod: string) => {
+        const selfPageInfo = {
+            pageNum: 1,
+            pageSize: 40
+        }
+        this.setState({
+            intention,
+            queryMethod,
+            pageInfo: selfPageInfo,
+            loading: true,
+        }, () => this.queryLayerByIntention(this.state.pageInfo, intention))
     }
 
   public render() {
@@ -250,12 +269,14 @@ class LayerSearch extends React.Component<Props,State> {
       <Content className="content">
           <div className="content_tool">
               {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
-              <Input  className="content_tool_search" allowClear={true}  placeholder="Input something to search services" onPressEnter={this.handleSearch}  addonAfter={
-                  <Radio.Group className="content_tool_radio" buttonStyle="solid" >
-                      <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><SearchOutlined /></Radio.Button></Tooltip>
-                      <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><FileSearchOutlined /></Radio.Button></Tooltip>
-                  </Radio.Group>} />
-              <Button className="content_tool_btn" type="primary">Return to Last Result</Button>
+              <Input.Search  className="content_tool_search"  placeholder="Input something to search services"
+                             onSearch={this.handleSearch} onPressEnter={this.handleSearch} enterButton = {true}
+              />
+              <Radio.Group className = 'content_tool_radio' defaultValue = "all data" buttonStyle = "solid"
+                           onChange={(e) => this.handleModifyDataSource(e)}>
+                  <Radio.Button value ="all data">All Data Source</Radio.Button>
+                  <Radio.Button value = "labeled data">Labeled Data Source</Radio.Button>
+              </Radio.Group>
               <Select defaultValue="firstLetter" className="content_tool_select">
                   <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
                   <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
@@ -273,6 +294,10 @@ class LayerSearch extends React.Component<Props,State> {
                    <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
                    <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
                 </div>
+                  <div className = "main_container_content_imglist_explanation" >
+                      <div>Interesting: click  <HeartOutlined/> or  press left</div>
+                      <div>Annoying: click  <FrownOutlined/> or press right</div>
+                  </div>
                 <div id="heatmap_wrapper" >
                     <List
                        id="main_container_content_imglist"
@@ -365,7 +390,7 @@ class LayerSearch extends React.Component<Props,State> {
               }
 
               <IntensionExp advancedPanelCallback={this.intentionPanelCallback} rSideCallback={this.rSideCallback}
-                            collapsed={this.state.rSideCollapsed}/>
+                            intentionCallback={this.intentionCallback} collapsed={this.state.rSideCollapsed}/>
 
               <Modal className="main_container_modal" visible={this.state.submitVisible} onOk={() => {this.handleSubmitOk()}}
                      onCancel={() => {this.setState({submitVisible: false})}} closable={false}
@@ -379,20 +404,17 @@ class LayerSearch extends React.Component<Props,State> {
 
                 <div className="main_container_modal_body">
                   <span className="sub_title">Retrieval Method:</span><br/>
-                    <Radio.Group className="radioGroup" defaultValue='MDLIntention' value={this.state.radioValue}
+                    <Radio.Group className="radioGroup" defaultValue='MDL' value={this.state.radioValue}
                           onChange={(e)=>{this.setState({radioValue: e.target.value})}}>
-                        <Radio value='MDLIntention'>
+                        <Radio value='MDL'>
                             Map Retrieval Intention Recognition based on Minimum Description Length Principle and Random Merge Strategy
+                            ( Must in the labeled database)
                         </Radio>
-                        <Radio value='layerVision' disabled={!!this.state.negativeList.length}>
+                        <Radio value='layerVision' >
                             Content-based WMS Layer Retrieval by Considering Cartographic Method and Main Area of Map
+                            ( Negative Samples are not used)
                         </Radio>
                     </Radio.Group>
-                  {/*  <p>A WMS layer retrieval strategy that takes into account the knowledge of cartography methods and*/}
-                  {/*      map content. Firstly, the map is roughly classified according to cartography methods. Then*/}
-                  {/*      explore the best feature fusion modes corresponding to the maps with same cartography methods,*/}
-                  {/*      and on this basis, extract the hash code. Finally, use hash codes to achieve fast WMS layer*/}
-                  {/*      retrieval.</p>*/}
                 </div>
              </Modal>
 
@@ -404,6 +426,23 @@ class LayerSearch extends React.Component<Props,State> {
   // show card component when the mouse hovers the layers.
   public popoverContent = (layer:ILayer) =>{
       let hoverCounter=0
+      const dataSourceCache = window.sessionStorage.getItem('dataSource')
+      const abbContentList = []
+      if (dataSourceCache === 'labeled data') {
+          const wholeContent = layer.fContent?.split(',')
+          for (const item of wholeContent!) {
+              abbContentList.push(item.slice(item.lastIndexOf('/') + 1, item.length))
+          }
+      }
+
+      // setTimeout(()=>{
+      //     const el = document.getElementById('guide_select')
+      //     if (el) {
+      //         el.setAttribute("open",String(true))
+      //         console.log(el)
+      //     }
+      // },3000)
+
     return (
       <Card  cover={<img src={'data:image/png;base64,'+layer.photo} />} bodyStyle={{padding: "10px"}}
              onMouseEnter={()=>{this.hoverInterval=setInterval(()=>{hoverCounter+=1},50)}}
@@ -412,13 +451,25 @@ class LayerSearch extends React.Component<Props,State> {
                  clearInterval(this.hoverInterval)
                  hoverCounter=0}}
       >
-          <div className="main_container_content_imglist_item_popover_description">
-              <span><TagOutlined className="icon" /><b>Name: </b>{layer.name}</span><br/>
-              <span><ProjectOutlined className="icon" /><b>Title: </b>{layer.title}</span><br/>
-              <span><PushpinOutlined className="icon" /><b>Attribution: </b>{layer.attribution===""?"No attribution":layer.attribution}</span><br/>
-              <span><BulbOutlined className="icon" /><b>Topic: </b>{layer.topic}</span><br/>
-              <span><ThunderboltOutlined className="icon" /><b>Keywords: </b>{layer.keywords===""?"No keywords":layer.keywords}</span>
-          </div>
+          {
+              dataSourceCache === 'labeled data' ?
+                  <div className="main_container_content_imglist_item_popover_description">
+                      <span><TagOutlined className="icon"/><b>Content: </b>{layer.fContent === "" ? "No Content" : abbContentList.join(', ')}</span><br/>
+                      <span><ProjectOutlined className="icon"/><b>Space: </b> {layer.fSpace === "" ? "No space" : layer.fSpace} </span><br/>
+                      <span><PushpinOutlined className="icon"/><b>Style: </b>{layer.fStyle === "" ? "No style" : layer.fStyle}</span><br/>
+                      <span><BulbOutlined className="icon"/><b>Topic: </b>{layer.fTopic === "" ? "No topic" : layer.fTopic}</span><br/>
+                  </div>
+                  :
+                  <div className="main_container_content_imglist_item_popover_description">
+                      <span><TagOutlined className="icon"/><b>Name: </b>{layer.name}</span><br/>
+                      <span><ProjectOutlined className="icon"/><b>Title: </b>{layer.title}</span><br/>
+                      <span><PushpinOutlined
+                          className="icon"/><b>Attribution: </b>{layer.attribution === "" ? "No attribution" : layer.attribution}</span><br/>
+                      <span><BulbOutlined className="icon"/><b>Topic: </b>{layer.topic}</span><br/>
+                      <span><ThunderboltOutlined
+                          className="icon"/><b>Keywords: </b>{layer.keywords === "" ? "No keywords" : layer.keywords}</span>
+                  </div>
+          }
           <div className="main_container_content_imglist_item_popover_button">
               <Space size="small" align="center">
                   <Tooltip trigger="hover" placement="top"
@@ -483,6 +534,7 @@ class LayerSearch extends React.Component<Props,State> {
 
   // carouse component in the marking collection
   public carouselComponent = (layer:ILayer[],index: number) =>{
+
     return (
       <List
       key={index}
@@ -493,14 +545,57 @@ class LayerSearch extends React.Component<Props,State> {
       dataSource={layer}
       renderItem={(item:ILayer)=>(
         <List.Item key={item.id} style={{margin: 2, padding: 4}}>
-          <Card className="card" hoverable={true}
-                cover={<Image className="img" alt="Layer Image" preview={!this.state.isDelete}
-                    src={'data:image/png;base64,'+item.photo} style={{display: 'inline-block'}}/>}
-                onClick={()=>{(this.state.isPositiveTab?this.handlePositiveDelete:this.handleNegativeDelete)(item)}}
-                style={{border: this.state.isDelete?' 5px solid #c0392b' :' 1px solid #ccc' }}
-                bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
-              {item.name}
-          </Card>
+            <Tooltip title={() => {
+                const abbContentList = []
+                if (window.sessionStorage.getItem('dataSource') === 'labeled data') {
+                    const wholeContent = item.fContent?.split(',')
+                    for (const concept of wholeContent!) {
+                        abbContentList.push(concept.slice(concept.lastIndexOf('/') + 1, concept.length))
+                    }
+                }
+                return (
+                    window.sessionStorage.getItem('dataSource') === 'labeled data' ?
+                        <div>
+                            <span><TagOutlined
+                                className="icon"/><b>Content: </b>{item.fContent === "" ? "No Content" : abbContentList.join(', ')}</span><br/>
+                            <span><ProjectOutlined
+                                className="icon"/><b>Space: </b> {item.fSpace === "" ? "No space" : item.fSpace} </span><br/>
+                            <span><PushpinOutlined
+                                className="icon"/><b>Style: </b>{item.fStyle === "" ? "No style" : item.fStyle}</span><br/>
+                            <span><BulbOutlined
+                                className="icon"/><b>Topic: </b>{item.fTopic === "" ? "No topic" : item.fTopic}</span><br/>
+                        </div>
+                        :
+                        <div>
+                            <span><TagOutlined className="icon"/><b>Name: </b>{item.name}</span><br/>
+                            <span><ProjectOutlined className="icon"/><b>Title: </b>{item.title}</span><br/>
+                            <span><PushpinOutlined
+                                className="icon"/><b>Attribution: </b>{item.attribution === "" ? "No attribution" : item.attribution}</span><br/>
+                            <span><BulbOutlined className="icon"/><b>Topic: </b>{item.topic}</span><br/>
+                            <span><ThunderboltOutlined
+                                className="icon"/><b>Keywords: </b>{item.keywords === "" ? "No keywords" : item.keywords}</span>
+                        </div>
+                )
+              }
+            }>
+                <Card className="card" hoverable={true}
+                      cover={<Image className="img" alt="Layer Image" preview={!this.state.isDelete}
+                                    src={'data:image/png;base64,' + item.photo} style={{display: 'inline-block'}}/>}
+                      onClick={() => {
+                          (this.state.isPositiveTab ? this.handlePositiveDelete : this.handleNegativeDelete)(item)
+                      }}
+                      style={{border: this.state.isDelete ? ' 5px solid #c0392b' : ' 1px solid #ccc'}}
+                      bodyStyle={{
+                          padding: 2,
+                          textAlign: "center",
+                          textOverflow: "ellipsis",
+                          overflow: "hidden",
+                          whiteSpace: "nowrap"
+                      }}
+                >
+                    {item.name}
+                </Card>
+            </Tooltip>
             <CloseCircleTwoTone className="deleteIcon" twoToneColor="#c0392b"
                                 style={{display: this.state.isDelete?"inline-block": "none"}}
                                 onClick={()=>{(this.state.isPositiveTab?this.handlePositiveDelete:this.handleNegativeDelete)(item)}}/>
@@ -509,7 +604,6 @@ class LayerSearch extends React.Component<Props,State> {
    />
     )
   }
-
 
     // update hoverList to save moving action of the users' mouse
     public updateHoverList=(layer:ILayer,counter:number)=>{
@@ -527,6 +621,27 @@ class LayerSearch extends React.Component<Props,State> {
             selfHoverList.push({layerID: layer.id, frequency: 1, time: Math.floor(counter*0.05*100)/100})
         }
         this.hoverList=selfHoverList
+    }
+
+    // handle data source modification
+    public handleModifyDataSource = (e:any) => {
+        const dataSourceCache = window.sessionStorage.getItem('dataSource')
+        if (dataSourceCache !== e.target.value){
+            window.sessionStorage.setItem('dataSource', e.target.value)
+            // query
+            const initialPageInfo = {
+                    pageNum: 1,
+                    pageSize: 40// should be multiple of 8
+            }
+            // TODO: queryPar need to be initialed and render consistently.
+            this.setState({
+                loading: true,
+                pageInfo: initialPageInfo,
+                positiveList: [],
+                negativeList: []
+            })
+            this.queryLayerList(initialPageInfo, this.state.queryPar)
+        }
     }
 
     // handle input search in the database
@@ -783,25 +898,45 @@ class LayerSearch extends React.Component<Props,State> {
   // handle Submit button in the marking collection
   public  handleSubmitOk = () => {
     smoothscroll();
-    this.setState({
-        loading: true,
-        submitVisible: false,
-        pageInfo:{
-            pageNum: 1,
-            pageSize: 40,
-        },
-    })
+    // this.setState({
+    //     loading: true,
+    //     submitVisible: false,
+    //     pageInfo:{
+    //         pageNum: 1,
+    //         pageSize: 40,
+    //     },
+    // })
 
-    if(this.state.radioValue==='MDLIntention'){
-        const newSampleList=[this.state.positiveList,this.state.negativeList]
-        this.setState({
-            queryMethod: 'MDLIntention',
-        },
-            ()=>{this.queryLayerByMDLIntention(this.state.pageInfo,newSampleList)
-            // ()=>{this.queryLayerByLayerVision(this.state.pageInfo,this.state.positiveList)
-        })
+    if(this.state.radioValue==='MDL'){
+        if (window.sessionStorage.getItem('dataSource') === 'labeled data') {
+            if (this.state.negativeList.length === 0) {
+                message.error('Annoying layer list can not be null!')
+            } else {
+                this.setState({
+                        loading: true,
+                        submitVisible: false,
+                        pageInfo:{
+                            pageNum: 1,
+                            pageSize: 40,
+                        },
+                        queryMethod: 'MDL',
+                    },
+                    ()=>{this.queryLayerByMDL(this.state.pageInfo,this.state.positiveList, this.state.negativeList)
+                        // ()=>{this.queryLayerByLayerVision(this.state.pageInfo,this.state.positiveList)
+                    })
+            }
+        } else {
+            message.error('MDL method must be used in the labeled database.')
+        }
+
     }else if(this.state.radioValue==='layerVision'){
         this.setState({
+            loading: true,
+            submitVisible: false,
+            pageInfo:{
+                pageNum: 1,
+                pageSize: 40,
+            },
             queryMethod:'layerVision',
         },()=>{this.queryLayerByLayerVision(this.state.pageInfo,this.state.positiveList)})
     }
@@ -836,9 +971,11 @@ class LayerSearch extends React.Component<Props,State> {
     else if (this.state.queryMethod === 'layerVision'){
       this.queryLayerByLayerVision(this.state.pageInfo,this.submitOptionList[0]);
     }
-    else if(this.state.queryMethod === 'MDLIntention'){
-        this.queryLayerByMDLIntention(this.state.pageInfo,this.submitOptionList);
-        // this.queryLayerByLayerVision(this.state.pageInfo,this.submitOptionList[0]);
+    else if(this.state.queryMethod === 'MDL'){
+        this.queryLayerByMDL(this.state.pageInfo, this.submitOptionList[0], this.submitOptionList[1]);
+    }
+    else if(this.state.queryMethod === 'intention'){
+        this.queryLayerByIntention(this.state.pageInfo, this.state.intention);
     }
 
 }
@@ -851,10 +988,13 @@ class LayerSearch extends React.Component<Props,State> {
   // Function: send http request to get layer list data
   // When to transfer: init render LayerSearch component, select the condition submenu item, click "apply", click "search", pahinate to a new page 
   // @param  params:object = {keyword?:string, bound?:number[], pageNum:number, pageSize:number, topic?:string, organization?:string, organization_type?:string, continent?:string}
-  public async queryLayerList(pagePar:object, queryPar:object) {
+  public async queryLayerList(pagePar:IPageInfo, queryPar:IQueryPar) {
       this.hoverList=[] // TODO: POST MOUSE DATA TO BACK END
       const baseUrl: string = 'search/queryLayerList';
-      const reqPar: object = Object.assign(pagePar, queryPar);
+      const dbTable = {
+          table: window.sessionStorage.getItem("dataSource") === 'labeled data'? 'layerlist_for_intent':'layerlist'
+      }
+      const reqPar: object = Object.assign(pagePar, queryPar, dbTable, {photoType: 'Base64Str'});
       const url: string = reqUrl(delEmptyKey(reqPar), baseUrl, '8081');
       let requestTime: number = 0;  // record request time
       console.log(url)
@@ -879,9 +1019,13 @@ class LayerSearch extends React.Component<Props,State> {
       }
   }
 
-  public async queryLayerByLayerVision(pagePar:object,layerList:ILayer[]) {
+  public async queryLayerByLayerVision(pagePar: IPageInfo,layerList:ILayer[]) {
       this.hoverList=[]  // TODO: POST MOUSE DATA TO BACK END
-      const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
+      const dbTable = {
+          table: window.sessionStorage.getItem("dataSource") === 'labeled data'? 'layerlist_for_intent':'layerlist'
+      }
+      const reqPar:object = Object.assign(pagePar, dbTable, {photoType: 'Base64Str'})
+      const baseUrl:string = reqUrl(delEmptyKey(reqPar),'search/queryLayerByTemplate','8081');
       let url: string = baseUrl + '&templateId=';
       this.submitOptionList[0]=JSON.parse(JSON.stringify(layerList))
       // if (!this.state.queryState.paginate) {
@@ -920,22 +1064,43 @@ class LayerSearch extends React.Component<Props,State> {
       }
   }
 
-  public async queryLayerByMDLIntention(pagePar:object,layerList:ILayer[][]){
-      const baseUrl:string = reqUrl(delEmptyKey(pagePar),'search/queryLayerByTemplate','8081');
-      let url: string = baseUrl + '&templateId=';
-      this.submitOptionList=JSON.parse(JSON.stringify(layerList))
+  public async queryLayerByMDL(pagePar: IPageInfo, positiveList:ILayer[], negativeList: ILayer[]){
+      // get the positive and negative layers ID
+      const positiveID: number[] = []
+      const negativeID: number[] = []
+      for (const item of positiveList) {
+          if (item.id < 0) {
+              continue
+          }
+          positiveID.push(item.id)
+      }
+      for (const item of negativeList) {
+          negativeID.push(item.id)
+      }
+
+      // construct body of post method
+      const config = {
+          body: {
+              sessionID: '',
+              layers: {
+                  irrelevance: negativeID,
+                  relevance: positiveID,
+              },
+              // parameter: {}
+              pageNum: pagePar.pageNum,
+              pageSize: pagePar.pageSize,
+              photoType: "Base64Str"
+          },
+          method: "post",
+          'Content-Type': 'application/json'
+      }
+      const url :string = reqUrl({},'search/queryLayerByMDL','8081');
+
+      this.submitOptionList=JSON.parse(JSON.stringify([positiveList, negativeList]))
       // if (!this.state.queryState.paginate) {
       //     // deep copy
       //     this.submitOptionList = JSON.parse(JSON.stringify(this.state.positiveList))
       // }
-      for (const each of this.submitOptionList[0]) {
-          if (each.id < 0) {
-              continue;
-          }
-          url += each.id.toString() + ','
-      }
-      url = url.substring(0, url.length - 1)
-      // const url:string = 'http://132.232.98.213:8081/search/querylayerbytemplate?templateId=1,2&pageNum=1&pageSize=40';
 
       let requestTime: number = 0;  // record request time
       console.log(url)
@@ -943,7 +1108,7 @@ class LayerSearch extends React.Component<Props,State> {
           const timer = setInterval(() => {
               ++requestTime
           }, 10)
-          const res: any = await $req(url, {})
+          const res: any = await $req(url, config)
           clearInterval(timer);
           const resBody: any = JSON.parse(res)
           this.setState({
@@ -952,29 +1117,88 @@ class LayerSearch extends React.Component<Props,State> {
               listTotal: resBody.totalLayerNum,
               isUpdate: true,
               loading: false,
-              queryMethod: 'MDLIntention',
+              queryMethod: 'MDL',
               time: requestTime * 0.01,
 
               rSideCollapsed: false
           })
+
+          // update intention in the right sider
+          const selfConfidence:number[]=[]
+          const resIntent = JSON.parse(resBody.intention)
+          const intentList = resIntent.result[0].intention
+          intentList.map((val:ISubIntent)=>{
+              selfConfidence.push(val.confidence)
+          })
+          selfConfidence.push(resIntent.result[0].confidence)
+          const intention = {
+              confidence: selfConfidence,
+              encodingLen: resIntent.parameter.encodingLength,
+              filtration: resIntent.parameter.filtrationCoefficient,
+              intent: resIntent.result[0].intention,
+              mergeNum: resIntent.parameter.mergeNum
+          }
+          this.props.dispatch(conveyIntentData(intention))
+
       } catch (e) {
           alert(e.message)
       }
 
       // 将静态的意图数据存放在redux中
-      const selfConfidence:number[]=[]
-      rawData.result[0].intention.map((val:ISubIntent)=>{
-          selfConfidence.push(val.confidence)
-      })
-      selfConfidence.push(rawData.result[0].confidence)
-      const res={
-          confidence: selfConfidence,
-          encodingLen: rawData.parameter.encodingLength,
-          filtration: rawData.parameter.filtrationCoefficient,
-          intent: rawData.result[0].intention,
-          mergeNum: rawData.parameter.mergeNum
+      // const selfConfidence:number[]=[]
+      // rawData.result[0].intention.map((val:ISubIntent)=>{
+      //     selfConfidence.push(val.confidence)
+      // })
+      // selfConfidence.push(rawData.result[0].confidence)
+      // const res={
+      //     confidence: selfConfidence,
+      //     encodingLen: rawData.parameter.encodingLength,
+      //     filtration: rawData.parameter.filtrationCoefficient,
+      //     intent: rawData.result[0].intention,
+      //     mergeNum: rawData.parameter.mergeNum
+      // }
+      // this.props.dispatch(conveyIntentData(res))
+  }
+
+  public async queryLayerByIntention(pagePar: IPageInfo, intention: ISubIntent[]) {
+      const config = {
+          body: {
+              sessionID: '',
+              intention,
+              pageNum: pagePar.pageNum,
+              pageSize: pagePar.pageSize,
+              photoType: "Base64Str"
+          },
+          method: "post",
+          'Content-Type': 'application/json'
       }
-      this.props.dispatch(conveyIntentData(res))
+      const url: string = reqUrl({}, '/search/queryLayerByIntention','8081')
+
+      let requestTime: number = 0;  // record request time
+      console.log(url)
+      try {
+          const timer = setInterval(() => {
+              ++requestTime
+          }, 10)
+          const res: any = await $req(url, config)
+          clearInterval(timer);
+          const resBody: any = JSON.parse(res)
+          this.setState({
+              currentSize: resBody.currentLayerNum,
+              dataList: resBody.data,
+              listTotal: resBody.totalLayerNum,
+              isUpdate: true,
+              loading: false,
+              queryMethod: 'intention',
+              time: requestTime * 0.01,
+
+              rSideCollapsed: false
+          })
+
+          console.log(resBody)
+      } catch (e) {
+          alert(e.message)
+      }
   }
 }
 
@@ -982,6 +1206,7 @@ class LayerSearch extends React.Component<Props,State> {
 const mapStateToProps = (state:any) =>{
   return {
       queryPar: state.conveyQueryParReducer.queryPar,
+      intentData: state.conveyIntentDataReducer.intentData,
   }
 }
 

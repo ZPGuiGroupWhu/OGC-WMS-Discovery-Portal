@@ -62,6 +62,10 @@ class LayerInfo extends React.Component<Props,State>{
                 title: '',
                 topic: '',
                 url: '',
+                fContent: '',
+                fSpace: '',
+                fStyle: '',
+                fTopic: '',
                 service:{
                     abstr:'',
                     administrative_unit:'',
@@ -141,6 +145,21 @@ class LayerInfo extends React.Component<Props,State>{
                             <span className='span'><ThunderboltOutlined className="icon" /><b>Keywords: </b><span className={(LayerKeyword!=='null')?'tag':'tagnull'}>{LayerKeyword}</span></span><br/>
                         </Content>
                     </Content>
+                    { window.sessionStorage.getItem('dataSource') === 'labeled data' ?
+                        <Content className="_info_container_section">
+                            <Content className="_info_container_section_content">
+                                <b>Tagging Dimensions</b><br/>
+                                <span className='span'><TagOutlined className="icon" /><b>FContent: </b>
+                                    {this.state.layerInfoData.fContent}</span><br/>
+                                <span className='span'><ProjectOutlined className="icon" /><b>FSpace: </b>
+                                    {this.state.layerInfoData.fSpace}</span><br/>
+                                <span className='span'><PushpinOutlined className="icon" /><b>FStyle: </b>
+                                    <span className="tag">{this.state.layerInfoData.fStyle}</span></span><br/>
+                                <span className='span'><BulbOutlined className="icon" /><b>FTopic: </b>
+                                    <span className="tag">{this.state.layerInfoData.fTopic}</span></span><br/>
+                            </Content>
+                        </Content>
+                        : null}
                     <br/>
                     <b className="_info_container_header">The service messages of the layer</b><br/>
                     <Content className="_info_container_section">
@@ -198,7 +217,11 @@ class LayerInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryLayerInfo';
-        const url:string = reqUrl({id:this.props.layerID},baseUrl,'8081');
+        const dbTable = {
+            table: window.sessionStorage.getItem('dataSource') === 'labeled data'? 'layerlist_for_intent':'layerlist'
+        }
+        const reqPar = Object.assign({id: this.props.layerID}, {photoType: 'Base64Str'}, dbTable)
+        const url:string = reqUrl(reqPar,baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
             // console.log(res)

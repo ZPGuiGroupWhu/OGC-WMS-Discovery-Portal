@@ -308,6 +308,7 @@ import provinceData from "../../assets/data/province.json"
 import countryData from "../../assets/data/country.json"
 import continentData from "../../assets/data/continent.json"
 
+
 // import { MapContainer, Popup, Marker, TileLayer } from 'react-leaflet'
 // import "node_modules/leaflet/dist/leaflet.css"
 // import "node_modules/leaflet/dist/leaflet.js"
@@ -317,7 +318,7 @@ const { Option } = Select;
 
 
 const Topic = ["Agriculture", "Biodiversity", "Climate", "Disaster", "Ecosystem", "Energy", "Geology", "Health", "Water", "Weather"];
-const Style=["Point Symbol Method","Line Symbol Method","Area Method","Quality Base Method","Choloplethic Method","Others"]
+const Style=["Raw Image","Point Symbol Method","Line Symbol Method","Area Method","Quality Base Method","Choloplethic Method","Others"]
 const styleImg = Style.map((item: string) => require("../../assets/img/style/" + item + ".png"));
 const MyIcon = createFromIconfontCN({
     scriptUrl: '//at.alicdn.com/t/font_1728748_42yz4wxteli.js', // use some icon from iconfont
@@ -330,8 +331,9 @@ interface Props {
     collapsed: boolean;
     advancedPanelCallback: (advancedPanel:boolean)=>void;
     dispatch:(action:any)=>void;
-    intentData: object
+    intentData: object  // store all intentional data including parameter and extra result through redux
     rSideCallback:(rSideCollapse:boolean)=>void
+    intentionCallback: (intention:ISubIntent[], queryMethod: string) => void  // store only intent through props
 }
 
 interface State {
@@ -612,7 +614,7 @@ class IntentionExp extends React.Component<Props, State> {
                                     >
                                         &lt;&lt;&nbsp;Advanced
                                     </Button>
-                                    <Button className="advanced_Btn"  shape="round" disabled={true}>
+                                    <Button className="advanced_Btn"  shape="round" onClick={this.handleFeedBack}>
                                         Feedback&nbsp;&gt;&gt;
                                     </Button>
                                 </Space>
@@ -1282,6 +1284,17 @@ class IntentionExp extends React.Component<Props, State> {
             isLocationEdit: !this.state.isLocationEdit
         })
     }
+
+    // // handle feedback when some dimensions of sub-intent are modified
+    public handleFeedBack = () => {
+        if (window.sessionStorage.getItem('dataSource') === 'labeled data') {
+            this.props.intentionCallback(this.state.newIntent, 'intention')
+        } else {
+            message.error('Intention feedback must be used in the labeled database.')
+        }
+
+    }
+
 
     // public makemap() {
 

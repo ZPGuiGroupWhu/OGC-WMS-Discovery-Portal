@@ -5,7 +5,8 @@ import {
     CONVEY_LOGIN_VISIBLE,
     CONVEY_REGISTER_VISIBLE,
     CONVEY_IS_LOGIN, CONVEY_FORGOT_PASSWORD_VISIBLE,
-    CONVEY_INTENT
+    CONVEY_INTENT,
+    // CONVEY_DATASOURCE
 } from '../redux/action'
 import {combineReducers} from 'redux'
 
@@ -40,6 +41,8 @@ const initialIntent={
     intent: [],
     mergeNum: 0
 }
+
+// const initialDataSource = 'all data'
 
 function conveyIDReducer (state=initialStateID,action:any) {
    // console.log(action);
@@ -115,11 +118,24 @@ function conveyIntentDataReducer(state=initialIntent,action:any){
     }
 }
 
+
+// function conveyDataSourceReducer(state=initialDataSource,action:any) {
+//     switch (action.type) {
+//         case CONVEY_DATASOURCE:
+//             return JSON.parse(JSON.stringify(
+//                 action.dataSource
+//             ))
+//         default:
+//             return state
+//     }
+// }
+
 const rootReducer=combineReducers({
     conveyIDReducer,
     conveyQueryParReducer,
     conveyVisibleReducer,
-    conveyIntentDataReducer
+    conveyIntentDataReducer,
+    // conveyDataSourceReducer
 })
 
 export default rootReducer

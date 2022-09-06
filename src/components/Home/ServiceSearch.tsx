@@ -6,8 +6,8 @@ import LeftSider from './LeftSider';
 import {stringFilter, reqUrl, smoothscroll, delEmptyKey } from '../../util/util';
 import { IServInfo, IPageInfo, IQueryPar } from "../../util/interface";
 import {NavLink as Link} from 'react-router-dom';
-import { CompassOutlined, FileSearchOutlined, PushpinOutlined, SearchOutlined } from '@ant-design/icons';
-import { Layout, List, Rate, Statistic, Input, Select, Button, Radio, Tooltip } from 'antd';
+import { CompassOutlined, PushpinOutlined} from '@ant-design/icons';
+import { Layout, List, Rate, Statistic, Input, Select, Radio} from 'antd';
 import {connect}from 'react-redux'
 import {conveyServiceID, conveyQueryPar} from '../../redux/action'
 
@@ -68,6 +68,8 @@ class ServiceSearch extends React.Component<Props, State> {
            },
            time: 0,
         };
+
+        window.sessionStorage.setItem('dataSource','all data')
     }
 
 
@@ -107,12 +109,14 @@ class ServiceSearch extends React.Component<Props, State> {
             <Content className="content">
                 <div className="content_tool">
                     {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
-                    <Input  className="content_tool_search" allowClear={true}  placeholder="Input something to search services"  onPressEnter={this.handleSearch} addonAfter={
-                        <Radio.Group className="content_tool_radio" buttonStyle="solid" >
-                            <Tooltip placement="bottom" title="Search in the Database"><Radio.Button onClick={this.handleSearch}><SearchOutlined /></Radio.Button></Tooltip>
-                            <Tooltip placement="bottom" title="Search in the Last Result"><Radio.Button onClick={this.handleRefine}><FileSearchOutlined /></Radio.Button></Tooltip>
-                        </Radio.Group>} />
-                    <Button className="content_tool_btn" type="primary">Return to Last Result</Button>
+                    <Input.Search  className="content_tool_search"  placeholder="Input something to search services"
+                                   onSearch={this.handleSearch} onPressEnter={this.handleSearch} enterButton = {true}
+                    />
+                    <Radio.Group className = 'content_tool_radio' defaultValue = "all data" buttonStyle = "solid"
+                                 onChange={(e) => this.handleModifyDataSource(e)}>
+                        <Radio.Button value ="all data">All Data Source</Radio.Button>
+                        <Radio.Button value = "labeled data">Labeled Data Source</Radio.Button>
+                    </Radio.Group>
                     <Select defaultValue="firstLetter" className="content_tool_select">
                        <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
                        <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
@@ -182,6 +186,25 @@ class ServiceSearch extends React.Component<Props, State> {
         // }
     }
 
+    // handle data source modification
+    public handleModifyDataSource = (e:any) => {
+        const dataSourceCache = window.sessionStorage.getItem('dataSource')
+        if (dataSourceCache !== e.target.value){
+            window.sessionStorage.setItem('dataSource', e.target.value)
+            // query
+            const initialPageInfo = {
+                pageNum: 1,
+                pageSize: 40// should be multiple of 8
+            }
+            // TODO: queryPar need to be initialed and render consistently.
+            this.setState({
+                loading: true,
+                pageInfo: initialPageInfo,
+            })
+            this.queryWMSList(initialPageInfo, this.state.queryPar)
+        }
+    }
+
     // handle input search in the database
     public handleSearch=()=>{
         const inputValue=document.getElementsByClassName('ant-input')[0].getAttribute('value');
@@ -217,7 +240,10 @@ class ServiceSearch extends React.Component<Props, State> {
     // @param  params:object = {keyword?:string, bound?:number[], pageNum:number, pageSize:number, topic?:string, organization?:string, organization_type?:string, continent?:string}
     public async queryWMSList(pagePar:object, queryPar:object) {
         const baseUrl:string = 'search/queryWMSList';
-        const reqPar:object = Object.assign(pagePar,queryPar);
+        const dbTable = {
+            table: window.sessionStorage.getItem("dataSource") === 'labeled data'? 'wms_for_intent':'wms'
+        }
+        const reqPar:object = Object.assign(pagePar, queryPar, dbTable);
         const url:string = reqUrl(delEmptyKey(reqPar),baseUrl,'8081');
         let requestTime:number=0;  // record request time
         console.log(url)
