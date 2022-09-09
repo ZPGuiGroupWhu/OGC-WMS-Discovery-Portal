@@ -3,7 +3,7 @@ import json
 # import time
 
 import HashPkg
-# import MCPkg
+#import MCPkg
 import cv2
 import matlab
 import requests
@@ -12,7 +12,7 @@ import numpy as np
 
 from werkzeug.exceptions import abort
 
-from server.querywmslist_server_flask.src.core import FeatureExtraction
+from querywmslist_server_flask.src.core import FeatureExtraction
 
 # mcInstance = MCPkg.initialize()
 generateHashInstance = HashPkg.initialize()

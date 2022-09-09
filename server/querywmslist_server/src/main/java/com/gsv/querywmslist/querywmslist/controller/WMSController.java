@@ -37,18 +37,23 @@ public class WMSController {
             @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
             @ApiImplicitParam(name = "organization",value = "输入组织",required = false),
             @ApiImplicitParam(name = "organization_type",value = "输入组织类型",required = false),
+            @ApiImplicitParam(name = "table",value = "检索数据库的表名, 默认为wms表，若想使用服务于意图检索的表则取值为wms_for_intent",required = false),
             @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
             @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true)
     })
     public String getWMSList(String keywords, float[] bound, String continent, String topic,
-    		String organization, String organization_type, Integer pageNum, Integer pageSize){
+    		String organization, String organization_type, String table, Integer pageNum, Integer pageSize){
 
         // MultiWMSResponse
     	MultiWMSResponse response = new MultiWMSResponse();
     	try {
+            String tableName = "wms";
+            if ("wms_for_intent".equals(table)) {
+                tableName = "wms_for_intent";
+            }
     		List<WMSWithContactInfo> wmsList = wmsService.getWMSList(keywords, bound, continent, topic, 
-    				organization, organization_type, pageNum, pageSize);
-    		Integer totalWMSNum = wmsService.getWMSListNum(keywords, bound, continent, topic, organization, organization_type);
+    				organization, organization_type, tableName, pageNum, pageSize);
+    		Integer totalWMSNum = wmsService.getWMSListNum(keywords, bound, continent, topic, organization, organization_type, tableName);
     		response.setData(wmsList);
     		response.setErrCode(0);
     		response.setCurrentWMSNum(wmsList.size());
@@ -107,7 +112,7 @@ public class WMSController {
 			if("Base64Str".equals(photoType)) {
 				photoTransportType = PhotoTransportType.BASE64_STRING;
 			}
-    		
+
             WMSWithLayer result = wmsService.getWMSInfo(id, photoTransportType);
             response.setErrCode(0);
             response.setData(result);

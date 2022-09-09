@@ -7,6 +7,7 @@
 //import org.junit.Test;
 //
 //import com.gsv.querywmslist.querywmslist.bean.ObjectSimilarity;
+//
 //public class ObjectSimilarityTest {
 //
 //	@Test
@@ -22,5 +23,5 @@
 //			System.out.println(os);
 //		}
 //	}
-//
+//	
 //}

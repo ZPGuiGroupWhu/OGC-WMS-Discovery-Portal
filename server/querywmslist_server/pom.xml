@@ -83,22 +83,20 @@
   			<version>3.14.9</version>
 		</dependency>
 
-        <!--引入第三方本地的依赖包-->
         <dependency>
-            <groupId>com.gsv.queryWMSList</groupId>
+            <groupId>javabuilder</groupId>
             <artifactId>javabuilder</artifactId>
-            <version>1.0</version>
+            <version>0.0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/javabuilder.jar</systemPath>
+            <systemPath>${basedir}/lib/javabuilder.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.gsv.queryWMSList</groupId>
+            <groupId>MCPkg</groupId>
             <artifactId>MCPkg</artifactId>
-            <version>1.0</version>
+            <version>0.0.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/lib/MCPkg.jar</systemPath>
+            <systemPath>${basedir}/lib/MCPkg.jar</systemPath>
         </dependency>
-
     </dependencies>
 
     <build>
@@ -109,10 +107,24 @@
                 <configuration>
                     <includeSystemScope>true</includeSystemScope>
                 </configuration>
-
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
-
     </build>
+
+
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
 	
 </project>

@@ -19,6 +19,7 @@ import java.sql.DriverManager;
 import java.io.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class RecognizeIntentionTest {
         //System.out.println(positive);
         Integer[][] b= new Integer[2][];
         b[0]=positive.toArray(new Integer[]{});
-        b[1]=negative.toArray(new Integer[]{});
+        b[1]= negative.toArray(new Integer[]{});
 
 
 
@@ -77,34 +78,21 @@ public class RecognizeIntentionTest {
             jsintention.stream().forEach(subIntention -> {
 
                 JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
-                JSONArray contentArray=jsonIntention.getJSONArray("content");
-                JSONArray locationArray=jsonIntention.getJSONArray("location");
-                JSONArray styleArray=jsonIntention.getJSONArray("style");
-                JSONArray topicArray=jsonIntention.getJSONArray("topic");
+                List<String> content= (List<String>) jsonIntention.get("content");
+                List<String> location= (List<String>) jsonIntention.get("location");
+                List<String> style= (List<String>) jsonIntention.get("style");
+                List<String> topic= (List<String>) jsonIntention.get("topic");
+                Intention.SubIntention temSubIntention=intention.new SubIntention();
 
-                String temSubIntention="";
-                for(int i = 0; i < contentArray.size(); i++) {
-                    String content = contentArray.get(i).toString();
-                    temSubIntention+=content.substring(content.lastIndexOf("/")+1)+" ";
-                }
-                for(int i = 0; i < locationArray.size(); i++) {
-                    String location=locationArray.get(i).toString();
-                    String temp=locationArray.get(i).toString()+temSubIntention+" ";
-                    temSubIntention+=temp;
-                }
-                for(int i = 0; i < styleArray.size(); i++) {
-                    temSubIntention+=styleArray.get(i).toString()+" ";
-
-                }
-                for(int i = 0; i < topicArray.size(); i++) {
-                    temSubIntention+=topicArray.get(i).toString()+" ";
-                }
+                if (content.equals("null")==false){temSubIntention.content=Arrays.asList(content.get(0).substring(content.get(0).lastIndexOf("/")+1)+' ');}
+                if (location.equals("null")==false){temSubIntention.location= Arrays.asList(location.get(0) +' ') ;}
+                if (style.equals("null")==false){temSubIntention.style=Arrays.asList(style.get(0) +' ');}
+                if (topic.equals("null")==false){temSubIntention.topic=topic;}
 
                 intention.subIntention.add(temSubIntention);
-                System.out.println(temSubIntention);
+                //System.out.println(temSubIntention);
             });
 
-            JSONArray negative=jsonObject.getJSONArray("negative samples");
 
         } else {
             throw new IOException("Unexpected code " + response);
