@@ -1125,18 +1125,18 @@ class LayerSearch extends React.Component<Props,State> {
 
           // update intention in the right sider
           const selfConfidence:number[]=[]
-          const resIntent = JSON.parse(resBody.intention)
-          const intentList = resIntent.result[0].intention
+          // const resIntent = JSON.parse(resBody.intention)
+          const intentList = resBody.intention.result[0].intention
           intentList.map((val:ISubIntent)=>{
               selfConfidence.push(val.confidence)
           })
-          selfConfidence.push(resIntent.result[0].confidence)
+          selfConfidence.push(resBody.intention.result[0].confidence)
           const intention = {
               confidence: selfConfidence,
-              encodingLen: resIntent.parameter.encodingLength,
-              filtration: resIntent.parameter.filtrationCoefficient,
-              intent: resIntent.result[0].intention,
-              mergeNum: resIntent.parameter.mergeNum
+              encodingLen: resBody.intention.parameter.encodingLength,
+              filtration: resBody.intention.parameter.filtrationCoefficient,
+              intent: resBody.intention.result[0].intention,
+              mergeNum: resBody.intention.parameter.mergeNum
           }
           this.props.dispatch(conveyIntentData(intention))
 
