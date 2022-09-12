@@ -614,7 +614,7 @@ class IntentionExp extends React.Component<Props, State> {
                                     >
                                         &lt;&lt;&nbsp;Advanced
                                     </Button>
-                                    <Button className="advanced_Btn"  shape="round" onClick={this.handleFeedBack}>
+                                    <Button className="advanced_Btn"  shape="round" type = "primary" onClick={this.handleFeedBack}>
                                         Feedback&nbsp;&gt;&gt;
                                     </Button>
                                 </Space>

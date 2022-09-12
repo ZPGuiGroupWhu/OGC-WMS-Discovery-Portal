@@ -119,8 +119,7 @@
     display: flex;
     align-items: flex-end;
     &_value{
-        padding-right: $bound_padding;
-        margin-right: $bound_padding;
+        margin-right: 8px;
     }
     span{
         padding-bottom: 5px;

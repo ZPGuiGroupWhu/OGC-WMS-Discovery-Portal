@@ -224,8 +224,8 @@ class LayerSearch extends React.Component<Props,State> {
                   <div className="words">
                       <Statistic className="value"
                                  value={this.state.isPositiveTab ? this.state.positiveList.length : this.state.negativeList.length}
-                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the Interesting Collection." :
-                                     "  layers have been selected in the Annoying Collection."}/>
+                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the like Collection." :
+                                     "  layers have been selected in the dislike Collection."}/>
                   </div>
                   <div className="buttons">
                       <input type="file" id="upload_file" multiple={true} style={{display: 'none'}}
@@ -269,7 +269,7 @@ class LayerSearch extends React.Component<Props,State> {
       <Content className="content">
           <div className="content_tool">
               {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
-              <Input.Search  className="content_tool_search"  placeholder="Input something to search services"
+              <Input.Search  className="content_tool_search"  placeholder="Enter something to search for layers"
                              onSearch={this.handleSearch} onPressEnter={this.handleSearch} enterButton = {true}
               />
               <Radio.Group className = 'content_tool_radio' defaultValue = "all data" buttonStyle = "solid"
@@ -278,10 +278,10 @@ class LayerSearch extends React.Component<Props,State> {
                   <Radio.Button value = "labeled data">Labeled Data Source</Radio.Button>
               </Radio.Group>
               <Select defaultValue="firstLetter" className="content_tool_select">
-                  <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
-                  <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
-                  <Select.Option value="ResTime">Order By Response Time</Select.Option>
-                  <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
+                  <Select.Option value="firstLetter">Sort by Name First Letter</Select.Option>
+                  <Select.Option value="qulityRank" disabled = {true}>Sort by Quality Rank</Select.Option>
+                  <Select.Option value="ResTime"  disabled = {true}>Sort By Response Time</Select.Option>
+                  <Select.Option value="LayerNum"  disabled= {true}>Sort By Layer Number</Select.Option>
               </Select>
           </div>
           <Layout className="main_container">
@@ -291,12 +291,12 @@ class LayerSearch extends React.Component<Props,State> {
                       <AdvIntentionPanel callback={this.intentionPanelCallback}/> :
               <Content className="main_container_content" id="main_container_content" >
                 <div className="main_container_content_imglist_statis">
-                   <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layer images have been found."/>
-                   <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
+                   <Statistic className="main_container_content_imglist_statis_value" value={this.state.listTotal} suffix="layers have been found, taking"/>
+                   <Statistic className="main_container_content_imglist_statis_value" value={this.state.time} precision={2} suffix="seconds."/>
                 </div>
                   <div className = "main_container_content_imglist_explanation" >
-                      <div>Interesting: click  <HeartOutlined/> or  press left</div>
-                      <div>Annoying: click  <FrownOutlined/> or press right</div>
+                      <div>Like: click  <HeartOutlined/> or  press left</div>
+                      <div>Dislike: click  <FrownOutlined/> or press right</div>
                   </div>
                 <div id="heatmap_wrapper" >
                     <List
@@ -362,7 +362,7 @@ class LayerSearch extends React.Component<Props,State> {
                           tab={
                               <div className="main_container_content_markCollection_head">
                                       <HeartOutlined className="icon"/>
-                                      <span className="title">Interesting</span>
+                                      <span className="title">Like</span>
                               </div>
                           }
                       >
@@ -376,7 +376,7 @@ class LayerSearch extends React.Component<Props,State> {
                           tab={
                               <div className="main_container_content_markCollection_head">
                                       <FrownOutlined className="icon"/>
-                                      <span className="title">Annoying</span>
+                                      <span className="title">Dislike</span>
                               </div>
                           }
                       >

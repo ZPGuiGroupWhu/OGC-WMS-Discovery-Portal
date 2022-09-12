@@ -109,7 +109,7 @@ class ServiceSearch extends React.Component<Props, State> {
             <Content className="content">
                 <div className="content_tool">
                     {/*<Input.Search allowClear className="content_tool_search" enterButton={true} placeholder="Input something to search services" onSearch={value=>this.handleInputSearch(value)} />*/}
-                    <Input.Search  className="content_tool_search"  placeholder="Input something to search services"
+                    <Input.Search  className="content_tool_search"  placeholder="Enter something to search for services"
                                    onSearch={this.handleSearch} onPressEnter={this.handleSearch} enterButton = {true}
                     />
                     <Radio.Group className = 'content_tool_radio' defaultValue = "all data" buttonStyle = "solid"
@@ -117,19 +117,19 @@ class ServiceSearch extends React.Component<Props, State> {
                         <Radio.Button value ="all data">All Data Source</Radio.Button>
                         <Radio.Button value = "labeled data">Labeled Data Source</Radio.Button>
                     </Radio.Group>
-                    <Select defaultValue="firstLetter" className="content_tool_select">
-                       <Select.Option value="qulityRank">Order by Quality Rank</Select.Option>
-                       <Select.Option value="firstLetter">Order by Name First Letter</Select.Option>
-                        <Select.Option value="ResTime">Order By Response Time</Select.Option>
-                        <Select.Option value="LayerNum">Order By Layer Number</Select.Option>
+                    <Select defaultValue="firstLetter" className="content_tool_select" >
+                        <Select.Option value="firstLetter">Sort by Name First Letter</Select.Option>
+                        <Select.Option value="qulityRank" disabled = {true}>Sort by Quality Rank</Select.Option>
+                        <Select.Option value="ResTime" disabled = {true}>Sort By Response Time</Select.Option>
+                        <Select.Option value="LayerNum" disabled = {true}>Sort By Layer Number</Select.Option>
                     </Select>
                 </div>
                 <Layout className="main_container">
                     <LeftSider queryType={"service"}/>
                     <Content className="main_container_content">
                         <div className="main_container_content_statis">
-                            <Statistic className="main_container_content_statis_value" value={this.state.listTotal}  suffix="services have been found."/>
-                            <Statistic className="main_container_content_statis_value" value={this.state.time} precision={2} suffix="seconds have been needed."/>
+                            <Statistic className="main_container_content_statis_value" value={this.state.listTotal}  suffix="services have been found, taking "/>
+                            <Statistic className="main_container_content_statis_value" value={this.state.time} precision={2} suffix="seconds."/>
                         </div>
                         <List
                             className="main_container_content_list"

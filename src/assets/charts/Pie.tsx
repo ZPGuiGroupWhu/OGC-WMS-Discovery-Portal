@@ -8,23 +8,25 @@ export default class Pie extends React.Component{
             title : {
                 subtext: '',
                 text: 'Continental proportion',
-                x:'right'
+                left: 'center',
+                // x:'right'
             },
             tooltip : {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
             },
             legend: {
-                orient: 'vertical',
+                orient: 'horizontal',
                 left: 'left',
+                top: '10%',
                 data: ['Europe','North America','Asia','South America','Oceania', 'Africa']
             },
             series : [
                 {
                     name: 'Continent',
                     type: 'pie',
-                    radius : '40%',
-                    center: ['50%', '60%'],
+                    radius : '53%',
+                    center: ['50%', '65%'],
                     data:[
                         {value:22.6, name:'Europe'},
                         {value:76.8, name:'North America'},
@@ -50,23 +52,25 @@ export default class Pie extends React.Component{
             title : {
                 text: 'Provider type proportion',
                 subtext: '',
-                x:'right'
+                left: 'center',
+                // x:'right'
             },
             tooltip : {
                 trigger: 'item',
                 formatter: "{a} <br/>{b} : {c} ({d}%)"
             },
             legend: {
-                orient: 'vertical',
+                orient: 'horizontal',
                 left: 'left',
+                top: '10%',
                 data: ['Government','Academic institutions','Intergovernmental organizations','Industry','Other']
             },
             series : [
                 {
                     name: 'Provider',
                     type: 'pie',
-                    radius : '40%',
-                    center: ['50%', '60%'],
+                    radius : '53%',
+                    center: ['50%', '65%'],
                     data:[
                         {value:528, name:'Government'},
                         {value:479, name:'Academic institutions'},
@@ -89,9 +93,9 @@ export default class Pie extends React.Component{
     }
     public render() {
         return (
-            <div id="pie" style={{width: 800 + 'px', height: 400 + 'px', margin: 'auto'}}>
-                <div id="pie_chart" style ={{ width: 400 + 'px', height: 400 + 'px', float: 'left'}} />
-                <div id="provider_chart" style ={{ width: 400 + 'px', height: 400 + 'px', float: 'left'}} />
+            <div id="pie" style={{width: 800 + 'px', height: 320 + 'px', margin: 'auto'}}>
+                <div id="pie_chart" style ={{ width: 390 + 'px', height: 320 + 'px', float: 'left', marginLeft: '20px'}} />
+                <div id="provider_chart" style ={{ width: 390 + 'px', height: 320 + 'px', float: 'left'}} />
             </div>
         )
     }
