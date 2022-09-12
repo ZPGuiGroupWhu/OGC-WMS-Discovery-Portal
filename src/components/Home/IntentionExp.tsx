@@ -556,7 +556,7 @@ class IntentionExp extends React.Component<Props, State> {
                         </div>
                         {this.state.intent.length===0?
                             <Alert message='Error' type='error' showIcon={true} closable={true}
-                                   description='This part is inaccessible until you submit interesting and annoying layer collections'/>
+                                   description='This part is inaccessible until you submit like and dislike layer collections'/>
                             :
                             <div >
                                 <Tabs defaultActiveKey="1" size='small' activeKey={this.state.activeTabKey}
