@@ -98,6 +98,7 @@ class LayerInfo extends React.Component<Props,State>{
     }
 
     public render() {
+        const imgURL = this.state.layerInfoData.photo === '' ? undefined : 'http://119.91.111.143:8082/'+this.state.layerInfoData.photo
         let attribution='null';
         if(this.state.layerInfoData.attribution)
         {
@@ -121,7 +122,7 @@ class LayerInfo extends React.Component<Props,State>{
                 <b className="_info_container_header">LayerInfo</b><br/>
                     <Content className="_info_container_section">
                         <Content className="_info_container_section_photo">
-                           <Card hoverable={true} cover={<img src={'data:image/png;base64,'+this.state.layerInfoData.photo} />} bodyStyle={{padding:2, textAlign: "center"}}>
+                           <Card hoverable={true} cover={<img src={imgURL} />} bodyStyle={{padding:2, textAlign: "center"}}>
                                 <span><b>Name:</b>{this.state.layerInfoData.name}</span><br/>
                                 <span><b>Title:</b>{this.state.layerInfoData.title}</span>
                           </Card>
@@ -220,11 +221,11 @@ class LayerInfo extends React.Component<Props,State>{
         const dbTable = {
             table: window.sessionStorage.getItem('dataSource') === 'labeled data'? 'layerlist_for_intent':'layerlist'
         }
-        const reqPar = Object.assign({id: this.props.layerID}, {photoType: 'Base64Str'}, dbTable)
+        // reqPar = Object.assign({id: this.props.layerID}, {photoType: 'Base64Str'}, dbTable)  // deliver image by encoding base64, abandoned
+        const reqPar = Object.assign({id: this.props.layerID}, dbTable)
         const url:string = reqUrl(reqPar,baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
-            // console.log(res)
             this.setState({
                 layerInfoData: JSON.parse(res).data
             })

@@ -224,8 +224,8 @@ class LayerSearch extends React.Component<Props,State> {
                   <div className="words">
                       <Statistic className="value"
                                  value={this.state.isPositiveTab ? this.state.positiveList.length : this.state.negativeList.length}
-                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the like Collection." :
-                                     "  layers have been selected in the dislike Collection."}/>
+                                 suffix={this.state.isPositiveTab ? "  layers have been selected in the Like Collection." :
+                                     "  layers have been selected in the Dislike Collection."}/>
                   </div>
                   <div className="buttons">
                       <input type="file" id="upload_file" multiple={true} style={{display: 'none'}}
@@ -326,7 +326,7 @@ class LayerSearch extends React.Component<Props,State> {
                               renderItem={(childItem:ILayer) => (
                                   <List.Item key={childItem.id} className="main_container_content_imglist_item" style={{margin: 0, padding:0}}>
                                     <Popover className="main_container_content_imglist_item_popover" trigger="hover" content={this.popoverContent(childItem)}>
-                                       <Card hoverable={true} onContextMenu={()=>{this.handleDiscard(childItem)}} cover={<img src={'data:image/png;base64,'+childItem.photo} />}
+                                       <Card hoverable={true} onContextMenu={()=>{this.handleDiscard(childItem)}} cover={<img src={'http://119.91.111.143:8082/'+childItem.photo} />}
                                              onClick={()=>{this.handleStar(childItem)}}
                                              style={{border: (this.forList(childItem,this.state.positiveList))?' 5px solid #c0392b':
                                                      (this.forList(childItem,this.state.negativeList)?' 5px solid #808080':' 1px solid #ccc') }}
@@ -444,7 +444,7 @@ class LayerSearch extends React.Component<Props,State> {
       // },3000)
 
     return (
-      <Card  cover={<img src={'data:image/png;base64,'+layer.photo} />} bodyStyle={{padding: "10px"}}
+      <Card  cover={<img src={'http://119.91.111.143:8082/'+layer.photo} />} bodyStyle={{padding: "10px"}}
              onMouseEnter={()=>{this.hoverInterval=setInterval(()=>{hoverCounter+=1},50)}}
              onMouseLeave={()=>{
                  this.updateHoverList(layer,hoverCounter)
@@ -580,7 +580,7 @@ class LayerSearch extends React.Component<Props,State> {
             }>
                 <Card className="card" hoverable={true}
                       cover={<Image className="img" alt="Layer Image" preview={!this.state.isDelete}
-                                    src={'data:image/png;base64,' + item.photo} style={{display: 'inline-block'}}/>}
+                                    src={'http://119.91.111.143:8082/' + item.photo} style={{display: 'inline-block'}}/>}
                       onClick={() => {
                           (this.state.isPositiveTab ? this.handlePositiveDelete : this.handleNegativeDelete)(item)
                       }}
@@ -994,7 +994,8 @@ class LayerSearch extends React.Component<Props,State> {
       const dbTable = {
           table: window.sessionStorage.getItem("dataSource") === 'labeled data'? 'layerlist_for_intent':'layerlist'
       }
-      const reqPar: object = Object.assign(pagePar, queryPar, dbTable, {photoType: 'Base64Str'});
+      // const reqPar: object = Object.assign(pagePar, queryPar, dbTable, {photoType: 'Base64Str'}); deliver image by encoding base64, abandoned
+      const reqPar: object = Object.assign(pagePar, queryPar, dbTable);
       const url: string = reqUrl(delEmptyKey(reqPar), baseUrl, '8081');
       let requestTime: number = 0;  // record request time
       console.log(url)
@@ -1024,7 +1025,8 @@ class LayerSearch extends React.Component<Props,State> {
       const dbTable = {
           table: window.sessionStorage.getItem("dataSource") === 'labeled data'? 'layerlist_for_intent':'layerlist'
       }
-      const reqPar:object = Object.assign(pagePar, dbTable, {photoType: 'Base64Str'})
+      // const reqPar:object = Object.assign(pagePar, dbTable, {photoType: 'Base64Str'})  // deliver image by encoding base64, abandoned
+      const reqPar:object = Object.assign(pagePar, dbTable)
       const baseUrl:string = reqUrl(delEmptyKey(reqPar),'search/queryLayerByTemplate','8081');
       let url: string = baseUrl + '&templateId=';
       this.submitOptionList[0]=JSON.parse(JSON.stringify(layerList))
@@ -1089,7 +1091,7 @@ class LayerSearch extends React.Component<Props,State> {
               // parameter: {}
               pageNum: pagePar.pageNum,
               pageSize: pagePar.pageSize,
-              photoType: "Base64Str"
+              // photoType: "Base64Str"     // deliver image by encoding base64, abandoned
           },
           method: "post",
           'Content-Type': 'application/json'
@@ -1167,7 +1169,7 @@ class LayerSearch extends React.Component<Props,State> {
               intention,
               pageNum: pagePar.pageNum,
               pageSize: pagePar.pageSize,
-              photoType: "Base64Str"
+              // photoType: "Base64Str"    // deliver image by encoding base64, abandoned
           },
           method: "post",
           'Content-Type': 'application/json'
