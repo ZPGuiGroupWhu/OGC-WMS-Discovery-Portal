@@ -15,10 +15,6 @@
     <name>querywmslist</name>
     <description>Demo project for Spring Boot</description>
 
-    <properties>
-        <java.version>1.8</java.version>
-    </properties>
-
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
@@ -97,7 +93,9 @@
             <scope>system</scope>
             <systemPath>${basedir}/lib/MCPkg.jar</systemPath>
         </dependency>
+
     </dependencies>
+
 
     <build>
         <plugins>
@@ -116,15 +114,4 @@
         </plugins>
     </build>
 
-
-<!--    <build>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-
-<!--            </plugin>-->
-<!--        </plugins>-->
-<!--    </build>-->
-	
 </project>

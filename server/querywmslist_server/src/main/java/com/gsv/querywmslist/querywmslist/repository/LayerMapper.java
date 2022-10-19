@@ -285,5 +285,45 @@ public interface LayerMapper {
 			"</if> " +
 			"</script>")
 	List<Layer> getLayersbySubIntention(@Param("content") String content, @Param("space") String space, @Param("style") String style, @Param("topic") String topic);
+
+	@Select("<script>" +
+			"<if test='table!=\"layerlist_for_intent\" ' >" +
+			"SELECT ID " +
+			"from layerlist where 1=1  " +
+			"<if test='keywordsNew!=null and  keywordsNew != \"\" ' >" +
+			" AND MATCH ( Title, Abstract, `Name`, Attribution, Keywords, URL) AGAINST ( #{keywordsNew} )" +
+			"</if>  " +
+			"<if test='polygon!=null and polygon!=\"\"'> " +
+			// 这里将(Box,ST_GeomFromText('${polygon}', 4326))"中的4326去掉了，默认为0
+			// 这样在比较时基于迪卡尔坐标系，而不是WGS84，效果应该不变
+			"and MBRCONTAINS (Box,ST_GeomFromText('${polygon}'))" +
+			"</if>" +
+			"<if test='topicArray!=null and topicArray[0]!=null'>  " +
+			"and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
+			"LOWER(Topic) like CONCAT('%',#{item},'%')" +
+			"</foreach> )" +
+			"</if>  " +
+			"</if>  " +
+			"" +
+			"<if test='table==\"layerlist_for_intent\" '>" +
+			"SELECT ID " +
+			"from layerlist_for_intent where 1=1  " +
+			"<if test='keywordsNew!=null and  keywordsNew != \"\" ' >" +
+			" AND MATCH ( Title, Abstract, `Name`, Attribution, Keywords, URL, FContent, FSpace, FStyle, FTopic) AGAINST ( #{keywordsNew} )" +
+			"</if>  " +
+			"<if test='polygon!=null and polygon!=\"\"'> " +
+			// 这里将(Box,ST_GeomFromText('${polygon}', 4326))"中的4326去掉了，默认为0
+			// 这样在比较时基于迪卡尔坐标系，而不是WGS84，效果应该不变
+			"and MBRCONTAINS (Box,ST_GeomFromText('${polygon}'))" +
+			"</if>" +
+			"<if test='topicArray!=null and topicArray[0]!=null'>  " +
+			"and (<foreach collection='topicArray' item='item' index='index' separator='and'> " +
+			"LOWER(Topic) like CONCAT('%',#{item},'%')" +
+			"</foreach> )" +
+			"</if>  " +
+			"</if>" +
+			"</script>")
+	List<Integer> getLayersIDs(@Param("keywordsNew") String keywordsNew, @Param("polygon") String Polygon,
+						 @Param("topicArray")String [] topicArray, @Param("table") String table);
 }
 

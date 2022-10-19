@@ -38,7 +38,8 @@ public class IntentionUtils {
                     newContent.add(content.substring(content.lastIndexOf("/")+1));
                 }
             }
-            temSubIntention.content=newContent;
+//            temSubIntention.content=newContent;
+            temSubIntention.content = contentArray;
             temSubIntention.location = locationArray;
             temSubIntention.style =styleArray;
             temSubIntention.topic = topicArray;

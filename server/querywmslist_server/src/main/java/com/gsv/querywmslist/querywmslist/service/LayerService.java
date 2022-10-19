@@ -3,13 +3,7 @@ package com.gsv.querywmslist.querywmslist.service;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,6 +11,8 @@ import com.gsv.querywmslist.querywmslist.commons.*;
 import com.gsv.querywmslist.querywmslist.dao.*;
 import lombok.SneakyThrows;
 import okhttp3.*;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
+import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +28,8 @@ import com.gsv.querywmslist.querywmslist.repository.WMSMapper;
 import com.mathworks.toolbox.javabuilder.MWException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.util.ResourceUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
@@ -53,6 +51,7 @@ public class LayerService {
 	private Long createAt;
 	private HashcodeCache hashcodeCache = new HashcodeCache();
 	private IntentionCache intentionCache = new IntentionCache();
+	private InitialPageCache initialPageCache = new InitialPageCache();
 	
 	public LayerService() {
 		this.createAt = System.currentTimeMillis();
@@ -103,15 +102,18 @@ public class LayerService {
 		if ("layerlist_for_intent".equals(table)) {
 			List<Integer> intentSimID = new ArrayList<>();    // layerlist_for_intent表中符合相似度条件的图层
 			// 读取resources文件夹下的layerlist_for_intent的ID列表
-			File file = new File ("src/main/resources/layerlist_for_intentID.json");
-			FileReader fileReader = new FileReader(file);
-			Reader reader = new InputStreamReader(new FileInputStream(file), "Utf-8");
+//			File file = new File ("src/main/resources/layerlist_for_intentID.json");
+//			FileReader fileReader = new FileReader(file);
+//			Reader reader = new InputStreamReader(new FileInputStream(file), "Utf-8");
+
+			InputStream in = this.getClass().getResourceAsStream("/" + "layerlist_for_intentID.json");
+			Reader reader = new InputStreamReader(in, "Utf-8");
 			int ch = 0;
 			StringBuffer sb = new StringBuffer();
 			while ((ch = reader.read()) != -1) {
 				sb.append((char) ch);
 			}
-			fileReader.close();
+			// fileReader.close();
 			reader.close();
 			String jsonStr = sb.toString();
 
@@ -436,15 +438,11 @@ public class LayerService {
 		OkHttpClient client = new OkHttpClient();
 		Intention intention =new Intention();
 		intention.subIntention=new ArrayList<>();
-//		System.out.println(parameter);
-//		System.out.println(layers);
 		Map<String, Object> map = new HashMap<String, Object>();
-//		map.put("layers", JSONObject.parseObject(layers));
-//		map.put("parameter", JSONObject.parseObject(parameter));
 		map.put("layers", layers);
 		map.put("parameter", parameter);
 		String jsonStr = JSONObject.toJSONString(map);
-		System.out.println(jsonStr);
+//		System.out.println(jsonStr);
 		RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
 		Request request = new Request.Builder()
 				.url("http://127.0.0.1:8090/process/recognizeIntention")
@@ -461,33 +459,10 @@ public class LayerService {
 			intention.subIntentionNum=jsintention.size();
 			jsintention.stream().forEach(subIntention -> {
 				JSONObject jsonIntention = JSON.parseObject(subIntention.toString());
-//				JSONArray contentArray=jsonIntention.getJSONArray("content");
-//				JSONArray locationArray=jsonIntention.getJSONArray("location");
-//				JSONArray styleArray=jsonIntention.getJSONArray("style");
-//				JSONArray topicArray=jsonIntention.getJSONArray("topic");
-
 				List<String> content= (List<String>) jsonIntention.get("content");
 				List<String> location= (List<String>) jsonIntention.get("location");
 				List<String> style= (List<String>) jsonIntention.get("style");
 				List<String> topic= (List<String>) jsonIntention.get("topic");
-
-//				String temSubIntention="";
-//				for(int i = 0; i < contentArray.size(); i++) {
-//					String content = contentArray.get(i).toString();
-//					temSubIntention+=content.substring(content.lastIndexOf("/")+1)+" ";
-//				}
-//				for(int i = 0; i < locationArray.size(); i++) {
-//					String location=locationArray.get(i).toString();
-//					String temp=locationArray.get(i).toString()+temSubIntention+" ";
-//					temSubIntention+=temp;
-//				}
-//				for(int i = 0; i < styleArray.size(); i++) {
-//					temSubIntention+=styleArray.get(i).toString()+" ";
-//
-//				}
-//				for(int i = 0; i < topicArray.size(); i++) {
-//					temSubIntention+=topicArray.get(i).toString()+" ";
-//				}
 				Intention.SubIntention temSubIntention=intention.new SubIntention();
 
 				if (content.size() != 0) {
@@ -498,47 +473,8 @@ public class LayerService {
 				temSubIntention.location = location;
 				temSubIntention.style = style;
 				temSubIntention.topic = topic;
-
-//				if (location.size() != 0) {
-//					temSubIntention.location = location;
-//				} else {
-//					temSubIntention.location = Arrays.asList("");
-//				}
-//				if (style.size() != 0) {
-//					temSubIntention.style = style;
-//				} else {
-//					temSubIntention.style = Arrays.asList("");
-//				}
-//				if (topic.size() != 0) {
-//					temSubIntention.topic = topic;
-//				} else {
-//					temSubIntention.topic = Arrays.asList("");
-//				}
-
-
-//				if (content.get(0).equals("null") == false) {
-//					temSubIntention.content = Arrays.asList(content.get(0).substring(content.get(0).lastIndexOf("/") + 1));
-//				} else {
-//					temSubIntention.content = Arrays.asList("");
-//				}
-//				if (location.get(0).equals("null") == false) {
-//					temSubIntention.location = location;
-//				} else {
-//					temSubIntention.location = Arrays.asList("");
-//				}
-//				if (style.get(0).equals("null") == false) {
-//					temSubIntention.style = style;
-//				} else {
-//					temSubIntention.style = Arrays.asList("");
-//				}
-//				if (topic.get(0).equals("null") == false) {
-//					temSubIntention.topic = topic;
-//				} else {
-//					temSubIntention.topic = Arrays.asList("");
-//				}
-
 				intention.subIntention.add(temSubIntention);
-				System.out.println(temSubIntention);
+//				System.out.println(temSubIntention);
 			});
 		} else {
 			throw new IOException("Unexpected code " + response);
@@ -547,15 +483,54 @@ public class LayerService {
 	}
 
 
-	public List<Layer> getLayersByIntention(Intention intention) {
+	public List<Layer> getLayersByIntention(Intention intention) throws IOException {
 		List<Layer>resultLayers=new ArrayList<>();
+
+//		File file = ResourceUtils.getFile("classpath:all_hyponyms.json");
+//		JSONObject contents = JSON.parseObject(FileUtil.readAsString(file));
+
+		InputStream in = this.getClass().getResourceAsStream("/" + "all_hyponyms.json");
+		Reader reader = new InputStreamReader(in, "Utf-8");
+		int ch = 0;
+		StringBuffer sb = new StringBuffer();
+		while ((ch = reader.read()) != -1) {
+			sb.append((char) ch);
+		}
+		// fileReader.close();
+		reader.close();
+		String jsonStr = sb.toString();
+		JSONObject contents = JSON.parseObject(jsonStr);
 
 		for(int j = intention.subIntentionNum -1; j>=0; j--) {
 			Intention.SubIntention tempSubIntention= intention.subIntention.get(j);
-
+			List<String> subContents = new ArrayList<>();
 			// 对子意图中维度是空数组的情况进行改造，即[] => [""], 否则查询会报错
 			if (tempSubIntention.content.size() == 0) {
 				tempSubIntention.content = Arrays.asList("");
+			}
+			else{
+
+				//匹配geonames
+				if(!tempSubIntention.content.get(0).contains("http://")){
+					List<String> allContents = new ArrayList<>();
+					//获取所有概念
+					Iterator<String> sIterator = contents.keySet().iterator();
+					while (sIterator.hasNext()){
+						String key = sIterator.next();
+						allContents.add(key);
+						if(key.substring(key.lastIndexOf("/")+1).contains(tempSubIntention.content.get(0))){
+							subContents.addAll((List<String>)contents.get(key));
+							subContents.add(key);
+//							System.out.println(subContents);
+						}
+					}
+				}
+				else{
+				//扩展子意图的内容维度
+				subContents = (List<String>)contents.get(tempSubIntention.content.get(0));
+				subContents.add(tempSubIntention.content.get(0));
+//				System.out.println(subContents);
+				}
 			}
 			if (tempSubIntention.location.size() == 0) {
 				tempSubIntention.location = Arrays.asList("");
@@ -566,7 +541,8 @@ public class LayerService {
 			if (tempSubIntention.topic.size() == 0) {
 				tempSubIntention.topic = Arrays.asList("");
 			}
-			List<Layer> tempLayers = layerMapper.getLayersbySubIntention(tempSubIntention.content.get(0), tempSubIntention.location.get(0), tempSubIntention.style.get(0), tempSubIntention.topic.get(0));
+			for(String subContent : subContents){
+			List<Layer> tempLayers = layerMapper.getLayersbySubIntention(subContent, tempSubIntention.location.get(0), tempSubIntention.style.get(0), tempSubIntention.topic.get(0));
 
 			int max = resultLayers.size() > tempLayers.size() ? resultLayers.size() : tempLayers.size();
 			//新建一个数组list，来接受最终结果
@@ -583,7 +559,77 @@ public class LayerService {
 			}
 			resultLayers=list;
 		}
+		}
 		return resultLayers;
 	}
 
+    public List<LayerWithFloatBBox> getLayerListNew(String sessionID,String keywords, float[] bound, String topic,  String table, Integer pageNum, Integer pageSize, PhotoTransportType photoType) {
+		// 参数预处理
+		keywords = (keywords == null) ? keywords : keywords.toLowerCase();
+		String polygon = new String();
+		if (bound != null) {
+			float maxLat, maxLon, minLat, minLon;
+			minLon = bound[0];
+			maxLon = bound[1];
+			minLat = bound[2];
+			maxLat = bound[3];
+			polygon = "Polygon((" +
+					maxLat + " " + minLon + "," +
+					maxLat + " " + maxLon + "," +
+					minLat + " " + maxLon + "," +
+					minLat + " " + minLon + "," +
+					maxLat + " " + minLon + "))";
+			//从左上角开始顺时针写矩形，矩形第一个点和最后一个点必须一致
+		} else {
+			polygon = "";
+		}
+		String[] topicArray = (topic == null) ? null : topic.toLowerCase().split(",");
+		List<Layer> layers = new ArrayList<>();
+		//判断初始化页面
+		if (keywords == null && bound == null && topic == null) {
+//			System.out.println("计算totalLayerNum：");
+			List<Integer> totalLayerIDs=layerMapper.getLayersIDs(keywords, polygon, topicArray, table);
+			Integer totalLayerNum = totalLayerIDs.size();
+//			System.out.println(totalLayerNum);
+			Integer[] LayersOrder = totalLayerIDs.toArray(new Integer[0]);
+			if (initialPageCache.contains(sessionID)) {
+				LayersOrder = initialPageCache.getHashcode(sessionID);
+			} else {
+				//意图查询接口
+//				for(int a=0;a<totalLayerNum;a++){
+//					LayersOrder[a]=a;
+//				}
+				for(int i=0;i<totalLayerNum;i++){
+					int j=new Random().nextInt(totalLayerNum);
+					int t=LayersOrder[i];
+					LayersOrder[i]=LayersOrder[j];
+					LayersOrder[j]=t;
+				}
+//				System.out.println(LayersOrder);
+				sessionID = UUID.randomUUID().toString().replaceAll("-", "");
+				// 缓存
+				this.initialPageCache.put(sessionID, LayersOrder);
+			}
+			Integer fromRowNum = (pageNum - 1) * pageSize;
+			Integer[] tmpLayersIDs= new Integer[pageSize];
+			for(int i=0;i<pageSize;i++){
+				if(fromRowNum+i>=LayersOrder.length){
+					break;
+				}
+				tmpLayersIDs[i]=LayersOrder[fromRowNum+i];
+			}
+			layers=layerMapper.getLayersByIdArray(tmpLayersIDs,table);
+		} else {
+
+
+			Integer fromRowNum = (pageNum - 1) * pageSize;
+			layers = layerMapper.getLayers(keywords, polygon, topicArray, table, fromRowNum, pageSize);
+
+		}
+			// 转换BBox字段
+		List<LayerWithFloatBBox> layersWithFloatBBox = layers.stream().map(layer ->
+				TransformUtil.layerToLayerWithFloatBBox(layer, photoType)).collect(Collectors.toList());
+
+		return layersWithFloatBBox;
+	}
 }

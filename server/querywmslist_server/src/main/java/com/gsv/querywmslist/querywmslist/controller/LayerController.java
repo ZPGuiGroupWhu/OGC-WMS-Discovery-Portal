@@ -25,6 +25,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
+
 @RestController
 @Api(value = "LayerController",tags = "layer接口")
 public class LayerController {
@@ -33,23 +34,69 @@ public class LayerController {
 	private LayerService layerService;
 	
 	
+//	@CrossOrigin
+//	@GetMapping("/search/queryLayerList")
+//	@ApiOperation(value = "根据关键词及主题进行查询")
+//	@ApiImplicitParams({
+//        @ApiImplicitParam(name = "keywords",value = "输入与Name，Title，Abstract，Attribution，Keywords匹配的关键词",required = false),
+//        @ApiImplicitParam(name = "bound",value = "输入经纬度范围",required = false),
+//        @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
+//		@ApiImplicitParam(name = "table",value = "检索数据库的表名, 默认为layerlist表，若想使用服务于意图检索的表则取值为layerlist_for_intent",required = false),
+//        @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
+//        @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
+//		@ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+//	})
+//	public String getLayerList(String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize, String photoType, String table) {
+//		// MultiLayersResponse
+//
+//		MultiLayersResponse response = new MultiLayersResponse();
+//
+//		// TODO 错误类型分类不够细致，如可细分为代码运行错误、返回为空、参数错误等
+//		try {
+//			PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
+//			String tableName = "layerlist";
+//			if("Base64Str".equals(photoType)) {
+//				photoTransportType = PhotoTransportType.BASE64_STRING;
+//			}
+//			if ("layerlist_for_intent".equals(table)) {
+//				tableName = "layerlist_for_intent";
+//			}
+//			// 查询
+//			List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerList(keywords, bound, topic, tableName, pageNum, pageSize,
+//					photoTransportType);
+//			Integer totalLayerNum = layerService.getLayerListNum(keywords, bound, topic, tableName);
+//			response.setErrCode(0);
+//			response.setTotalLayerNum(totalLayerNum);
+//			response.setCurrentLayerNum(layersWithFloatBBox.size());
+//			response.setData(layersWithFloatBBox);
+//		} catch(Exception e) {
+//			response.setErrCode(1002);
+//			response.setReqMsg("出现错误");
+//		}
+//
+//		String result= JSON.toJSONString(response);
+//		return result;
+//	}
+
+
 	@CrossOrigin
 	@GetMapping("/search/queryLayerList")
 	@ApiOperation(value = "根据关键词及主题进行查询")
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "keywords",value = "输入与Name，Title，Abstract，Attribution，Keywords匹配的关键词",required = false),
-        @ApiImplicitParam(name = "bound",value = "输入经纬度范围",required = false),
-        @ApiImplicitParam(name = "topic",value = "输入主题",required = false),
-		@ApiImplicitParam(name = "table",value = "检索数据库的表名, 默认为layerlist表，若想使用服务于意图检索的表则取值为layerlist_for_intent",required = false),
-        @ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
-        @ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
-		@ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
+			@ApiImplicitParam(name = "sessionID",value = "当前会话标识符，取值为空表示当前会话的第一次检索",required = false),
+			@ApiImplicitParam(name = "keywords",value = "输入与Name，Title，Abstract，Attribution，Keywords匹配的关键词",required = false),
+			@ApiImplicitParam(name = "bound",value = "输入经纬度范围",required = false),
+			@ApiImplicitParam(name = "topic",value = "输入主题",required = false),
+			@ApiImplicitParam(name = "table",value = "检索数据库的表名, 默认为layerlist表，若想使用服务于意图检索的表则取值为layerlist_for_intent",required = false),
+			@ApiImplicitParam(name = "pageNum",value = "输入请求页面编号,1表示第一页",required = true),
+			@ApiImplicitParam(name = "pageSize",value = "输入每页的数据条数",required = true),
+			@ApiImplicitParam(name = "photoType",value = "图层缩略图的传输类型, 默认为静态资源地址，若想使用Base64编码则取值为Base64Str",required = false)
 	})
-	public String getLayerList(String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize, String photoType, String table) {
+	public String getLayerList(String sessionID,String keywords, float[] bound, String topic,Integer pageNum, Integer pageSize, String photoType, String table) {
 		// MultiLayersResponse
-		
+
 		MultiLayersResponse response = new MultiLayersResponse();
-		
+
 		// TODO 错误类型分类不够细致，如可细分为代码运行错误、返回为空、参数错误等
 		try {
 			PhotoTransportType photoTransportType = PhotoTransportType.STATIC_RESOURCE_PATH;
@@ -61,7 +108,7 @@ public class LayerController {
 				tableName = "layerlist_for_intent";
 			}
 			// 查询
-			List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerList(keywords, bound, topic, tableName, pageNum, pageSize,
+			List<LayerWithFloatBBox> layersWithFloatBBox = layerService.getLayerListNew(sessionID,keywords, bound, topic, tableName, pageNum, pageSize,
 					photoTransportType);
 			Integer totalLayerNum = layerService.getLayerListNum(keywords, bound, topic, tableName);
 			response.setErrCode(0);
@@ -76,6 +123,9 @@ public class LayerController {
 		String result= JSON.toJSONString(response);
 		return result;
 	}
+
+
+
 	
 	
     @CrossOrigin
@@ -233,7 +283,7 @@ public class LayerController {
 					= layerService.getLayerListByIntentionLayerIds(sessionID,layers,parameter, (Integer) data.get("pageNum"), (Integer) data.get("pageSize"), photoTransportType);
 			List<LayerWithFloatBBox> layersWithFloatBBox = searchResult.getLayers();
 			Map<String,Object> mapIntention= layerService.getIntentionByLayerIds(layers,parameter);
-			System.out.println(mapIntention);
+//			System.out.println(mapIntention);
 			response.setSessionID(searchResult.getSessionID());
 			response.setErrCode(0);
 			response.setTotalLayerNum(searchResult.getTotalLayerNum());
