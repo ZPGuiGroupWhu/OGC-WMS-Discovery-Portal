@@ -19,7 +19,7 @@
     "react-dom": "^16.14.0",
     "react-redux": "^7.2.6",
     "react-router-dom": "^4.3.1",
-    "react-scripts-ts": "3.1.0",
+    "react-scripts-ts": "4.0.8",
     "redux": "^4.1.2",
     "redux-persist": "^6.0.0"
   },
