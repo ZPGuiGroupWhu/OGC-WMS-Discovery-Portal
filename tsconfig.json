@@ -19,6 +19,7 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
+    "skipLibCheck": true
     // "resolveJsonModule": true
   },
   "exclude": [
