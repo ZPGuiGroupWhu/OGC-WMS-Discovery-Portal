@@ -77,6 +77,8 @@ class PortalHeader extends React.Component<Props,State>{
                         <Menu.Item key="13">Sign Out</Menu.Item>
                     </Menu.SubMenu> :
                     <Menu.Item key="6" className="header_menu_nav">Login</Menu.Item>}
+
+                <Menu.Item key = "14"><Link to = "/settings">Settings</Link></Menu.Item>
             </Menu>
            <Login />
           </Header>
