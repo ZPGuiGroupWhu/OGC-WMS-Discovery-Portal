@@ -9,7 +9,6 @@ from tensorflow.keras.applications.vgg19 import preprocess_input
 import base64
 import cv2
 import numpy as np
-
 from werkzeug.exceptions import abort
 
 model_path = os.path.expanduser('~') + "/gsv/models/Type_model3.h5"
@@ -63,6 +62,7 @@ def getMapMethod():
             # time3 = time.time()
             # print(time1 - time0, time2 - time1, time3 - time2)
         return jsonify(result)
+
 
 
 if __name__ == '__main__':

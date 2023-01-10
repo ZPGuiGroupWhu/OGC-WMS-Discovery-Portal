@@ -68,7 +68,7 @@ public interface WMSMapper {
 
     @Select("<script>" +
             "select x.* from(select m.* from (SELECT ID as id, Topic as topic, URL as url, Abstract as abstr, Keywords as keywords, Title as title, Country as country, " + 
-    		"StateOrProvince as stateorprovince, City as city, Latitude as latitude, Longitude as longitude from wms where 1=1 " +
+    		"StateOrProvince as stateorprovince, City as city, Latitude as latitude, Longitude as longitude from ${table} where 1=1 " +
             "<if test='keywords!=null and  keywords!=\"\" ' >" +
             " and MATCH (Title,Abstract,url,Keywords) AGAINST (#{keywords}) " +
             "</if>  " +
@@ -100,14 +100,19 @@ public interface WMSMapper {
             " ORDER BY m.id )x where x.id is not null " + 
             "limit #{fromRowNum}, #{pageSize}" + 
             "</script>")
-    List<WMS> getWMSList(@Param("keywords") String keywords, @Param("bound") float[] bound, @Param("continentNew") String continentNew,@Param("topicArray")String [] topicArray, @Param("organizationArray")String [] organizationArray, @Param("organizationTypeArray")String [] organizationTypeArray, @Param("fromRowNum") Integer fromRowNum, @Param("pageSize") Integer pageSize);
+    List<WMS> getWMSList(@Param("keywords") String keywords, @Param("bound") float[] bound,
+                         @Param("continentNew") String continentNew, @Param("topicArray")String [] topicArray,
+                         @Param("organizationArray")String [] organizationArray,
+                         @Param("organizationTypeArray")String [] organizationTypeArray,
+                         @Param("table") String table,
+                         @Param("fromRowNum") Integer fromRowNum, @Param("pageSize") Integer pageSize);
     // TODO SQL语句查询中的Organization和OrganizationType都是用Organization来匹配的。
     
     
     // 查询符合条件的WMS服务总数
     @Select("<script>" +
             "select count(x.id) from(select m.* from (SELECT ID as id, Topic as topic, URL as url, Abstract as abstr, Keywords as keywords, Title as title, Country as country, " + 
-    		"StateOrProvince as stateorprovince, City as city, Latitude as latitude, Longitude as longitude from wms where 1=1 " +
+    		"StateOrProvince as stateorprovince, City as city, Latitude as latitude, Longitude as longitude from ${table} where 1=1 " +
             "<if test='keywords!=null and  keywords!=\"\" ' >" +
             " and MATCH (Title,Abstract,url,Keywords) AGAINST (#{keywords}) " +
             "</if>  " +
@@ -138,7 +143,11 @@ public interface WMSMapper {
             " on m.id=n.ServiceID "+
             " )x where x.id is not null " + 
             "</script>")
-    Integer getWMSListNum(@Param("keywords") String keywords, @Param("bound") float[] bound, @Param("continentNew") String continentNew,@Param("topicArray")String [] topicArray, @Param("organizationArray")String [] organizationArray, @Param("organizationTypeArray")String [] organizationTypeArray);
+    Integer getWMSListNum(@Param("keywords") String keywords, @Param("bound") float[] bound,
+                          @Param("continentNew") String continentNew,@Param("topicArray")String [] topicArray,
+                          @Param("organizationArray")String [] organizationArray,
+                          @Param("organizationTypeArray")String [] organizationTypeArray,
+                          @Param("table") String table);
     // TODO SQL语句查询中的Organization和OrganizationType都是用Organization来匹配的。
     
     

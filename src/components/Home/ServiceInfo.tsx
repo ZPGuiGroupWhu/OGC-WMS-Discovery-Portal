@@ -181,7 +181,7 @@ class ServiceInfo extends React.Component<Props,State>{
                    renderItem={(childItem:ILayer) => (
                        <List.Item key={childItem.id} className="main_container_content_imglist_item">
                            <Link to='/layerInfo'>
-                            <Card hoverable={true}  cover={<img src={'data:image/png;base64,'+childItem.photo} />}  onClick={()=>{this.props.dispatch(conveyLayerID(childItem.id))}}
+                            <Card hoverable={true}  cover={<img src={'http://119.91.111.143:8082/'+childItem.photo} />}  onClick={()=>{this.props.dispatch(conveyLayerID(childItem.id))}}
                                   bodyStyle={{padding:2, textAlign: "center", textOverflow:"ellipsis", overflow:"hidden", whiteSpace:"nowrap"}}>
                                     {childItem.name}
                             </Card>
@@ -198,7 +198,9 @@ class ServiceInfo extends React.Component<Props,State>{
     // init service info: to get data
     public async initData(){
         const baseUrl:string = 'search/queryWMSInfo';
-        const url:string = reqUrl({id:this.props.serviceID},baseUrl,'8081');
+        // const reqPar: object = Object.assign({id:this.props.serviceID}, {photoType: 'Base64Str'})  // deliver image by encoding base64, abandoned
+        const reqPar: object = Object.assign({id:this.props.serviceID})
+        const url:string = reqUrl(reqPar,baseUrl,'8081');
         try {
             const res: any = await $req(url,{})
             // console.log(res)

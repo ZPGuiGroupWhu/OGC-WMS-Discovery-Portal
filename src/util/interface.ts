@@ -54,6 +54,11 @@ export interface ILayer{
     topic: string;
     url: string;
     service: object;
+
+    fContent?: string,
+    fSpace?: string,
+    fStyle?: string,
+    fTopic?: string,
 }
 
 // service list request body interface

@@ -9,7 +9,7 @@ class DataAnalysis extends React.Component{
   public render() {
     return (
       <div id="analysis_body">
-            <h3>Server Location and Provider Type</h3>
+            <h3>Server Locations and Provider Types</h3>
             <Pie />
             <div className="desc">The regional distribution and types of monitored public WMS providers. (a) shows that while most services are in North America and Europe, among the remaining .6%, Asia contains .23%. (b) shows providers by sector, government has largest proportion (37.69%) followed by academic institutions (34.19%), while industry has smallest proportion (1.78%)</div>
             <h3>Popular Map Subjects</h3>

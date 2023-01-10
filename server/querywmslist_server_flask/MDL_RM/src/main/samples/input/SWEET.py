@@ -5,21 +5,39 @@ from MDL_RM.src.main.samples.generation.ConceptIdTransform import Ontology_conce
     concept_to_id, Information_Content_concept_to_id
 import os.path
 
+
 # file_path_prefix = os.getcwd().split("MDL_RM")[0] + "MDL_RM/resources/ontologies/sweet"
-__dir__ = os.path.dirname(os.path.abspath(__file__))
-file_path_prefix = os.path.join(os.path.abspath(os.path.join(__dir__, "../../../../")),
-                                    "resources/ontologies/sweet")
+# __dir__ = os.path.dirname(os.path.abspath(__file__))
+# file_path_prefix = os.path.join(os.path.abspath(os.path.join(__dir__, "../../../../")),
+#                                     "resources/ontologies/sweet")
+#
+# Ontologies = load_json(os.path.join(file_path_prefix, "all_hyponyms_dimension_divided.json"))
+# Ancestor = load_json(os.path.join(file_path_prefix, "all_ancestors_dimension_divided.json"))
+# Neighborhood = load_json(os.path.join(file_path_prefix, "neighbors_dimension_divided.json"))
+# direct_Ancestor = load_json(os.path.join(file_path_prefix, "direct_ancestors_dimension_divided.json"))
+# direct_Ancestor_All_Dimensions = load_json(os.path.join(file_path_prefix, "direct_ancestors.json"))
+# Ontologies_All_Dimensions = load_json(os.path.join(file_path_prefix, "all_hyponyms.json"))
+# Ancestor_All_Dimensions = load_json(os.path.join(file_path_prefix, "ancestors.json"))
+# Neighborhood_All_Dimensions = load_json(os.path.join(file_path_prefix, "neighbors.json"))
+# Information_Content = load_json(os.path.join(file_path_prefix, "concept_information_content_yuan2013.json"))
 
-Ontologies = load_json(os.path.join(file_path_prefix, "all_hyponyms_dimension_divided.json"))
-Ancestor = load_json(os.path.join(file_path_prefix, "all_ancestors_dimension_divided.json"))
-Neighborhood = load_json(os.path.join(file_path_prefix, "neighbors_dimension_divided.json"))
-direct_Ancestor = load_json(os.path.join(file_path_prefix, "direct_ancestors_dimension_divided.json"))
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
 
-direct_Ancestor_All_Dimensions = load_json(os.path.join(file_path_prefix, "direct_ancestors.json"))
-Ontologies_All_Dimensions = load_json(os.path.join(file_path_prefix, "all_hyponyms.json"))
-Ancestor_All_Dimensions = load_json(os.path.join(file_path_prefix, "ancestors.json"))
-Neighborhood_All_Dimensions = load_json(os.path.join(file_path_prefix, "neighbors.json"))
-Information_Content = load_json(os.path.join(file_path_prefix, "concept_information_content_yuan2013.json"))
+direct_Ancestor_All_Dimensions = load_json( resource_path("direct_ancestors.json"))
+Ontologies_All_Dimensions = load_json(resource_path("all_hyponyms.json"))
+Ancestor_All_Dimensions = load_json(resource_path( "ancestors.json"))
+Neighborhood_All_Dimensions = load_json(resource_path("neighbors.json"))
+Information_Content = load_json( resource_path("concept_information_content_yuan2013.json"))
+Ontologies = load_json(resource_path("all_hyponyms_dimension_divided.json"))
+Ancestor = load_json(resource_path("all_ancestors_dimension_divided.json"))
+Neighborhood = load_json(resource_path("neighbors_dimension_divided.json"))
+direct_Ancestor = load_json(resource_path("direct_ancestors_dimension_divided.json"))
+
+
+
 Ontology_Root = "Thing"
 
 top_concepts = list(filter(lambda x: len(Ancestor_All_Dimensions[x]) == 0, list(Ancestor_All_Dimensions.keys())))

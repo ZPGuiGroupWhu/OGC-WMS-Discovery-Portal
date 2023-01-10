@@ -16,4 +16,15 @@ public class Layer {
     private String imagePath;
     private String  topic;
     private Integer  serviceId;
+
+    private String FContent;
+    private String FSpace;
+    private String FStyle;
+    private String FTopic;
+    public Sample toSample(){
+        Sample sample=new Sample();
+       // sample.S=this.
+        return sample;
+
+    }
 }

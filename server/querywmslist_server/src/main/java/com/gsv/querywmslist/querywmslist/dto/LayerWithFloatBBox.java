@@ -19,4 +19,9 @@ public class LayerWithFloatBBox {
     private String url;
     private String topic;
     private Integer  serviceId;
+
+    private String FContent;
+    private String FSpace;
+    private String FStyle;
+    private String FTopic;
 }

@@ -25,6 +25,10 @@ public class TransformUtil {
 		result.setTitle(layer.getTitle());
 		result.setUrl(layer.getUrl());
         result.setTopic(layer.getTopic());
+        result.setFContent(layer.getFContent());
+        result.setFSpace(layer.getFSpace());
+        result.setFStyle(layer.getFStyle());
+        result.setFTopic(layer.getFTopic());
         result.setProjection(layer.getBoundingbox().split(" ")[0]);
         float[][] bbox = new float[2][2];
         String[] bboxStrArray = layer.getBoundingbox().split(" ")[1].split(",");
@@ -86,8 +90,8 @@ public class TransformUtil {
         return result;
 		
 	}
-	
-	
+
+
 	public static WMSWithLayer mergeLayerAndWMSAndContactInfo(List<Layer> layers, WMS wms, ContactInfo contactInfo, PhotoTransportType photoType) {
 		
 		WMSWithLayer result = new WMSWithLayer();
@@ -123,6 +127,10 @@ public static LayerWithWMS mergeLayerAndWMSAndContactInfo(Layer layer, WMS wms, 
 		result.setTitle(layer.getTitle());
 		result.setUrl(layer.getUrl());
         result.setTopic(layer.getTopic());
+        result.setFContent(layer.getFContent());
+        result.setFSpace(layer.getFSpace());
+        result.setFStyle(layer.getFStyle());
+        result.setFTopic(layer.getFTopic());
         result.setProjection(layer.getBoundingbox().split(" ")[0]);
         float[][] bbox = new float[2][2];
         String[] bboxStrArray = layer.getBoundingbox().split(" ")[1].split(",");

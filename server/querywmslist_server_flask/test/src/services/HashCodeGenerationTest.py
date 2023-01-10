@@ -2,7 +2,7 @@ import requests
 import base64
 import json
 import time
-
+import string
 
 def image_base64_decode_test():
     url = "http://127.0.0.1:5000/imageBase64Decode"
@@ -65,12 +65,12 @@ def query_layer_by_uploaded_template_test():
         f.close()
         images.append(base64Str)
 
-    headers = {"Content-Type": "application/json"}
+    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
     # print(images)
     data = {'images': json.dumps(images),
             'sessionID': '5a6c03a929ff48e8befb8a09e80d7fc4',
             'pageNum': 1,
-            'pageSize': 2,
+            'pageSize': 10,
             'photoType': 'Base64Str'}
     # print(json.dumps(data))
     # print(json.dumps(data))
@@ -88,9 +88,19 @@ def testsearchByIntentionID():
     url = "http://127.0.0.1:8081/search/queryLayerByMDL"
     headers = {"Content-Type": "application/json"}
 
+
+    # data = {
+    #     'sessionID':' ',
+    #     'layers': '{\"irrelevance\": [2292,2292,2292], \"relevance\":[454,454,454]}',
+    #     'parameter': '{\"random_merge_number\":50,\"rule_covered_positive_sample_rate_threshold\":0.3}',
+    #     'pageNum': 1,
+    #     'pageSize': 10,
+    #     'photoType': ' '}
     data = {
-        'sessionID': '',
-        'layerIds': '{\"positive samples\":[1,2,3],\"negative samples\":[4,5,6]}',
+        'sessionID': ' ',
+        'layers': {"irrelevance": [454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454,454],
+                   "relevance":[2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292,2292]},
+        'parameter': {"random_merge_number":50,"rule_covered_positive_sample_rate_threshold":0.3},
         'pageNum': 1,
         'pageSize': 10,
         'photoType': ' '}
@@ -103,14 +113,15 @@ def testsearchByIntentionID():
 def testsearchByIntention():
     url = "http://127.0.0.1:8081/search/queryLayerByIntention"
     headers = {"Content-Type": "application/json"}
-    # file_object = open(r"G:\1文档\地图检索意图识别\系统开发\intentionResult2022.2.23.json")
-    # all_the_text = file_object.read()
-    # arr = json.loads(all_the_text)
-    # file_object.close()
+    file_object = open(r"G:\1文档\地图检索意图识别\系统开发\intentionResult2022.2.23.json")
+    all_the_text = file_object.read()
+
+    arr = json.loads(all_the_text)
+    file_object.close()
 
     data = {
         'sessionID': '',
-        'intention': "[{\"confidence\":0.8356528776658346,\"content\":[],\"location\":[\"Florida\"],\"style\":[],\"topic\":[]},{\"confidence\":0.44851355434289175,\"content\":[\"http://sweetontology.net/matr/SolidSubstance\"],\"location\":[],\"style\":[],\"topic\":[]}]",
+        'intention': [{"confidence":100,"content":["lake"],"location":[],"style":[],"topic":[]},{"confidence":100,"content":["tree"],"location":[],"style":[],"topic":[]}],
         'pageNum': 1,
         'pageSize': 10,
         'photoType': ' '}
@@ -119,10 +130,9 @@ def testsearchByIntention():
     for tmp_key in result:
         print(tmp_key, result[tmp_key])
 
-
 if __name__ == '__main__':
     # image_base64_decode_test()
     # get_hashcodes_test()
-    # query_layer_by_uploaded_template_test()
-    testsearchByIntention()
-# testsearchByIntentionID()
+#query_layer_by_uploaded_template_test()
+    testsearchByIntentionID()
+    #testsearchByIntention()

@@ -1,6 +1,6 @@
 # for MRIEMR
-adjust_sample_ratio = False                      # 是否平衡正负样本比例
-adjust_sample_num = False                     # 是否调整正负样本数量
+adjust_sample_ratio = True                      # 是否平衡正负样本比例
+adjust_sample_num = True                     # 是否调整正负样本数量
 MDL_RM_random_merge_number = 50                    # 随机合并时最大尝试次数
 rule_covered_positive_sample_rate_threshold = 0.3
 TAG_RECORD_MERGE_PROCESS = False

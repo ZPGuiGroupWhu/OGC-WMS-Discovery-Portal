@@ -11,7 +11,7 @@ https://github.com/ZPGuiGroupWhu/OGC-WMS-Discovery-Portal
 ## 项目部署
 如果想深入了解代码结构与细节，可以参照以下步骤部署前端的开发模式
 1.	安装前端软件环境：
-	* Node环境：安装Node，安装最新版即可
+	* Node环境：安装Node，推荐安装[14.17.0版本](https://nodejs.org/zh-cn/download/releases/) ,高版本安装依赖时可能会报错
 
 2.  接口服务与数据库部署在云服务器上，不用部署在本地
 	  

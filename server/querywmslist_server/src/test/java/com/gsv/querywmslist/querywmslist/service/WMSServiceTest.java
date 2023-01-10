@@ -26,7 +26,7 @@ public class WMSServiceTest {
 		String keyword = "water";
 		Integer pageNum = 1;
 		Integer pageSize = 5;
-		List<WMSWithContactInfo> result = wmsService.getWMSList(keyword, null, null, null, null, null, pageNum, pageSize);
+		List<WMSWithContactInfo> result = wmsService.getWMSList(keyword, null, null, null, null, null, null, pageNum, pageSize);
 		for(WMSWithContactInfo wms : result) {
 			System.out.println(wms.getId() + ", " + wms.getTitle());
 		}

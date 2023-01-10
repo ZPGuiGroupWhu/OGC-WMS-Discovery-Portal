@@ -6,9 +6,6 @@ import sys
 import time
 from math import log2, gamma
 
-__dir__ = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.abspath(os.path.join(__dir__, "../../../../")))
-
 from MDL_RM.src.main.samples.input import OntologyUtil, Sample
 from MDL_RM.src.main.samples.input.Data import Data
 from MDL_RM.src.main.util.RetrievalUtil import retrieve_docs_based_on_terms_covered_samples

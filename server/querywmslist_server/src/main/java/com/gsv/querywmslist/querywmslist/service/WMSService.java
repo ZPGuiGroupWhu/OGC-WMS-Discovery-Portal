@@ -26,7 +26,7 @@ public class WMSService {
     
     // 根据关键词、四至范围、所属大洲、主题词（支持多个）、发布组织（支持多个）、发布组织类型（支持多个）进行查询
     public List<WMSWithContactInfo> getWMSList(String keywords, float[] bound, String continent, String topic, 
-    		String organization, String organizationType, Integer pageNum, Integer pageSize){
+    		String organization, String organizationType, String table, Integer pageNum, Integer pageSize){
     	
     	// 参数预处理
         keywords = (keywords == null) ? null : keywords.toLowerCase();
@@ -37,7 +37,7 @@ public class WMSService {
 
         Integer fromRowNum = (pageNum - 1) * pageSize;
         List<WMS> wmsList = wmsMapper.getWMSList(keywords, bound, continent, topicArray, 
-        		organizationArray, organizationTypeArray, fromRowNum, pageSize);
+        		organizationArray, organizationTypeArray, table, fromRowNum, pageSize);
         List<WMSWithContactInfo> result = wmsList.stream().map(wms -> {
         	WMSWithContactInfo wmsWithContactInfo =  TransformUtil.mergeWMSAndContactInfo(wms, null);
         	wmsWithContactInfo.setIp(null);
@@ -49,8 +49,8 @@ public class WMSService {
     }
     
     
-    public Integer getWMSListNum(String keywords, float[] bound, String continent, String topic, 
-    		String organization, String organizationType){
+    public Integer getWMSListNum(String keywords, float[] bound, String continent, String topic,
+                                 String organization, String organizationType, String table){
     	
     	// 参数预处理
         keywords = (keywords == null) ? null : keywords.toLowerCase();
@@ -59,7 +59,7 @@ public class WMSService {
         String[] organizationArray = (organization == null) ? null : organization.toLowerCase().split(",");
         String[] organizationTypeArray = (organizationType == null) ? null : organizationType.toLowerCase().split(",");
 
-        Integer wmsListNum = wmsMapper.getWMSListNum(keywords, bound, continent, topicArray, organizationArray, organizationTypeArray);
+        Integer wmsListNum = wmsMapper.getWMSListNum(keywords, bound, continent, topicArray, organizationArray, organizationTypeArray, table);
         return wmsListNum;
     }
     
